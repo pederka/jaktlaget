@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements
 
         displaySelectedScreen(R.id.nav_map);
 
-        PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
+        //PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
     }
 
     @Override
