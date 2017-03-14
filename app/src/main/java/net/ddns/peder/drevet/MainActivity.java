@@ -14,12 +14,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 
-import net.ddns.peder.drevet.fragments.MapFragment;
+import net.ddns.peder.drevet.fragments.DrevetFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
 import net.ddns.peder.drevet.fragments.TeamFragment;
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, MapFragment.OnFragmentInteractionListener,
+        NavigationView.OnNavigationItemSelectedListener, DrevetFragment.OnFragmentInteractionListener,
         TeamFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener {
 
     @Override
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_map:
-                fragment = new MapFragment();
+                fragment = new DrevetFragment();
                 break;
             case R.id.nav_team:
                 fragment = new TeamFragment();
