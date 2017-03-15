@@ -6,7 +6,8 @@ import com.google.android.gms.maps.model.UrlTileProvider;
 public abstract class WMSTileProvider extends UrlTileProvider {
 
     // Web Mercator n/w corner of the map.
-    private static final double[] TILE_ORIGIN = { -20037508.34789244, 20037508.34789244 };
+    private static final double[] TILE_ORIGIN = { 1061557.448825, 8531595.349078 };
+    //private static final double[] TILE_ORIGIN = { -20037508.34789244, 20037508.34789244 };
     // array indexes for that data
     private static final int ORIG_X = 0;
     private static final int ORIG_Y = 1; // "

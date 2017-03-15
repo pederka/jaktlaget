@@ -8,10 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 
@@ -22,6 +25,8 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback {
     private OnFragmentInteractionListener mListener;
     private MapView mapView;
     private GoogleMap map;
+    private final LatLngBounds NORWAY = new LatLngBounds(
+            new LatLng(58.57, 3.71), new LatLng(71.51, 31.82));
 
     public DrevetFragment() {
         // Required empty public constructor
@@ -50,13 +55,7 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_team, container, false);
-
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
         try {
             // Loading map
             if (map == null) {
@@ -69,6 +68,12 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+
     }
 
     @Override
@@ -79,6 +84,7 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback {
         if (map != null) {
             setUpMap();
         }
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
     }
 
     public void onButtonPressed(Uri uri) {
