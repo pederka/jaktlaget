@@ -5,15 +5,15 @@ import com.google.android.gms.maps.model.UrlTileProvider;
 
 public abstract class WMSTileProvider extends UrlTileProvider {
 
-    // Web Mercator n/w corner of the map.
-    private static final double[] TILE_ORIGIN = { 1061557.448825, 8531595.349078 };
-    //private static final double[] TILE_ORIGIN = { -20037508.34789244, 20037508.34789244 };
+    // North-west corner of map
+    private static final double[] TILE_ORIGIN = {-90, 90};
     // array indexes for that data
     private static final int ORIG_X = 0;
-    private static final int ORIG_Y = 1; // "
+    private static final int ORIG_Y = 1; //
 
-    // Size of square world map in meters, using WebMerc projection.
-    private static final double MAP_SIZE = 20037508.34789244 * 2;
+    // Size of world map in degrees
+    private static final double MAP_SIZE_X = 180;
+    private static final double MAP_SIZE_Y = 90;
 
     // array indexes for array to hold bounding boxes.
     protected static final int MINX = 0;
@@ -40,11 +40,12 @@ public abstract class WMSTileProvider extends UrlTileProvider {
     // Return a web Mercator bounding box given tile x/y indexes and a zoom
     // level.
     protected double[] getBoundingBox(int x, int y, int zoom) {
-        double tileSize = MAP_SIZE / Math.pow(2, zoom);
-        double minx = TILE_ORIGIN[ORIG_X] + x * tileSize;
-        double maxx = TILE_ORIGIN[ORIG_X] + (x + 1) * tileSize;
-        double miny = TILE_ORIGIN[ORIG_Y] - (y + 1) * tileSize;
-        double maxy = TILE_ORIGIN[ORIG_Y] - y * tileSize;
+        double tileSize_x = MAP_SIZE_X / Math.pow(2, zoom);
+        double tileSize_y = MAP_SIZE_Y / Math.pow(2, zoom);
+        double minx = TILE_ORIGIN[ORIG_X] + x * tileSize_x;
+        double maxx = TILE_ORIGIN[ORIG_X] + (x + 1) * tileSize_x;
+        double miny = TILE_ORIGIN[ORIG_Y] - (y + 1) * tileSize_y;
+        double maxy = TILE_ORIGIN[ORIG_Y] - y * tileSize_y;
 
         double[] bbox = new double[4];
         bbox[MINX] = minx;
