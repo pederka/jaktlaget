@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 
@@ -48,7 +48,7 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback {
         map.addTileOverlay(new TileOverlayOptions().tileProvider(wmsTileProvider));
 
         // to satellite so we can see the WMS overlay.
-        map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        map.setMapType(GoogleMap.MAP_TYPE_NONE);
     }
 
     @Override
@@ -85,6 +85,9 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback {
             setUpMap();
         }
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(59.9139, 10.7522))
+                );
     }
 
     public void onButtonPressed(Uri uri) {
