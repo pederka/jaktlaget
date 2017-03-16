@@ -8,12 +8,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,8 +34,8 @@ import com.google.android.gms.maps.model.TileProvider;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.providers.TileProviderFactory;
 
-public class DrevetFragment extends Fragment implements OnMapReadyCallback,
-    GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback,
+    GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private OnFragmentInteractionListener mListener;
     private MapView mapView;
     private GoogleMap map;
@@ -42,13 +45,14 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback,
     private LatLng latLng;
     private Marker currLocationMarker;
     private LocationRequest mLocationRequest;
+    private String tag = "Map";
 
-    public DrevetFragment() {
+    public MapFragment() {
         // Required empty public constructor
     }
 
-    public static DrevetFragment newInstance(String param1, String param2) {
-        DrevetFragment fragment = new DrevetFragment();
+    public static MapFragment newInstance(String param1, String param2) {
+        MapFragment fragment = new MapFragment();
         return fragment;
     }
 
@@ -60,6 +64,7 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnected(Bundle bundle) {
+        Log.i(tag, "Connected to location API");
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -78,9 +83,13 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback,
             mLocationRequest = new LocationRequest();
             mLocationRequest.setInterval(5000); //5 seconds
             mLocationRequest.setFastestInterval(3000); //3 seconds
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            //mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-            //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, getContext());
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+        else {
+            Toast.makeText(getContext(), "No permission", Toast.LENGTH_SHORT);
         }
 
     }
@@ -99,6 +108,27 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback,
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        //place marker at current position
+        //mGoogleMap.clear();
+        if (currLocationMarker != null) {
+            currLocationMarker.remove();
+        }
+        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        currLocationMarker = map.addMarker(markerOptions);
+
+        //zoom to current position:
+        //map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
+
+
     }
 
 
@@ -144,9 +174,15 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback,
             setUpMap();
         }
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(59.9139, 10.7522))
-                );
+        if (ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            map.setMyLocationEnabled(true);
+        }
+        else {
+            Toast.makeText(getContext(), "No permission", Toast.LENGTH_SHORT);
+        }
+        buildGoogleApiClient();
+        mGoogleApiClient.connect();
     }
 
     public void onButtonPressed(Uri uri) {
@@ -170,6 +206,12 @@ public class DrevetFragment extends Fragment implements OnMapReadyCallback,
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 
     public interface OnFragmentInteractionListener {

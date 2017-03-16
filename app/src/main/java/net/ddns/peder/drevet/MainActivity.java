@@ -1,10 +1,13 @@
 package net.ddns.peder.drevet;
 
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,15 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import net.ddns.peder.drevet.fragments.DrevetFragment;
+import android.Manifest;
+import net.ddns.peder.drevet.fragments.MapFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
 import net.ddns.peder.drevet.fragments.TeamFragment;
 
 public class MainActivity extends AppCompatActivity implements
-        NavigationView.OnNavigationItemSelectedListener, DrevetFragment.OnFragmentInteractionListener,
+        NavigationView.OnNavigationItemSelectedListener, MapFragment.OnFragmentInteractionListener,
         TeamFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener {
 
+    private int MY_PERMISSIONS_REQUEST;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +42,19 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        displaySelectedScreen(R.id.nav_map);
 
+        // Request permission
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST);
+
+            }
+
+        displaySelectedScreen(R.id.nav_map);
         //PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
     }
 
@@ -86,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements
         //initializing the fragment object which is selected
         switch (itemId) {
             case R.id.nav_map:
-                fragment = new DrevetFragment();
+                fragment = new MapFragment();
                 break;
             case R.id.nav_team:
                 fragment = new TeamFragment();
