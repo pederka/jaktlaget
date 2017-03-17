@@ -59,7 +59,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -71,7 +70,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     mGoogleApiClient);
             if (mLastLocation != null) {
                 //place marker at current position
-                //mGoogleMap.clear();
                 latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
@@ -83,7 +81,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             mLocationRequest = new LocationRequest();
             mLocationRequest.setInterval(5000); //5 seconds
             mLocationRequest.setFastestInterval(3000); //3 seconds
-            //mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
             mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -112,31 +109,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onLocationChanged(Location location) {
-
-        //place marker at current position
-        //mGoogleMap.clear();
+        // Clear old location marker
         if (currLocationMarker != null) {
             currLocationMarker.remove();
         }
+        // Set new location marker
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         currLocationMarker = map.addMarker(markerOptions);
-
-        //zoom to current position:
-        //map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
-
-
     }
 
-
     private void setUpMap() {
-        TileProvider wmsTileProvider = TileProviderFactory.getOsgeoWmsTileProvider();
+        TileProvider wmsTileProvider = TileProviderFactory.getWmsTileProvider();
         map.addTileOverlay(new TileOverlayOptions().tileProvider(wmsTileProvider));
 
-        // to satellite so we can see the WMS overlay.
+        // Make sure the google map is not visible in the background
         map.setMapType(GoogleMap.MAP_TYPE_NONE);
     }
 
@@ -144,7 +134,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        return inflater.inflate(R.layout.fragment_map, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
         try {
             // Loading map
             if (map == null) {
@@ -152,17 +146,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 mapView.onCreate(savedInstanceState);
                 mapView.onResume();
                 mapView.getMapAsync(this);
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
-
     }
 
     @Override

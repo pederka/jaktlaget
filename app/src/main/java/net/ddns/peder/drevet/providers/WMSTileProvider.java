@@ -1,22 +1,17 @@
 package net.ddns.peder.drevet.providers;
 
 import com.google.android.gms.maps.model.UrlTileProvider;
-
 import java.net.URLEncoder;
 
 public abstract class WMSTileProvider extends UrlTileProvider {
 
     // North-west corner of map
-    //private static final double[] TILE_ORIGIN = {-85.0511, 85.0511};
     private static final double[] TILE_ORIGIN = {-20037508.34789244, 20037508.34789244};
     // array indexes for that data
     private static final int ORIG_X = 0;
     private static final int ORIG_Y = 1; //
 
-    // Size of world map in degrees
-    private static final double MAP_SIZE_X = 2*TILE_ORIGIN[1];
-    private static final double MAP_SIZE_Y = TILE_ORIGIN[1];
-    //private static final double MAP_SIZE = 5545984;
+    // Size of world map in metres
     private static final double MAP_SIZE = 20037508.34789244*2;
 
     // array indexes for array to hold bounding boxes.
@@ -45,7 +40,6 @@ public abstract class WMSTileProvider extends UrlTileProvider {
     // level.
     protected double[] getBoundingBox(int x, int y, int zoom) {
         double tileSize = MAP_SIZE / Math.pow(2, zoom);
-        //double tileSize_y = MAP_SIZE_Y / Math.pow(2, zoom);
         double minx = TILE_ORIGIN[ORIG_X] + x * tileSize;
         double maxx = TILE_ORIGIN[ORIG_X] + (x + 1) * tileSize;
         double miny = TILE_ORIGIN[ORIG_Y] - (y + 1) * tileSize;
