@@ -4,11 +4,15 @@
     <string name="email">Peder.Aursand@gmail.com</string>
     <string name="menu_map">Map</string>
     <string name="menu_team">Team</string>
+    <string name="menu_landmarks">Landmarks</string>
     <string name="menu_settings">Settings</string>
 
     <string name="pref_category_usage">App usage</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="column_description">Description</string>
+    <string name="column_user">User</string>
 
 </resources>

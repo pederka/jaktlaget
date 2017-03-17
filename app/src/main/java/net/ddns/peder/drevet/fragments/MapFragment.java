@@ -1,8 +1,10 @@
 package net.ddns.peder.drevet.fragments;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -32,7 +35,12 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 
 import net.ddns.peder.drevet.R;
+import net.ddns.peder.drevet.database.LandmarksDbHelper;
 import net.ddns.peder.drevet.providers.TileProviderFactory;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback,
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -46,6 +54,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private Marker currLocationMarker;
     private LocationRequest mLocationRequest;
     private String tag = "Map";
+    private LandmarksDbHelper landmarksDbHelper;
+    private SQLiteDatabase db;
 
     public MapFragment() {
         // Required empty public constructor
@@ -86,7 +96,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
         else {
-            Toast.makeText(getContext(), "No permission", Toast.LENGTH_SHORT);
+            Toast.makeText(getContext(), "No permission", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -139,6 +149,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
+        landmarksDbHelper = new LandmarksDbHelper(getContext());
+        db = landmarksDbHelper.getReadableDatabase();
         try {
             if (map == null) {
                 mapView = (MapView) view.findViewById(R.id.map);
@@ -164,10 +176,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
+    private void saveLandmarkToDatabase(String desc, LatLng latLng) {
+        ContentValues values = new ContentValues();
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm", Locale.US);
+        String date = df.format(c.getTime());
+        values.put(LandmarksDbHelper.COLUMN_NAME_TIME, date);
+        values.put(LandmarksDbHelper.COLUMN_NAME_USER, "me");
+        values.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc);
+        values.put(LandmarksDbHelper.COLUMN_NAME_LATITUDE, latLng.latitude);
+        values.put(LandmarksDbHelper.COLUMN_NAME_LONGDITUDE, latLng.longitude);
+        db.insert(LandmarksDbHelper.TABLE_NAME, null, values);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Do stuff with the map here!
         map = googleMap;
+
+
+        // Setting a click event handler for the map
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng latLng) {
+                saveLandmarkToDatabase("test", latLng);
+                Toast.makeText(getContext(), "Landmark saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // check if map is created successfully or not
         if (map != null) {
             setUpMap();
@@ -178,7 +215,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             map.setMyLocationEnabled(true);
         }
         else {
-            Toast.makeText(getContext(), "No permission", Toast.LENGTH_SHORT);
+            Toast.makeText(getContext(), "No permission", Toast.LENGTH_SHORT).show();
         }
         buildGoogleApiClient();
         mGoogleApiClient.connect();

@@ -19,10 +19,12 @@ import android.Manifest;
 import net.ddns.peder.drevet.fragments.MapFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
 import net.ddns.peder.drevet.fragments.TeamFragment;
+import net.ddns.peder.drevet.fragments.LandmarksFragment;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MapFragment.OnFragmentInteractionListener,
-        TeamFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener {
+        TeamFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener,
+        LandmarksFragment.OnFragmentInteractionListener {
 
     private int MY_PERMISSIONS_REQUEST;
 
@@ -105,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.nav_team:
                 fragment = new TeamFragment();
+                break;
+            case R.id.nav_landmarks:
+                fragment = new LandmarksFragment();
                 break;
             case R.id.nav_settings:
                 fragment = new SettingsFragment();

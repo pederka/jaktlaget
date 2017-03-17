@@ -1,17 +1,31 @@
 package net.ddns.peder.drevet.fragments;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import net.ddns.peder.drevet.R;
+import net.ddns.peder.drevet.database.LandmarksDbHelper;
 
 public class LandmarksFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
+    private LandmarksDbHelper landmarksDbHelper;
+    private SimpleCursorAdapter mAdapter;
+    private ListView listView;
+
+    private final static String[] PROJECTION = {
+                LandmarksDbHelper.COLUMN_NAME_ID,
+                LandmarksDbHelper.COLUMN_NAME_USER,
+                LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+    };
 
     public LandmarksFragment() {
         // Required empty public constructor
@@ -32,6 +46,32 @@ public class LandmarksFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_landmarks, container, false);
+
+        landmarksDbHelper = new LandmarksDbHelper(getContext());
+        SQLiteDatabase db = landmarksDbHelper.getReadableDatabase();
+
+        final String[] fromColumns = {LandmarksDbHelper.COLUMN_NAME_USER,
+                                      LandmarksDbHelper.COLUMN_NAME_DESCRIPTION};
+
+        final int[] toViews = {R.id.lm_list_user, R.id.lm_list_desc};
+
+
+        Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
+                                 PROJECTION,
+                                 null,
+                                 null,
+                                 null,
+                                 null,
+                                 null);
+
+
+        mAdapter = new SimpleCursorAdapter(getActivity(),
+                            R.layout.lm_row,
+                        cursor, fromColumns, toViews);
+
+        listView = (ListView) view.findViewById(R.id.lm_list);
+        listView.setAdapter(mAdapter);
+
         return view;
     }
 
