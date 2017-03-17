@@ -140,11 +140,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         try {
-            // Loading map
             if (map == null) {
                 mapView = (MapView) view.findViewById(R.id.map);
                 mapView.onCreate(savedInstanceState);
                 mapView.onResume();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+         try {
+            // Loading map
+            if (map == null) {
                 mapView.getMapAsync(this);
             }
         } catch (Exception e) {
