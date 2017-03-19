@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.net.Uri;
@@ -199,7 +200,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         // Do stuff with the map here!
         map = googleMap;
 
-
         // Setting a click event handler for the map
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
@@ -265,6 +265,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
         buildGoogleApiClient();
         mGoogleApiClient.connect();
+
+        addLandMarks(map);
+
+    }
+
+    private void addLandMarks(GoogleMap map) {
+        final String[] PROJECTION = {
+            LandmarksDbHelper.COLUMN_NAME_ID,
+            LandmarksDbHelper.COLUMN_NAME_SHOWED,
+            LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+            LandmarksDbHelper.COLUMN_NAME_LATITUDE,
+            LandmarksDbHelper.COLUMN_NAME_LONGDITUDE,
+        };
+
+        String selection = LandmarksDbHelper.COLUMN_NAME_SHOWED + " = ?";
+        String[] selectionArgs = { "1" };
+        final Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
+                         PROJECTION,
+                         selection,
+                         selectionArgs,
+                         null,
+                         null,
+                         null);
+        while (cursor.moveToNext()) {
+            Location pos = new LatLng(getLatitude(), getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(pos);
+            markerOptions.title(description);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+            Marker marker = map.addMarker(markerOptions);
+        }
     }
 
     public void onButtonPressed(Uri uri) {
