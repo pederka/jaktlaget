@@ -3,6 +3,7 @@ package net.ddns.peder.drevet.fragments;
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
@@ -10,11 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.support.v7.widget.AppCompatEditText;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 
+import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.database.LandmarksDbHelper;
 import net.ddns.peder.drevet.providers.TileProviderFactory;
@@ -56,6 +60,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private String tag = "Map";
     private LandmarksDbHelper landmarksDbHelper;
     private SQLiteDatabase db;
+    private boolean shared;
 
     public MapFragment() {
         // Required empty public constructor
@@ -176,13 +181,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    private void saveLandmarkToDatabase(String desc, LatLng latLng) {
+    private void saveLandmarkToDatabase(String desc, boolean shared, LatLng latLng) {
         ContentValues values = new ContentValues();
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm", Locale.US);
         String date = df.format(c.getTime());
         values.put(LandmarksDbHelper.COLUMN_NAME_TIME, date);
         values.put(LandmarksDbHelper.COLUMN_NAME_USER, "me");
+        values.put(LandmarksDbHelper.COLUMN_NAME_SHARED, shared);
         values.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc);
         values.put(LandmarksDbHelper.COLUMN_NAME_LATITUDE, latLng.latitude);
         values.put(LandmarksDbHelper.COLUMN_NAME_LONGDITUDE, latLng.longitude);
@@ -200,8 +206,44 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
             @Override
             public void onMapClick(LatLng latLng) {
-                saveLandmarkToDatabase("test", latLng);
-                Toast.makeText(getContext(), "Landmark saved", Toast.LENGTH_SHORT).show();
+                final LatLng coords = latLng;
+                shared = false;
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(R.string.lm_dialog_title)
+                        .setMultiChoiceItems(R.array.lm_choices, null,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which,
+                                                boolean isChecked) {
+                                if (isChecked) {
+                                    // If the user checked the item, add it to the selected items
+                                    shared = true;
+                                } else {
+                                    // Else, if the item is already in the array, remove it
+                                    shared = false;
+                                }
+                            }
+                        }
+                );
+                final EditText input = new EditText(getContext());
+                input.setHint("Description");
+                builder.setView(input);
+
+                builder.setPositiveButton(R.string.lm_ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        String description = input.getText().toString();
+                        saveLandmarkToDatabase(description, shared, coords);
+                        Toast.makeText(getContext(), "Landmark saved", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.setNegativeButton(R.string.lm_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             }
         });
 

@@ -7,9 +7,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import net.ddns.peder.drevet.R;
@@ -20,10 +24,12 @@ public class LandmarksFragment extends Fragment {
     private LandmarksDbHelper landmarksDbHelper;
     private SimpleCursorAdapter mAdapter;
     private ListView listView;
+    private SQLiteDatabase db;
 
     private final static String[] PROJECTION = {
                 LandmarksDbHelper.COLUMN_NAME_ID,
                 LandmarksDbHelper.COLUMN_NAME_USER,
+                LandmarksDbHelper.COLUMN_NAME_SHARED,
                 LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
     };
 
@@ -48,7 +54,7 @@ public class LandmarksFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_landmarks, container, false);
 
         landmarksDbHelper = new LandmarksDbHelper(getContext());
-        SQLiteDatabase db = landmarksDbHelper.getReadableDatabase();
+        db = landmarksDbHelper.getReadableDatabase();
 
         final String[] fromColumns = {LandmarksDbHelper.COLUMN_NAME_USER,
                                       LandmarksDbHelper.COLUMN_NAME_DESCRIPTION};
@@ -56,7 +62,7 @@ public class LandmarksFragment extends Fragment {
         final int[] toViews = {R.id.lm_list_user, R.id.lm_list_desc};
 
 
-        Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
+        final Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
                                  PROJECTION,
                                  null,
                                  null,
@@ -71,6 +77,24 @@ public class LandmarksFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.lm_list);
         listView.setAdapter(mAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view,
+                                    final int position, final long id) {
+                landmarksDbHelper.deleteItem(db, id);
+                // Update listview
+                Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
+                                    PROJECTION,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    null);
+                mAdapter.swapCursor(cursor);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
 
         return view;
     }

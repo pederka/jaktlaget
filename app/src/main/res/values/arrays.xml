@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="lm_choices">
+        <item>Share with team</item>
+    </string-array>
+</resources>

@@ -14,5 +14,12 @@
 
     <string name="column_description">Description</string>
     <string name="column_user">User</string>
+    <string name="column_show">Show?</string>
+    <string name="column_share">Share?</string>
+
+    <string name="lm_dialog_title">Add landmark</string>
+    <string name="lm_dialog_message">Add landmark to database?</string>
+    <string name="lm_ok">Add</string>
+    <string name="lm_cancel">Cancel</string>
 
 </resources>
