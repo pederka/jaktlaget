@@ -7,28 +7,26 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 
 import net.ddns.peder.drevet.R;
+import net.ddns.peder.drevet.adapters.LandmarksCursorAdapter;
 import net.ddns.peder.drevet.database.LandmarksDbHelper;
 
 public class LandmarksFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private LandmarksDbHelper landmarksDbHelper;
-    private SimpleCursorAdapter mAdapter;
+    private LandmarksCursorAdapter mAdapter;
     private ListView listView;
     private SQLiteDatabase db;
 
     private final static String[] PROJECTION = {
                 LandmarksDbHelper.COLUMN_NAME_ID,
-                LandmarksDbHelper.COLUMN_NAME_USER,
+                LandmarksDbHelper.COLUMN_NAME_SHOWED,
                 LandmarksDbHelper.COLUMN_NAME_SHARED,
                 LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
     };
@@ -56,10 +54,9 @@ public class LandmarksFragment extends Fragment {
         landmarksDbHelper = new LandmarksDbHelper(getContext());
         db = landmarksDbHelper.getReadableDatabase();
 
-        final String[] fromColumns = {LandmarksDbHelper.COLUMN_NAME_USER,
-                                      LandmarksDbHelper.COLUMN_NAME_DESCRIPTION};
+        final String[] fromColumns = {LandmarksDbHelper.COLUMN_NAME_DESCRIPTION};
 
-        final int[] toViews = {R.id.lm_list_user, R.id.lm_list_desc};
+        final int[] toViews = {R.id.lm_list_desc};
 
 
         final Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
@@ -71,7 +68,7 @@ public class LandmarksFragment extends Fragment {
                                  null);
 
 
-        mAdapter = new SimpleCursorAdapter(getActivity(),
+        mAdapter = new LandmarksCursorAdapter(getActivity(),
                             R.layout.lm_row,
                         cursor, fromColumns, toViews);
 

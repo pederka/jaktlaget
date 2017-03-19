@@ -187,7 +187,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm", Locale.US);
         String date = df.format(c.getTime());
         values.put(LandmarksDbHelper.COLUMN_NAME_TIME, date);
-        values.put(LandmarksDbHelper.COLUMN_NAME_USER, "me");
+        values.put(LandmarksDbHelper.COLUMN_NAME_SHOWED, 1);
         values.put(LandmarksDbHelper.COLUMN_NAME_SHARED, shared);
         values.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc);
         values.put(LandmarksDbHelper.COLUMN_NAME_LATITUDE, latLng.latitude);

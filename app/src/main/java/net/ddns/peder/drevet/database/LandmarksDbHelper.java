@@ -9,14 +9,14 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class LandmarksDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "Landmarks.db";
 
     public static final String TABLE_NAME = "landmarks";
     public static final String COLUMN_NAME_ID = "_id";
     public static final String COLUMN_NAME_TIME = "time";
     public static final String COLUMN_NAME_DESCRIPTION = "description";
-    public static final String COLUMN_NAME_USER = "user";
+    public static final String COLUMN_NAME_SHOWED = "showed";
     public static final String COLUMN_NAME_SHARED = "shared";
     public static final String COLUMN_NAME_LATITUDE = "latitude";
     public static final String COLUMN_NAME_LONGDITUDE = "longditude";
@@ -26,7 +26,7 @@ public class LandmarksDbHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
                     COLUMN_NAME_TIME + " TEXT," +
                     COLUMN_NAME_DESCRIPTION + " TEXT," +
-                    COLUMN_NAME_USER + " TEXT," +
+                    COLUMN_NAME_SHOWED + " TEXT," +
                     COLUMN_NAME_SHARED + " INTEGER," +
                     COLUMN_NAME_LATITUDE + " REAL," +
                     COLUMN_NAME_LONGDITUDE + " REAL)";
