@@ -21,20 +21,29 @@
             android:textSize="18sp"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:layout_height="wrap_content" />
-        <ImageView
+        <LinearLayout
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5">
+
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_place_black_24dp"
-            android:layout_weight="0.5"
-            android:layout_gravity="center"
             />
-        <ImageView
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="0.5">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/ic_share_black_24dp"
-            android:layout_weight="0.5"
-            android:layout_gravity="center"
             />
+
+        </LinearLayout>
         <Space
             android:layout_width="0dp"
             android:layout_height="15dp"
