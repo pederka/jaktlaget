@@ -132,7 +132,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
         currLocationMarker = map.addMarker(markerOptions);
     }
@@ -251,7 +250,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         if (map != null) {
             setUpMap();
         }
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
+        if (latLng == null) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
+        }
+        else {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7));
+        }
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
