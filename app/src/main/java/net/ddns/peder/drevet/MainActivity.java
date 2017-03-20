@@ -12,10 +12,15 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.Manifest;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+
 import net.ddns.peder.drevet.fragments.MapFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
 import net.ddns.peder.drevet.fragments.TeamFragment;
@@ -44,6 +49,21 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Run switch
+        final SwitchCompat runSwitch = (SwitchCompat) findViewById(R.id.run_switch);
+        runSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Toast.makeText(getApplicationContext(), R.string.run_stop,
+                                                            Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), R.string.run_start,
+                                                                        Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         // Request permission
         if (ContextCompat.checkSelfPermission(this,

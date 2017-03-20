@@ -223,14 +223,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                         }
                 );
                 final EditText input = new EditText(getContext());
-                input.setHint("Description");
+                input.setHint(getString(R.string.description_hint));
                 builder.setView(input);
 
                 builder.setPositiveButton(R.string.lm_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String description = input.getText().toString();
                         saveLandmarkToDatabase(description, shared, coords);
-                        Toast.makeText(getContext(), "Landmark saved", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.landmark_added, Toast.LENGTH_SHORT).show();
                     }
                 });
                 builder.setNegativeButton(R.string.lm_cancel, new DialogInterface.OnClickListener() {
