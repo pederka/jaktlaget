@@ -25,11 +25,14 @@ import net.ddns.peder.drevet.fragments.MapFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
 import net.ddns.peder.drevet.fragments.TeamFragment;
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
+import net.ddns.peder.drevet.fragments.TeamLandmarksFragment;
+import net.ddns.peder.drevet.fragments.TeamManagementFragment;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MapFragment.OnFragmentInteractionListener,
         TeamFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener,
-        LandmarksFragment.OnFragmentInteractionListener {
+        LandmarksFragment.OnFragmentInteractionListener, TeamLandmarksFragment.OnFragmentInteractionListener,
+        TeamManagementFragment.OnFragmentInteractionListener {
 
     private int MY_PERMISSIONS_REQUEST;
 
@@ -127,6 +130,12 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.nav_team:
                 fragment = new TeamFragment();
+                break;
+            case R.id.nav_team_landmarks:
+                fragment = new TeamLandmarksFragment();
+                break;
+            case R.id.nav_team_manage:
+                fragment = new TeamManagementFragment();
                 break;
             case R.id.nav_landmarks:
                 fragment = new LandmarksFragment();

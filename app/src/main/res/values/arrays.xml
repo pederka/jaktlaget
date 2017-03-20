@@ -2,6 +2,6 @@
 <resources>
 
     <string-array name="lm_choices">
-        <item>Share with team</item>
+        <item>Del med laget?</item>
     </string-array>
 </resources>
