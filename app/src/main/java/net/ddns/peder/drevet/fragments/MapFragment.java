@@ -53,8 +53,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private final LatLngBounds NORWAY = new LatLngBounds(
             new LatLng(58.57, 3.71), new LatLng(71.51, 31.82));
     private GoogleApiClient mGoogleApiClient;
-    private LatLng latLng;
-    private Marker currLocationMarker;
+    private Location lastPos;
     private LocationRequest mLocationRequest;
     private String tag = "Map";
     private LandmarksDbHelper landmarksDbHelper;
@@ -82,15 +81,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
-            if (mLastLocation != null) {
-                //place marker at current position
-                latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.title("Current Position");
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                currLocationMarker = map.addMarker(markerOptions);
-            }
 
             mLocationRequest = new LocationRequest();
             mLocationRequest.setInterval(5000); //5 seconds
@@ -124,15 +114,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onLocationChanged(Location location) {
         // Clear old location marker
-        if (currLocationMarker != null) {
-            currLocationMarker.remove();
-        }
-        // Set new location marker
-        latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        currLocationMarker = map.addMarker(markerOptions);
+        lastPos = location;
     }
 
     private void setUpMap() {
@@ -162,6 +144,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (lastPos != null) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastPos.getLatitude(),
+                                                        lastPos.getLongitude()), 7));
         }
 
     }
@@ -248,11 +234,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         if (map != null) {
             setUpMap();
         }
-        if (latLng == null) {
+        if (lastPos == null) {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
         }
         else {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastPos.getLatitude(),
+                    lastPos.getLongitude()), 7));
         }
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -300,7 +287,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(pos);
                 markerOptions.title(description);
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(
+                                                        BitmapDescriptorFactory.HUE_RED));
                 map.addMarker(markerOptions);
             }
         }
