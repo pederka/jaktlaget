@@ -1,6 +1,7 @@
 package net.ddns.peder.drevet.fragments;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,12 +13,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v7.widget.AppCompatEditText;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -38,7 +37,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 
-import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.database.LandmarksDbHelper;
 import net.ddns.peder.drevet.providers.TileProviderFactory;
@@ -289,12 +287,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                          null,
                          null);
         while (cursor.moveToNext()) {
-            Location pos = new LatLng(getLatitude(), getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(pos);
-            markerOptions.title(description);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-            Marker marker = map.addMarker(markerOptions);
+            int showed = cursor.getInt(cursor.getColumnIndexOrThrow(
+                                                        LandmarksDbHelper.COLUMN_NAME_SHOWED));
+            if (showed > 0) {
+                Float latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
+                        LandmarksDbHelper.COLUMN_NAME_LATITUDE));
+                Float longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
+                        LandmarksDbHelper.COLUMN_NAME_LONGDITUDE));
+                LatLng pos = new LatLng(latitude, longitude);
+                String description = cursor.getString(cursor.getColumnIndexOrThrow(
+                        LandmarksDbHelper.COLUMN_NAME_DESCRIPTION));
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(pos);
+                markerOptions.title(description);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                map.addMarker(markerOptions);
+            }
         }
     }
 
@@ -324,7 +332,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onPause() {
         super.onPause();
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
     }
 
     public interface OnFragmentInteractionListener {
