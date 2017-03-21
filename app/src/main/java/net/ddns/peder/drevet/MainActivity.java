@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import net.ddns.peder.drevet.database.AWSSyncManager;
 import net.ddns.peder.drevet.fragments.MapFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
 import net.ddns.peder.drevet.fragments.TeamFragment;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements
         TeamManagementFragment.OnFragmentInteractionListener {
 
     private int MY_PERMISSIONS_REQUEST;
+    private AWSSyncManager syncManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        syncManager = new AWSSyncManager(getApplicationContext());
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -58,11 +62,12 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    Toast.makeText(getApplicationContext(), R.string.run_stop,
+                    Toast.makeText(getApplicationContext(), R.string.run_start,
                                                             Toast.LENGTH_SHORT).show();
+                    syncManager.shareLandmarks();
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), R.string.run_start,
+                    Toast.makeText(getApplicationContext(), R.string.run_stop,
                                                                         Toast.LENGTH_SHORT).show();
                 }
             }
