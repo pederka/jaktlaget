@@ -19,14 +19,12 @@ import net.ddns.peder.drevet.database.LandmarksDbHelper;
 
 public class LandmarksCursorAdapter extends SimpleCursorAdapter {
 
-    private int item_layout;
     private SQLiteDatabase db;
     private LandmarksDbHelper dbHelper;
 
     public LandmarksCursorAdapter (Context context, int layout, Cursor cursor, String[] fromCols,
                                             int[] toViews) {
-        super(context, layout, cursor, fromCols, toViews);
-        item_layout = layout;
+        super(context, layout, cursor, fromCols, toViews, 0);
 
         this.mContext = context;
         dbHelper = new LandmarksDbHelper(context);
