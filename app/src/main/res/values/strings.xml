@@ -32,4 +32,12 @@
     <string name="toast_no_user_no_sync">Kan ikke synkronisere uten gyldig brukernavn</string>
     <string name="toast_no_team_no_sync">Kan ikke synkronisere uten gyldig jaktlag</string>
     <string name="toast_sync_success">Synkronisering vellykket</string>
+    <string name="toast_invalid_username">Ugyldig brukernavn</string>
+    <string name="toast_username_saved">Brukernavn oppdatert</string>
+    <string name="toast_invalid_teamname">Ugyldig lagnavn</string>
+    <string name="toast_teamname_saved">Lagnavn oppdatert</string>
+
+    <string name="save_name_button">Lagre</string>
+    <string name="teamname_hint">Lagnavn</string>
+    <string name="username_hint">Brukernavn</string>
 </resources>

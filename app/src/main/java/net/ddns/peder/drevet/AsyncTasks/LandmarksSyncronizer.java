@@ -21,9 +21,9 @@ import net.ddns.peder.drevet.database.Landmark;
 import net.ddns.peder.drevet.database.LandmarksDbHelper;
 
 public class LandmarksSyncronizer extends AsyncTask<Void, Void, Integer>{
-    public final int SUCCESS = 0;
-    public final int FAILED_USER = 1;
-    public final int FAILED_TEAM = 1;
+    private final int SUCCESS = 0;
+    private final int FAILED_USER = 1;
+    private final int FAILED_TEAM = 1;
 
     private CognitoCredentialsProvider credentialsProvider;
     private Context mContext;
@@ -50,7 +50,7 @@ public class LandmarksSyncronizer extends AsyncTask<Void, Void, Integer>{
         // Read userid from preferences
         SharedPreferences prefs = ((Activity)mContext).getPreferences(Context.MODE_PRIVATE);
         userId = prefs.getString(Constants.PREF_USER_ID, Constants.DEFAULT_USER_ID);
-        // Read userid from preferences
+        // Read teamid from preferences
         teamId = prefs.getString(Constants.PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
     }
 
