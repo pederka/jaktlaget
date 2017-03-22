@@ -2,23 +2,24 @@ package net.ddns.peder.drevet.database;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 @DynamoDBTable(tableName="TeamLandmarks")
 public class Landmark {
-    private String landmarkId;
+    private String LandmarkId;
     private String description;
     private String user;
-    private String team;
+    private String Team;
     private float latitude;
     private float longitude;
 
     @DynamoDBHashKey(attributeName="LandmarkId")
     public String getLandmarkId() {
-        return landmarkId;
+        return LandmarkId;
     }
-    public void setLandmarkId(String landmarkId) {
-        this.landmarkId = landmarkId;
+    public void setLandmarkId(String LandmarkId) {
+        this.LandmarkId = LandmarkId;
     }
 
     @DynamoDBAttribute(attributeName="description")
@@ -29,12 +30,12 @@ public class Landmark {
         this.description = description;
     }
 
-    @DynamoDBAttribute(attributeName="team")
+    @DynamoDBRangeKey(attributeName="Team")
     public String getTeam() {
-        return team;
+        return Team;
     }
-    public void setTeam(String team) {
-        this.team = team;
+    public void setTeam(String Team) {
+        this.Team = Team;
     }
 
     @DynamoDBAttribute(attributeName="user")
