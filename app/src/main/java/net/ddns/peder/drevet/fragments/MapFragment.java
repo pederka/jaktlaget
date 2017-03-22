@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 
+import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.database.LandmarksDbHelper;
 import net.ddns.peder.drevet.providers.TileProviderFactory;
@@ -44,6 +45,7 @@ import net.ddns.peder.drevet.providers.TileProviderFactory;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Random;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback,
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -170,12 +172,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy HH:mm", Locale.US);
         String date = df.format(c.getTime());
+        Random r = new Random();
+        r.setSeed(System.currentTimeMillis());
+        String landmarkId = Integer.toString(r.nextInt(Constants.LANDMARK_ID_SIZE));
         values.put(LandmarksDbHelper.COLUMN_NAME_TIME, date);
         values.put(LandmarksDbHelper.COLUMN_NAME_SHOWED, 1);
         values.put(LandmarksDbHelper.COLUMN_NAME_SHARED, shared);
+        values.put(LandmarksDbHelper.COLUMN_NAME_LANDMARKID, landmarkId);
         values.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc);
         values.put(LandmarksDbHelper.COLUMN_NAME_LATITUDE, latLng.latitude);
-        values.put(LandmarksDbHelper.COLUMN_NAME_LONGDITUDE, latLng.longitude);
+        values.put(LandmarksDbHelper.COLUMN_NAME_LONGITUDE, latLng.longitude);
         db.insert(LandmarksDbHelper.TABLE_NAME, null, values);
     }
 
@@ -261,7 +267,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             LandmarksDbHelper.COLUMN_NAME_SHOWED,
             LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
             LandmarksDbHelper.COLUMN_NAME_LATITUDE,
-            LandmarksDbHelper.COLUMN_NAME_LONGDITUDE,
+            LandmarksDbHelper.COLUMN_NAME_LONGITUDE,
         };
 
         String selection = LandmarksDbHelper.COLUMN_NAME_SHOWED + " = ?";
@@ -280,7 +286,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 Float latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
                         LandmarksDbHelper.COLUMN_NAME_LATITUDE));
                 Float longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
-                        LandmarksDbHelper.COLUMN_NAME_LONGDITUDE));
+                        LandmarksDbHelper.COLUMN_NAME_LONGITUDE));
                 LatLng pos = new LatLng(latitude, longitude);
                 String description = cursor.getString(cursor.getColumnIndexOrThrow(
                         LandmarksDbHelper.COLUMN_NAME_DESCRIPTION));

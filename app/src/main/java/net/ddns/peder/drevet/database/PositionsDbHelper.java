@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import static net.ddns.peder.drevet.database.LandmarksDbHelper.COLUMN_NAME_LONGITUDE;
+
 /**
  * Created by peder on 04.03.2017.
  */
@@ -17,7 +19,7 @@ public class PositionsDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME_TIME = "time";
     public static final String COLUMN_NAME_USER = "user";
     public static final String COLUMN_NAME_LATITUDE = "latitude";
-    public static final String COLUMN_NAME_LONGDITUDE = "longditude";
+    public static final String COLUMN_NAME_LONGDTUDE = "longitude";
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TABLE_NAME + " (" +
@@ -25,7 +27,7 @@ public class PositionsDbHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_TIME + " TEXT," +
                     COLUMN_NAME_USER + " TEXT," +
                     COLUMN_NAME_LATITUDE + " REAL," +
-                    COLUMN_NAME_LONGDITUDE + " REAL)";
+                    COLUMN_NAME_LONGITUDE + " REAL)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TABLE_NAME;

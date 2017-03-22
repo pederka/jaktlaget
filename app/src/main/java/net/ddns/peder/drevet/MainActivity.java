@@ -17,10 +17,12 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-import net.ddns.peder.drevet.database.AWSSyncTask;
+import net.ddns.peder.drevet.AsyncTasks.LandmarksSyncronizer;
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
 import net.ddns.peder.drevet.fragments.MapFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements
         TeamManagementFragment.OnFragmentInteractionListener {
 
     private int MY_PERMISSIONS_REQUEST;
-    private AWSSyncTask syncTask;
+    private LandmarksSyncronizer landmarksSyncronizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        syncTask = new AWSSyncTask(getApplicationContext());
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -60,15 +61,24 @@ public class MainActivity extends AppCompatActivity implements
         runSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if (!isChecked) {
                     Toast.makeText(getApplicationContext(), R.string.run_start,
                                                             Toast.LENGTH_SHORT).show();
-                    syncTask.execute();
                 }
                 else {
                     Toast.makeText(getApplicationContext(), R.string.run_stop,
                                                                         Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        // Sync switch
+        final ImageButton syncButton = (ImageButton) findViewById(R.id.sync_button);
+        syncButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                landmarksSyncronizer = new LandmarksSyncronizer(MainActivity.this);
+                landmarksSyncronizer.execute();
             }
         });
 

@@ -29,4 +29,7 @@
     <string name="description_hint">Beskrivelse</string>
     <string name="landmark_added">Kartmerke lagt til</string>
 
+    <string name="toast_no_user_no_sync">Kan ikke synkronisere uten gyldig brukernavn</string>
+    <string name="toast_no_team_no_sync">Kan ikke synkronisere uten gyldig jaktlag</string>
+    <string name="toast_sync_success">Synkronisering vellykket</string>
 </resources>

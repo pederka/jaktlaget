@@ -9,6 +9,7 @@ public class Landmark {
     private String landmarkId;
     private String description;
     private String user;
+    private String team;
     private float latitude;
     private float longitude;
 
@@ -26,6 +27,14 @@ public class Landmark {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @DynamoDBAttribute(attributeName="team")
+    public String getTeam() {
+        return team;
+    }
+    public void setTeam(String team) {
+        this.team = team;
     }
 
     @DynamoDBAttribute(attributeName="user")
