@@ -1,29 +1,27 @@
 package net.ddns.peder.drevet.database;
 
 
-import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.auth.CognitoCredentialsProvider;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 import java.util.Random;
 
 
-public class AWSSyncManager {
+public class AWSSyncTask extends AsyncTask<String, Void, String>{
     private CognitoCredentialsProvider credentialsProvider;
     private Context mContext;
     private final String tag = "Sync";
 
-    public AWSSyncManager(Context context) {
+    public AWSSyncTask(Context context) {
         // Initialize the Amazon Cognito credentials provider
         credentialsProvider = new CognitoCachingCredentialsProvider(
                 context,
@@ -33,11 +31,8 @@ public class AWSSyncManager {
         mContext = context;
     }
 
-    public void shareLandmarks() {
-
-        LandmarksDbHelper landmarksDbHelper;
-        SQLiteDatabase db;
-
+    @Override
+    protected String doInBackground(String... params) {
         final String[] PROJECTION = {
                 LandmarksDbHelper.COLUMN_NAME_ID,
                 LandmarksDbHelper.COLUMN_NAME_SHOWED,
@@ -48,12 +43,11 @@ public class AWSSyncManager {
         };
 
         AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
-        Log.i(tag, "AWS client connected");
         DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);
 
 
-        landmarksDbHelper = new LandmarksDbHelper(mContext);
-        db = landmarksDbHelper.getReadableDatabase();
+        LandmarksDbHelper landmarksDbHelper = new LandmarksDbHelper(mContext);
+        SQLiteDatabase db = landmarksDbHelper.getReadableDatabase();
 
         Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
                                  PROJECTION,
@@ -62,6 +56,7 @@ public class AWSSyncManager {
                                  null,
                                  null,
                                  null);
+
         while (cursor.moveToNext()) {
             final int shared = cursor.getInt(cursor.getColumnIndex(
                                             LandmarksDbHelper.COLUMN_NAME_SHARED));
@@ -84,6 +79,7 @@ public class AWSSyncManager {
             }
         }
         cursor.close();
+        return "yes";
     }
 }
 

@@ -1,7 +1,8 @@
 package net.ddns.peder.drevet.database;
 
-import com.amazonaws.services.dynamodbv2.model.*;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.*;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
 @DynamoDBTable(tableName="TeamLandmarks")
 public class Landmark {
@@ -11,7 +12,7 @@ public class Landmark {
     private float latitude;
     private float longitude;
 
-    @DynamoDBHashKey(attributeName="landmarkId")
+    @DynamoDBHashKey(attributeName="LandmarkId")
     public String getLandmarkId() {
         return landmarkId;
     }

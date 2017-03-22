@@ -1,5 +1,6 @@
 package net.ddns.peder.drevet;
 
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,16 +17,14 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.Manifest;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import net.ddns.peder.drevet.database.AWSSyncManager;
+import net.ddns.peder.drevet.database.AWSSyncTask;
+import net.ddns.peder.drevet.fragments.LandmarksFragment;
 import net.ddns.peder.drevet.fragments.MapFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
 import net.ddns.peder.drevet.fragments.TeamFragment;
-import net.ddns.peder.drevet.fragments.LandmarksFragment;
 import net.ddns.peder.drevet.fragments.TeamLandmarksFragment;
 import net.ddns.peder.drevet.fragments.TeamManagementFragment;
 
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements
         TeamManagementFragment.OnFragmentInteractionListener {
 
     private int MY_PERMISSIONS_REQUEST;
-    private AWSSyncManager syncManager;
+    private AWSSyncTask syncTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        syncManager = new AWSSyncManager(getApplicationContext());
+        syncTask = new AWSSyncTask(getApplicationContext());
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (isChecked) {
                     Toast.makeText(getApplicationContext(), R.string.run_start,
                                                             Toast.LENGTH_SHORT).show();
-                    syncManager.shareLandmarks();
+                    syncTask.execute();
                 }
                 else {
                     Toast.makeText(getApplicationContext(), R.string.run_stop,
