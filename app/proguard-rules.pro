@@ -32,6 +32,6 @@
 -keep class com.amazonaws.auth.AWS4Signer
 -keep class com.amazonaws.services.s3.internal.S3Signer
 -dontwarn
--keep public class net.ddns.peder.drevet.database.Landmark {
+-keep public class net.ddns.peder.drevet.dynamoDB.Landmark {
     *;
 }

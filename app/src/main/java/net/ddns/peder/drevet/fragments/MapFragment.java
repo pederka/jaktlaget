@@ -1,30 +1,20 @@
 package net.ddns.peder.drevet.fragments;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -32,7 +22,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
@@ -47,16 +36,12 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback,
-    GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     private OnFragmentInteractionListener mListener;
     private MapView mapView;
     private GoogleMap map;
     private final LatLngBounds NORWAY = new LatLngBounds(
             new LatLng(58.57, 3.71), new LatLng(71.51, 31.82));
-    private GoogleApiClient mGoogleApiClient;
-    private Location lastPos;
-    private LocationRequest mLocationRequest;
     private String tag = "Map";
     private LandmarksDbHelper landmarksDbHelper;
     private SQLiteDatabase db;
@@ -67,8 +52,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public static MapFragment newInstance(String param1, String param2) {
-        MapFragment fragment = new MapFragment();
-        return fragment;
+        return new MapFragment();
     }
 
     @Override
@@ -76,48 +60,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.i(tag, "Connected to location API");
-        if (ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-
-            mLocationRequest = new LocationRequest();
-            mLocationRequest.setInterval(5000); //5 seconds
-            mLocationRequest.setFastestInterval(3000); //3 seconds
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-        else {
-            Toast.makeText(getContext(), "No permission", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        // Clear old location marker
-        lastPos = location;
-    }
 
     private void setUpMap() {
         TileProvider wmsTileProvider = TileProviderFactory.getWmsTileProvider();
@@ -147,11 +89,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (lastPos != null) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastPos.getLatitude(),
-                                                        lastPos.getLongitude()), 7));
-        }
-
     }
 
     @Override
@@ -240,22 +177,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         if (map != null) {
             setUpMap();
         }
-        if (lastPos == null) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
-        }
-        else {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastPos.getLatitude(),
-                    lastPos.getLongitude()), 7));
-        }
-        if (ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            map.setMyLocationEnabled(true);
-        }
-        else {
-            Toast.makeText(getContext(), "No permission", Toast.LENGTH_SHORT).show();
-        }
-        buildGoogleApiClient();
-        mGoogleApiClient.connect();
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
 
         addLandMarks(map);
 
@@ -326,9 +248,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onPause() {
         super.onPause();
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
     }
 
     public interface OnFragmentInteractionListener {

@@ -17,7 +17,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
-import net.ddns.peder.drevet.database.Landmark;
+import net.ddns.peder.drevet.dynamoDB.Landmark;
 import net.ddns.peder.drevet.database.LandmarksDbHelper;
 import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
 

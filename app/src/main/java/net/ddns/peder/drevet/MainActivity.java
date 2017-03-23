@@ -1,6 +1,7 @@
 package net.ddns.peder.drevet;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import net.ddns.peder.drevet.fragments.SettingsFragment;
 import net.ddns.peder.drevet.fragments.TeamFragment;
 import net.ddns.peder.drevet.fragments.TeamLandmarksFragment;
 import net.ddns.peder.drevet.fragments.TeamManagementFragment;
+import net.ddns.peder.drevet.services.LocationService;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MapFragment.OnFragmentInteractionListener,
@@ -62,10 +64,12 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
+                    stopService(new Intent(getApplicationContext(), LocationService.class));
                     Toast.makeText(getApplicationContext(), R.string.run_start,
                                                             Toast.LENGTH_SHORT).show();
                 }
                 else {
+                    startService(new Intent(getApplicationContext(), LocationService.class));
                     Toast.makeText(getApplicationContext(), R.string.run_stop,
                                                                         Toast.LENGTH_SHORT).show();
                 }

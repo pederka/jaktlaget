@@ -19,7 +19,7 @@
     <string name="column_show">Vis?</string>
     <string name="column_share">Del?</string>
 
-    <string name="run_stop">Posisjonsdeling started</string>
+    <string name="run_stop">Posisjonsdeling startet</string>
     <string name="run_start">Posisjonsdeling stoppet</string>
 
     <string name="lm_dialog_title">Nytt kartmerke</string>

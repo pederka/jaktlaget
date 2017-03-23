@@ -1,33 +1,24 @@
-package net.ddns.peder.drevet.database;
+package net.ddns.peder.drevet.dynamoDB;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBTable;
 
-@DynamoDBTable(tableName="TeamLandmarks")
-public class Landmark {
-    private String LandmarkId;
-    private String description;
-    private String user;
+@DynamoDBTable(tableName="Positions")
+public class Position {
+    private String User;
     private String Team;
     private float latitude;
     private float longitude;
+    private String time;
 
-    @DynamoDBHashKey(attributeName="LandmarkId")
-    public String getLandmarkId() {
-        return LandmarkId;
+    @DynamoDBHashKey(attributeName="User")
+    public String getUser() {
+        return User;
     }
-    public void setLandmarkId(String LandmarkId) {
-        this.LandmarkId = LandmarkId;
-    }
-
-    @DynamoDBAttribute(attributeName="description")
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUser(String User) {
+        this.User = User;
     }
 
     @DynamoDBRangeKey(attributeName="Team")
@@ -38,12 +29,12 @@ public class Landmark {
         this.Team = Team;
     }
 
-    @DynamoDBAttribute(attributeName="user")
-    public String getUser() {
-        return user;
+    @DynamoDBAttribute(attributeName="time")
+    public String getTime() {
+        return time;
     }
-    public void setUser(String user) {
-        this.user = user;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     @DynamoDBAttribute(attributeName="latitude")
