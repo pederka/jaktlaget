@@ -1,7 +1,10 @@
 package net.ddns.peder.drevet;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,12 +44,20 @@ public class MainActivity extends AppCompatActivity implements
     private int MY_PERMISSIONS_REQUEST;
     private LandmarksSyncronizer landmarksSyncronizer;
 
+    private boolean runningService;
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mContext = this;
+
+        // Any running service should be stopped when the app is opened
+        stopService(new Intent(getApplicationContext(), LocationService.class));
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -64,12 +75,16 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
-                    stopService(new Intent(getApplicationContext(), LocationService.class));
+                    runningService = false;
+                    SharedPreferences prefs = ((Activity)mContext).getPreferences(Context.MODE_PRIVATE);
+                    prefs.edit().putBoolean(Constants.PREF_RUNNING, false).apply();
                     Toast.makeText(getApplicationContext(), R.string.run_start,
                                                             Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    startService(new Intent(getApplicationContext(), LocationService.class));
+                    runningService = true;
+                    SharedPreferences prefs = ((Activity)mContext).getPreferences(Context.MODE_PRIVATE);
+                    prefs.edit().putBoolean(Constants.PREF_RUNNING, true).apply();
                     Toast.makeText(getApplicationContext(), R.string.run_stop,
                                                                         Toast.LENGTH_SHORT).show();
                 }
@@ -100,6 +115,43 @@ public class MainActivity extends AppCompatActivity implements
         displaySelectedScreen(R.id.nav_map);
         //PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (runningService) {
+            startService(new Intent(getApplicationContext(), LocationService.class));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        stopService(new Intent(getApplicationContext(), LocationService.class));
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        stopService(new Intent(getApplicationContext(), LocationService.class));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (runningService) {
+            startService(new Intent(getApplicationContext(), LocationService.class));
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (runningService) {
+            startService(new Intent(getApplicationContext(), LocationService.class));
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
