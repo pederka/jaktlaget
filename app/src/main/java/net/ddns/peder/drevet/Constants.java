@@ -16,5 +16,7 @@ public final class Constants {
     public static final int LANDMARK_ID_SIZE = 10000000;
     public static final int DEFAULT_LOCATION_INTERVAL = 1000;
     public static final int NOTIFICATION_ID = 1337;
+    public static final long ACTIVITY_GPS_UPDATE_TIME = 5000;
+    public static final long ACTIVITY_GPS_DISTANCE = 10;
 
 }

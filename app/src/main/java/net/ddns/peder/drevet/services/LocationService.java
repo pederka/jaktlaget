@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import net.ddns.peder.drevet.AsyncTasks.PositionSyncronizer;
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
 
@@ -49,6 +50,8 @@ public class LocationService extends Service {
                                                             (float)location.getLongitude()).apply();
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
+            PositionSyncronizer posSync = new PositionSyncronizer(getApplicationContext());
+            posSync.execute();
         }
 
         @Override

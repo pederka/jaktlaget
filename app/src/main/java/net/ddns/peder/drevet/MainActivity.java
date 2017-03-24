@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -33,6 +35,7 @@ import net.ddns.peder.drevet.fragments.SettingsFragment;
 import net.ddns.peder.drevet.fragments.TeamFragment;
 import net.ddns.peder.drevet.fragments.TeamLandmarksFragment;
 import net.ddns.peder.drevet.fragments.TeamManagementFragment;
+import net.ddns.peder.drevet.listeners.MyLocationListener;
 import net.ddns.peder.drevet.services.LocationService;
 
 public class MainActivity extends AppCompatActivity implements
@@ -43,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private int MY_PERMISSIONS_REQUEST;
     private LandmarksSyncronizer landmarksSyncronizer;
+    private LocationListener locationListener;
+    private LocationManager locationManager;
 
     private boolean runningService;
     private Context mContext;
@@ -65,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -82,6 +86,16 @@ public class MainActivity extends AppCompatActivity implements
                                                             Toast.LENGTH_SHORT).show();
                 }
                 else {
+                    // Request permission
+                    if (ContextCompat.checkSelfPermission((Activity)mContext,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions((Activity)mContext,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    MY_PERMISSIONS_REQUEST);
+
+                    }
                     runningService = true;
                     SharedPreferences prefs = ((Activity)mContext).getPreferences(Context.MODE_PRIVATE);
                     prefs.edit().putBoolean(Constants.PREF_RUNNING, true).apply();
@@ -112,6 +126,17 @@ public class MainActivity extends AppCompatActivity implements
 
             }
 
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            locationListener = new MyLocationListener(mContext);
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
+                                                Constants.ACTIVITY_GPS_DISTANCE, locationListener);
+
+        }
+
         displaySelectedScreen(R.id.nav_map);
         //PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
     }
@@ -119,6 +144,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onPause() {
         super.onPause();
+        if (locationManager != null) {
+            locationManager.removeUpdates(locationListener);
+        }
         if (runningService) {
             startService(new Intent(getApplicationContext(), LocationService.class));
         }
@@ -128,17 +156,36 @@ public class MainActivity extends AppCompatActivity implements
     public void onResume() {
         super.onResume();
         stopService(new Intent(getApplicationContext(), LocationService.class));
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
+                                                Constants.ACTIVITY_GPS_DISTANCE, locationListener);
+
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
         stopService(new Intent(getApplicationContext(), LocationService.class));
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
+                                                Constants.ACTIVITY_GPS_DISTANCE, locationListener);
+
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        if (locationManager != null) {
+            locationManager.removeUpdates(locationListener);
+        }
         if (runningService) {
             startService(new Intent(getApplicationContext(), LocationService.class));
         }
@@ -147,6 +194,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (locationManager != null) {
+            locationManager.removeUpdates(locationListener);
+        }
         if (runningService) {
             startService(new Intent(getApplicationContext(), LocationService.class));
         }
