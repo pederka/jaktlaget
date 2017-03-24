@@ -40,4 +40,10 @@
     <string name="save_name_button">Lagre</string>
     <string name="teamname_hint">Lagnavn</string>
     <string name="username_hint">Brukernavn</string>
+
+    <string name="notification_title">Jaktlaget</string>
+    <string name="notification_message">Deler din posisjon med laget</string>
+    <string name="ticker_text">Posisjonsdeling</string>
+
+
 </resources>

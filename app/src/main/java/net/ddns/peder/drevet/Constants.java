@@ -15,5 +15,6 @@ public final class Constants {
     public static final String DEFAULT_TEAM_ID = "noTeam";
     public static final int LANDMARK_ID_SIZE = 10000000;
     public static final int DEFAULT_LOCATION_INTERVAL = 1000;
+    public static final int NOTIFICATION_ID = 1337;
 
 }

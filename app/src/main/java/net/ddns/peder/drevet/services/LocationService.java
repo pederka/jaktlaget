@@ -1,5 +1,7 @@
 package net.ddns.peder.drevet.services;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import net.ddns.peder.drevet.Constants;
+import net.ddns.peder.drevet.R;
 
 /**
  * Created by peder on 3/23/17.
@@ -80,6 +83,20 @@ public class LocationService extends Service {
     {
         Log.e(tag, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
+
+        Intent notificationIntent = new Intent(this, LocationService.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle(getText(R.string.notification_title))
+                .setContentText(getText(R.string.notification_message))
+                .setSmallIcon(R.drawable.ic_map_black_24dp)
+                .setContentIntent(pendingIntent)
+                .setTicker(getText(R.string.ticker_text))
+                .build();
+
+        startForeground(Constants.NOTIFICATION_ID, notification);
+
         return START_STICKY;
     }
 
