@@ -1,11 +1,11 @@
 package net.ddns.peder.drevet.AsyncTasks;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -62,10 +62,10 @@ public class LandmarksSyncronizer extends AsyncTask<Void, Void, Integer>{
         );
         mContext = context;
         // Read userid from preferences
-        SharedPreferences prefs = ((Activity)mContext).getPreferences(Context.MODE_PRIVATE);
-        userId = prefs.getString(Constants.PREF_USER_ID, Constants.DEFAULT_USER_ID);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        userId = prefs.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
         // Read teamid from preferences
-        teamId = prefs.getString(Constants.PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
+        teamId = prefs.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
     }
 
     @Override
@@ -116,13 +116,6 @@ public class LandmarksSyncronizer extends AsyncTask<Void, Void, Integer>{
             mapper.batchSave(landmarks);
         }
         cursor.close();
-
-        //// Get team landmarks
-        //TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(mContext);
-        //db = teamLandmarksDbHelper.getWritableDatabase();
-
-        //// Clear any old data first
-        //teamLandmarksDbHelper.clearTable(db);
 
         return SUCCESS;
     }

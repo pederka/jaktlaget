@@ -10,9 +10,9 @@ public final class Constants {
     public static final String SHARED_PREF_LAT = "latitude";
     public static final String SHARED_PREF_LON = "longitude";
     public static final String SHARED_PREF_TIME = "last_update";
-    public static final String PREF_RUNNING = "runningService";
-    public static final String PREF_USER_ID = "userId";
-    public static final String PREF_TEAM_ID = "teamId";
+    public static final String SHARED_PREF_RUNNING = "runningService";
+    public static final String SHARED_PREF_USER_ID = "userId";
+    public static final String SHARED_PREF_TEAM_ID = "teamId";
 
     // Default names
     public static final String DEFAULT_USER_ID = "noUser";

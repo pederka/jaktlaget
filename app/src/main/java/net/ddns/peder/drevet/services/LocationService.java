@@ -26,6 +26,8 @@ public class LocationService extends Service {
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
     private static final String tag = "LocationService";
+    private String userId;
+    private String teamId;
 
     private class LocationListener implements android.location.LocationListener {
         private Location mLastLocation;
@@ -34,6 +36,7 @@ public class LocationService extends Service {
         {
             Log.e(tag, "LocationListener " + provider);
             mLastLocation = new Location(provider);
+
         }
 
         @Override
@@ -86,6 +89,11 @@ public class LocationService extends Service {
     {
         Log.e(tag, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                                                                        this);
+        userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
+        teamId = sharedPreferences.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
 
         Intent notificationIntent = new Intent(this, LocationService.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);

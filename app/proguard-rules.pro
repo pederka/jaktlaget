@@ -35,3 +35,6 @@
 -keep public class net.ddns.peder.drevet.dynamoDB.Landmark {
     *;
 }
+-keep public class net.ddns.peder.drevet.dynamoDB.Position {
+    *;
+}

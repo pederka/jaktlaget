@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements
     private boolean runningService;
     private Context mContext;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,8 +82,9 @@ public class MainActivity extends AppCompatActivity implements
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
                     runningService = false;
-                    SharedPreferences prefs = ((Activity)mContext).getPreferences(Context.MODE_PRIVATE);
-                    prefs.edit().putBoolean(Constants.PREF_RUNNING, false).apply();
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
+                                                                        getApplicationContext());
+                    prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, false).apply();
                     Toast.makeText(getApplicationContext(), R.string.run_start,
                                                             Toast.LENGTH_SHORT).show();
                 }
@@ -97,8 +100,9 @@ public class MainActivity extends AppCompatActivity implements
 
                     }
                     runningService = true;
-                    SharedPreferences prefs = ((Activity)mContext).getPreferences(Context.MODE_PRIVATE);
-                    prefs.edit().putBoolean(Constants.PREF_RUNNING, true).apply();
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
+                            getApplicationContext());
+                    prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, true).apply();
                     Toast.makeText(getApplicationContext(), R.string.run_stop,
                                                                         Toast.LENGTH_SHORT).show();
                 }
