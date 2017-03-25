@@ -9,8 +9,15 @@ import android.util.Log;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.auth.CognitoCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
+import com.amazonaws.services.dynamodbv2.model.Condition;
 
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.dynamoDB.Position;
@@ -64,9 +71,15 @@ public class PositionSyncronizer extends AsyncTask<Void, Void, Integer>{
         position.setLatitude(lat);
         position.setLongitude(lon);
         position.setTime(Long.toString(position_time));
-        Log.i(tag, userId+" "+teamId+" "+lat+" "+lon+" "+Long.toString(position_time));
 
         mapper.save(position);
+
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        PaginatedScanList<Position> result = mapper.scan(Position.class, scanExpression);
+
+        for (int i=0; i < result.size(); i++) {
+            Log.i(tag, "Found position for "+result.get(i).getUser());
+        }
 
         return SUCCESS;
     }

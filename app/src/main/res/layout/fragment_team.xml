@@ -4,5 +4,53 @@
     android:layout_height="match_parent"
     tools:context="net.ddns.peder.drevet.fragments.TeamFragment">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:text="@string/column_user"
+            android:layout_width="0dp"
+            android:layout_weight="1.0"
+            android:textSize="18sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:text="@string/column_last_update"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:textSize="18sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_place_black_24dp"
+            />
+        </LinearLayout>
+
+    </LinearLayout>
+   <Space
+            android:layout_width="1dp"
+            android:layout_height="15dp"/>
+    <ListView
+        android:id="@+id/lm_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    </ListView>
+
+    </LinearLayout>
 </FrameLayout>

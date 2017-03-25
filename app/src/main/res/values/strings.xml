@@ -18,6 +18,7 @@
     <string name="column_user">Bruker</string>
     <string name="column_show">Vis?</string>
     <string name="column_share">Del?</string>
+    <string name="column_last_update">Sist oppdatert</string>
 
     <string name="run_stop">Posisjonsdeling startet</string>
     <string name="run_start">Posisjonsdeling stoppet</string>
