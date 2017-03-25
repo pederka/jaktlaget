@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +23,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
@@ -46,6 +51,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private LandmarksDbHelper landmarksDbHelper;
     private SQLiteDatabase db;
     private boolean shared;
+    private SharedPreferences sharedPreferences;
+    private Handler mHandler;
+    private Marker myLocationMarker;
 
     public MapFragment() {
         // Required empty public constructor
@@ -60,6 +68,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
     }
 
+    private Runnable updateMyPosition = new Runnable() {
+        @Override
+       public void run() {
+            long currentTime = System.currentTimeMillis();
+            long lastPositionTime = sharedPreferences.getLong(Constants.SHARED_PREF_TIME, 0);
+            if ((currentTime-lastPositionTime)/1000 < 600 && map != null) {
+                // Getting latitude and longitude of the last known location
+                double latitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LAT, 0);
+                double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON, 0);
+                // Creating a LatLng object for the current location
+                LatLng latLng = new LatLng(latitude, longitude);
+                // Clear old position
+                if (myLocationMarker != null) {
+                    myLocationMarker.remove();
+                }
+                // Set new position
+                myLocationMarker = map.addMarker(new MarkerOptions()
+                        .anchor(0.5f, 0.5f)
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.raw.my_location)));
+            }
+            mHandler.postDelayed(this, Constants.MAP_LOCATION_UPDATE_INTERVAL);
+        }
+    };
+
+
 
     private void setUpMap() {
         TileProvider wmsTileProvider = TileProviderFactory.getWmsTileProvider();
@@ -72,6 +106,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        mHandler = new Handler();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_map, container, false);
     }
@@ -180,6 +216,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
 
         addLandMarks(map);
+
+        // Start update of own loaction
+        mHandler.postDelayed(updateMyPosition, Constants.MAP_LOCATION_UPDATE_INTERVAL);
 
     }
 
