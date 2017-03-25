@@ -1,7 +1,10 @@
 package net.ddns.peder.drevet.AsyncTasks;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -20,6 +23,8 @@ import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 
 import net.ddns.peder.drevet.Constants;
+import net.ddns.peder.drevet.database.LandmarksDbHelper;
+import net.ddns.peder.drevet.database.PositionsDbHelper;
 import net.ddns.peder.drevet.dynamoDB.Position;
 
 public class PositionSyncronizer extends AsyncTask<Void, Void, Integer>{
@@ -35,6 +40,12 @@ public class PositionSyncronizer extends AsyncTask<Void, Void, Integer>{
     private float lon;
     private long position_time;
     private final static String tag = "PositionSyncronizer";
+    private final static String[] PROJECTION = {
+                PositionsDbHelper.COLUMN_NAME_ID,
+                PositionsDbHelper.COLUMN_NAME_USER,
+                PositionsDbHelper.COLUMN_NAME_TEAM,
+                PositionsDbHelper.COLUMN_NAME_TIME,
+    };
 
     public PositionSyncronizer(Context context) {
         // Initialize the Amazon Cognito credentials provider
@@ -51,6 +62,8 @@ public class PositionSyncronizer extends AsyncTask<Void, Void, Integer>{
         lat = sharedPrefs.getFloat(Constants.SHARED_PREF_LAT, 0.0f);
         lon = sharedPrefs.getFloat(Constants.SHARED_PREF_LON, 0.0f);
         position_time = sharedPrefs.getLong(Constants.SHARED_PREF_TIME, 0);
+
+
     }
 
     @Override
@@ -77,8 +90,48 @@ public class PositionSyncronizer extends AsyncTask<Void, Void, Integer>{
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
         PaginatedScanList<Position> result = mapper.scan(Position.class, scanExpression);
 
+        PositionsDbHelper dbHelper = new PositionsDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        String selection = PositionsDbHelper.COLUMN_NAME_TEAM + " = ?";
+        String[] selectionArgs = {teamId};
+        Cursor cursor = db.query(PositionsDbHelper.TABLE_NAME,
+                         PROJECTION,
+                         selection,
+                         selectionArgs,
+                         null,
+                         null,
+                         null);
+
         for (int i=0; i < result.size(); i++) {
-            Log.i(tag, "Found position for "+result.get(i).getUser());
+            Boolean found = false;
+            if (position.getTeam().equals(teamId)) {
+                // Look for existing entry and modify if present
+                while(cursor.moveToNext()) {
+                    if (cursor.getString(cursor.getColumnIndexOrThrow(PositionsDbHelper.COLUMN_NAME_USER))
+                            .equals(position.getUser())) {
+                        // Exists! Modify existing row and and break
+                        ContentValues values = new ContentValues();
+                        values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, position.getLatitude());
+                        values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, position.getLongitude());
+                        values.put(PositionsDbHelper.COLUMN_NAME_TIME, position.getTime());
+                        String whereClause = PositionsDbHelper.COLUMN_NAME_ID+"="+
+                                cursor.getInt(cursor.getColumnIndex(PositionsDbHelper.COLUMN_NAME_ID));
+                        db.update(PositionsDbHelper.TABLE_NAME, values, whereClause, null);
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    // No preexisting entry in database. Make new row.
+                    ContentValues values = new ContentValues();
+                    values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, position.getLatitude());
+                    values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, position.getLongitude());
+                    values.put(PositionsDbHelper.COLUMN_NAME_TIME, position.getTime());
+                    values.put(PositionsDbHelper.COLUMN_NAME_TEAM, position.getTeam());
+                    values.put(PositionsDbHelper.COLUMN_NAME_USER, position.getUser());
+                    db.insert(PositionsDbHelper.TABLE_NAME, null, values);
+                }
+            }
         }
 
         return SUCCESS;

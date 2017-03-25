@@ -11,7 +11,7 @@ import static net.ddns.peder.drevet.database.LandmarksDbHelper.COLUMN_NAME_LONGI
  */
 
 public class PositionsDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "Positions.db";
 
     public static final String TABLE_NAME = "positions";
@@ -19,6 +19,7 @@ public class PositionsDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME_TIME = "time";
     public static final String COLUMN_NAME_USER = "user";
     public static final String COLUMN_NAME_TEAM = "team";
+    public static final String COLUMN_NAME_SHOWED = "showed";
     public static final String COLUMN_NAME_LATITUDE = "latitude";
     public static final String COLUMN_NAME_LONGITUDE = "longitude";
 
@@ -28,6 +29,7 @@ public class PositionsDbHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_TIME + " TEXT," +
                     COLUMN_NAME_USER + " TEXT," +
                     COLUMN_NAME_TEAM + " TEXT," +
+                    COLUMN_NAME_SHOWED + " INTEGER," +
                     COLUMN_NAME_LATITUDE + " REAL," +
                     COLUMN_NAME_LONGITUDE + " REAL)";
 
