@@ -24,4 +24,9 @@ public final class Constants {
     public static final long ACTIVITY_GPS_UPDATE_TIME = 5000;
     public static final long ACTIVITY_GPS_DISTANCE = 10;
     public static final long MAP_LOCATION_UPDATE_INTERVAL = 5000;
+
+    // File names
+    public static final String LOCAL_LANDMARKS_FILE = "landmarks_local.json";
+    public static final String TEAM_LANDMARKS_FILE = "landmarks_team.json";
+    public static final String POSITIONS_FILE = "positions.json";
 }

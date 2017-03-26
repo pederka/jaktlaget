@@ -12,18 +12,12 @@ import android.util.Log;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.auth.CognitoCredentialsProvider;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
-import com.amazonaws.services.dynamodbv2.model.Condition;
 
 import net.ddns.peder.drevet.Constants;
-import net.ddns.peder.drevet.database.LandmarksDbHelper;
 import net.ddns.peder.drevet.database.PositionsDbHelper;
 import net.ddns.peder.drevet.dynamoDB.Position;
 
@@ -103,32 +97,38 @@ public class PositionSyncronizer extends AsyncTask<Void, Void, Integer>{
                          null,
                          null);
 
+        Log.i(tag, "Found "+result.size()+" team members");
         for (int i=0; i < result.size(); i++) {
             Boolean found = false;
-            if (position.getTeam().equals(teamId)) {
+            Position pos = result.get(i);
+            if (pos.getTeam().equals(teamId)) {
                 // Look for existing entry and modify if present
                 while(cursor.moveToNext()) {
                     if (cursor.getString(cursor.getColumnIndexOrThrow(PositionsDbHelper.COLUMN_NAME_USER))
-                            .equals(position.getUser())) {
+                            .equals(pos.getUser())) {
                         // Exists! Modify existing row and and break
                         ContentValues values = new ContentValues();
-                        values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, position.getLatitude());
-                        values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, position.getLongitude());
-                        values.put(PositionsDbHelper.COLUMN_NAME_TIME, position.getTime());
+                        values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, pos.getLatitude());
+                        values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, pos.getLongitude());
+                        values.put(PositionsDbHelper.COLUMN_NAME_TIME, pos.getTime());
+                        values.put(PositionsDbHelper.COLUMN_NAME_USER, pos.getUser());
                         String whereClause = PositionsDbHelper.COLUMN_NAME_ID+"="+
                                 cursor.getInt(cursor.getColumnIndex(PositionsDbHelper.COLUMN_NAME_ID));
                         db.update(PositionsDbHelper.TABLE_NAME, values, whereClause, null);
+                        Log.i(tag, "User "+pos.getUser()+" found, updating position");
                         found = true;
                     }
                 }
+                cursor.moveToFirst();
                 if (!found) {
+                    Log.i(tag, "User "+pos.getUser()+" not found, creating new entry");
                     // No preexisting entry in database. Make new row.
                     ContentValues values = new ContentValues();
-                    values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, position.getLatitude());
-                    values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, position.getLongitude());
-                    values.put(PositionsDbHelper.COLUMN_NAME_TIME, position.getTime());
-                    values.put(PositionsDbHelper.COLUMN_NAME_TEAM, position.getTeam());
-                    values.put(PositionsDbHelper.COLUMN_NAME_USER, position.getUser());
+                    values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, pos.getLatitude());
+                    values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, pos.getLongitude());
+                    values.put(PositionsDbHelper.COLUMN_NAME_TIME, pos.getTime());
+                    values.put(PositionsDbHelper.COLUMN_NAME_TEAM, pos.getTeam());
+                    values.put(PositionsDbHelper.COLUMN_NAME_USER, pos.getUser());
                     db.insert(PositionsDbHelper.TABLE_NAME, null, values);
                 }
             }

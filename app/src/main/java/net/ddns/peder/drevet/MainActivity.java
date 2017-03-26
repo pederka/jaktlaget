@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import net.ddns.peder.drevet.AsyncTasks.LandmarksSyncronizer;
+import net.ddns.peder.drevet.AsyncTasks.PositionSyncronizer;
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
 import net.ddns.peder.drevet.fragments.MapFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
@@ -46,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements
         TeamManagementFragment.OnFragmentInteractionListener {
 
     private int MY_PERMISSIONS_REQUEST;
-    private LandmarksSyncronizer landmarksSyncronizer;
     private LocationListener locationListener;
     private LocationManager locationManager;
 
@@ -114,8 +114,10 @@ public class MainActivity extends AppCompatActivity implements
         syncButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                landmarksSyncronizer = new LandmarksSyncronizer(MainActivity.this);
+                LandmarksSyncronizer landmarksSyncronizer = new LandmarksSyncronizer(MainActivity.this);
                 landmarksSyncronizer.execute();
+                PositionSyncronizer positionSyncronizer = new PositionSyncronizer(MainActivity.this);
+                positionSyncronizer.execute();
             }
         });
 
@@ -162,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements
         stopService(new Intent(getApplicationContext(), LocationService.class));
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
+                PackageManager.PERMISSION_GRANTED && locationManager != null) {
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
                                                 Constants.ACTIVITY_GPS_DISTANCE, locationListener);
