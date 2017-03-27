@@ -2,7 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="net.ddns.peder.drevet.fragments.TeamFragment">
+    tools:context="net.ddns.peder.drevet.fragments.TeamFragment"
+    android:background="@color/colorPrimaryLight"
+    android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
