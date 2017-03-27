@@ -23,7 +23,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -32,6 +31,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 
 import net.ddns.peder.drevet.Constants;
+import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.database.LandmarksDbHelper;
 import net.ddns.peder.drevet.providers.TileProviderFactory;
@@ -121,6 +121,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mapView = (MapView) view.findViewById(R.id.map);
                 mapView.onCreate(savedInstanceState);
                 mapView.onResume();
+                if (((MainActivity)getActivity()).cameraPosition != null) {
+                    map.moveCamera(CameraUpdateFactory.newCameraPosition((
+                                                    (MainActivity)getActivity()).cameraPosition));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,13 +217,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (map != null) {
             setUpMap();
         }
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
+        if (((MainActivity)getActivity()).cameraPosition != null) {
+            map.moveCamera(CameraUpdateFactory.newCameraPosition((
+                                        (MainActivity)getActivity()).cameraPosition));
+        } else {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
+        }
 
         addLandMarks(map);
 
         // Start update of own loaction
         mHandler.postDelayed(updateMyPosition, Constants.MAP_LOCATION_UPDATE_INTERVAL);
 
+    }
+
+    private void zoomToPosition(GoogleMap map) {
+        double latitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LAT, 0);
+        double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON, 0);
+        long lastPositionTime = sharedPreferences.getLong(Constants.SHARED_PREF_TIME, 0);
+        long currentTime = System.currentTimeMillis();
+        if ((currentTime-lastPositionTime)/1000 < 600) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 7));
+        } else {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
+        }
     }
 
     private void addLandMarks(GoogleMap map) {
@@ -261,6 +282,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
+            map.moveCamera(CameraUpdateFactory.newCameraPosition((
+                                                    (MainActivity)getActivity()).cameraPosition));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (map != null) {
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(
+                    ((MainActivity)getActivity()).cameraPosition));
+        }
+    }
+
+
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -287,8 +328,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onPause() {
         super.onPause();
+        ((MainActivity)getActivity()).cameraPosition = map.getCameraPosition();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((MainActivity)getActivity()).cameraPosition = map.getCameraPosition();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((MainActivity)getActivity()).cameraPosition = map.getCameraPosition();
+    }
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

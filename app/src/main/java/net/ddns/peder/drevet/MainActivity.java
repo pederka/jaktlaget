@@ -29,6 +29,8 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.CameraPosition;
+
 import net.ddns.peder.drevet.AsyncTasks.LandmarksSyncronizer;
 import net.ddns.peder.drevet.AsyncTasks.PositionSyncronizer;
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements
     private int MY_PERMISSIONS_REQUEST;
     private LocationListener locationListener;
     private LocationManager locationManager;
+
+    public CameraPosition cameraPosition;
 
     private boolean runningService;
     private Context mContext;
@@ -178,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements
         stopService(new Intent(getApplicationContext(), LocationService.class));
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
+                PackageManager.PERMISSION_GRANTED || locationManager != null) {
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
                                                 Constants.ACTIVITY_GPS_DISTANCE, locationListener);
