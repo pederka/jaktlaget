@@ -294,7 +294,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        if (map != null) {
+        if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
             map.moveCamera(CameraUpdateFactory.newCameraPosition(
                     ((MainActivity)getActivity()).cameraPosition));
         }
@@ -328,19 +328,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity)getActivity()).cameraPosition = map.getCameraPosition();
+        if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
+            ((MainActivity) getActivity()).cameraPosition = map.getCameraPosition();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((MainActivity)getActivity()).cameraPosition = map.getCameraPosition();
+        if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
+            ((MainActivity) getActivity()).cameraPosition = map.getCameraPosition();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ((MainActivity)getActivity()).cameraPosition = map.getCameraPosition();
+        if (map != null) {
+            ((MainActivity) getActivity()).cameraPosition = map.getCameraPosition();
+        }
     }
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
