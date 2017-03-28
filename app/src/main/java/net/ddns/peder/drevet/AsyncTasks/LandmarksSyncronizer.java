@@ -20,6 +20,7 @@ import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.dynamoDB.Landmark;
 import net.ddns.peder.drevet.database.LandmarksDbHelper;
 import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
+import net.ddns.peder.drevet.utils.JsonUtil;
 
 import java.util.ArrayList;
 
@@ -76,6 +77,9 @@ public class LandmarksSyncronizer extends AsyncTask<Void, Void, Integer>{
         if (teamId.equals(Constants.DEFAULT_TEAM_ID)) {
             return FAILED_TEAM;
         }
+
+        Log.i(tag, "Writing landmarks to file");
+        JsonUtil.exportDataToFile(mContext, "landmarks.json");
 
         AmazonDynamoDBClient ddbClient = new AmazonDynamoDBClient(credentialsProvider);
         DynamoDBMapper mapper = new DynamoDBMapper(ddbClient);

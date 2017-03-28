@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.CameraPosition;
 
+import net.ddns.peder.drevet.AsyncTasks.DataSyncronizer;
 import net.ddns.peder.drevet.AsyncTasks.LandmarksSyncronizer;
 import net.ddns.peder.drevet.AsyncTasks.PositionSyncronizer;
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
@@ -87,20 +88,19 @@ public class MainActivity extends AppCompatActivity implements
                 if (!isChecked) {
                     runningService = false;
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
-                                                                        getApplicationContext());
+                            getApplicationContext());
                     prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, false).apply();
                     Toast.makeText(getApplicationContext(), R.string.run_start,
-                                                            Toast.LENGTH_SHORT).show();
-                }
-                else {
+                            Toast.LENGTH_SHORT).show();
+                } else {
                     // Request permission
-                    if (ContextCompat.checkSelfPermission((Activity)mContext,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
+                    if (ContextCompat.checkSelfPermission((Activity) mContext,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
                             != PackageManager.PERMISSION_GRANTED) {
 
-                        ActivityCompat.requestPermissions((Activity)mContext,
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    MY_PERMISSIONS_REQUEST);
+                        ActivityCompat.requestPermissions((Activity) mContext,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                MY_PERMISSIONS_REQUEST);
 
                     }
                     runningService = true;
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements
                             getApplicationContext());
                     prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, true).apply();
                     Toast.makeText(getApplicationContext(), R.string.run_stop,
-                                                                        Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -118,24 +118,34 @@ public class MainActivity extends AppCompatActivity implements
         syncButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LandmarksSyncronizer landmarksSyncronizer = new LandmarksSyncronizer(MainActivity.this);
-                landmarksSyncronizer.execute();
-                PositionSyncronizer positionSyncronizer = new PositionSyncronizer(MainActivity.this);
-                positionSyncronizer.execute();
+                DataSyncronizer dataSyncronizer = new DataSyncronizer(MainActivity.this);
+                dataSyncronizer.execute();
+                //LandmarksSyncronizer landmarksSyncronizer = new LandmarksSyncronizer(MainActivity.this);
+                //landmarksSyncronizer.execute();
+                //PositionSyncronizer positionSyncronizer = new PositionSyncronizer(MainActivity.this);
+                //positionSyncronizer.execute();
             }
         });
 
-        // Request permission
+        // Request permissions
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST);
 
-            }
+        }
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
 
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST);
+
+        }
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {

@@ -262,23 +262,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                          null,
                          null);
         while (cursor.moveToNext()) {
-            int showed = cursor.getInt(cursor.getColumnIndexOrThrow(
-                                                        LandmarksDbHelper.COLUMN_NAME_SHOWED));
-            if (showed > 0) {
-                Float latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
-                        LandmarksDbHelper.COLUMN_NAME_LATITUDE));
-                Float longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
-                        LandmarksDbHelper.COLUMN_NAME_LONGITUDE));
-                LatLng pos = new LatLng(latitude, longitude);
-                String description = cursor.getString(cursor.getColumnIndexOrThrow(
-                        LandmarksDbHelper.COLUMN_NAME_DESCRIPTION));
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(pos);
-                markerOptions.title(description);
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(
-                                                        BitmapDescriptorFactory.HUE_RED));
-                map.addMarker(markerOptions);
-            }
+            Float latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
+                    LandmarksDbHelper.COLUMN_NAME_LATITUDE));
+            Float longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
+                    LandmarksDbHelper.COLUMN_NAME_LONGITUDE));
+            LatLng pos = new LatLng(latitude, longitude);
+            String description = cursor.getString(cursor.getColumnIndexOrThrow(
+                    LandmarksDbHelper.COLUMN_NAME_DESCRIPTION));
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(pos);
+            markerOptions.title(description);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(
+                                                    BitmapDescriptorFactory.HUE_RED));
+            map.addMarker(markerOptions);
         }
     }
 

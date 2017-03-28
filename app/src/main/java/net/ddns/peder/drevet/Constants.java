@@ -29,4 +29,8 @@ public final class Constants {
     public static final String LOCAL_LANDMARKS_FILE = "landmarks_local.json";
     public static final String TEAM_LANDMARKS_FILE = "landmarks_team.json";
     public static final String POSITIONS_FILE = "positions.json";
+
+    // For Amazon S3
+    public static final String MY_BUCKET = "jaktlaget";
+    public static final String OBJECT_KEY = "jaktlag";
 }
