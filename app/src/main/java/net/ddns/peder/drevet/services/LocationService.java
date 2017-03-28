@@ -15,6 +15,7 @@ import android.util.Log;
 
 import net.ddns.peder.drevet.AsyncTasks.PositionSyncronizer;
 import net.ddns.peder.drevet.Constants;
+import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
 
 /**
@@ -95,7 +96,7 @@ public class LocationService extends Service {
         userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
         teamId = sharedPreferences.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
 
-        Intent notificationIntent = new Intent(this, LocationService.class);
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Notification notification = new Notification.Builder(this)
