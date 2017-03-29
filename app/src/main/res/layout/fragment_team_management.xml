@@ -8,47 +8,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-         <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-    <LinearLayout
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
+
         <EditText
             android:id="@+id/username_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.8"
-            android:hint="@string/username_hint"/>
-            />
-        <Button
-            android:id="@+id/save_username_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:background="@color/colorAccent"
-            android:text="@string/save_name_button"/>
-    </LinearLayout>
-        <Space
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
-    <LinearLayout
+            android:layout_height="wrap_content"
+            android:hint="@string/username_hint"/>
+
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <EditText
+    <EditText
             android:id="@+id/teamname_text"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.8"
             android:hint="@string/teamname_hint"/>
+    </android.support.design.widget.TextInputLayout>
         <Button
             android:id="@+id/save_teamname_button"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:background="@color/colorAccent"
+            android:background="@drawable/buttonshape"
             android:text="@string/save_name_button"/>
-    </LinearLayout>
 
     </LinearLayout>
 </FrameLayout>

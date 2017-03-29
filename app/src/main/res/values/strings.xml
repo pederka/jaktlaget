@@ -36,7 +36,9 @@
     <string name="toast_invalid_username">Ugyldig brukernavn</string>
     <string name="toast_username_saved">Brukernavn oppdatert</string>
     <string name="toast_invalid_teamname">Ugyldig lagnavn</string>
+    <string name="toast_invalid_name">Ugyldig brukernavn eller lagnavn</string>
     <string name="toast_teamname_saved">Lagnavn oppdatert</string>
+    <string name="toast_name_saved">Brukernavn og lagnavn oppdatert</string>
 
     <string name="save_name_button">Lagre</string>
     <string name="teamname_hint">Lagnavn</string>

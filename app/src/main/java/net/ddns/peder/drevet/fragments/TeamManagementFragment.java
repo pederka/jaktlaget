@@ -56,40 +56,26 @@ public class TeamManagementFragment extends Fragment {
             teamText.setText(teamId);
         }
 
-        Button saveUserButton = (Button) view.findViewById(R.id.save_username_button);
-        saveUserButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userId = userText.getText().toString().trim();
-                if (userId.equals("") || userId.equals(Constants.DEFAULT_USER_ID)) {
-                    Toast.makeText(getContext(), R.string.toast_invalid_username,
-                                    Toast.LENGTH_SHORT).show();
-                    userText.setText("");
-                }
-                else {
-                    prefs.edit().putString(Constants.SHARED_PREF_USER_ID, userId).apply();
-                    Toast.makeText(getContext(), R.string.toast_username_saved,
-                            Toast.LENGTH_SHORT).show();
-                    userText.setText(userId);
-                }
-            }
-        });
-
         Button saveTeamButton = (Button) view.findViewById(R.id.save_teamname_button);
         saveTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String userId = userText.getText().toString().trim();
                 String teamId = teamText.getText().toString().trim();
-                if (teamId.equals("") || teamId.equals(Constants.DEFAULT_TEAM_ID)) {
-                    Toast.makeText(getContext(), R.string.toast_invalid_teamname,
+                if (teamId.equals("") || teamId.equals(Constants.DEFAULT_TEAM_ID) ||
+                        userId.equals("") || userId.equals(Constants.DEFAULT_USER_ID)) {
+                    Toast.makeText(getContext(), R.string.toast_invalid_name,
                             Toast.LENGTH_SHORT).show();
                     teamText.setText("");
+                    userText.setText("");
                 }
                 else {
                     prefs.edit().putString(Constants.SHARED_PREF_TEAM_ID, teamId).apply();
-                    Toast.makeText(getContext(), R.string.toast_teamname_saved,
+                    prefs.edit().putString(Constants.SHARED_PREF_USER_ID, userId).apply();
+                    Toast.makeText(getContext(), R.string.toast_name_saved,
                             Toast.LENGTH_SHORT).show();
                     teamText.setText(teamId);
+                    userText.setText(userId);
                 }
             }
         });
