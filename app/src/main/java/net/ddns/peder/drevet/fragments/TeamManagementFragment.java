@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,8 @@ public class TeamManagementFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private EditText userText;
     private EditText teamText;
+    private TextInputLayout textInputLayoutUser;
+    private TextInputLayout textInputLayoutTeam;
 
     public TeamManagementFragment() {
         // Required empty public constructor
@@ -56,30 +59,54 @@ public class TeamManagementFragment extends Fragment {
             teamText.setText(teamId);
         }
 
+        textInputLayoutUser = (TextInputLayout) view.findViewById(R.id.text_input_layout_user);
+        textInputLayoutTeam = (TextInputLayout) view.findViewById(R.id.text_input_layout_team);
+
         Button saveTeamButton = (Button) view.findViewById(R.id.save_teamname_button);
         saveTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userId = userText.getText().toString().trim();
-                String teamId = teamText.getText().toString().trim();
-                if (teamId.equals("") || teamId.equals(Constants.DEFAULT_TEAM_ID) ||
-                        userId.equals("") || userId.equals(Constants.DEFAULT_USER_ID)) {
-                    Toast.makeText(getContext(), R.string.toast_invalid_name,
-                            Toast.LENGTH_SHORT).show();
-                    teamText.setText("");
-                    userText.setText("");
-                }
-                else {
-                    prefs.edit().putString(Constants.SHARED_PREF_TEAM_ID, teamId).apply();
-                    prefs.edit().putString(Constants.SHARED_PREF_USER_ID, userId).apply();
-                    Toast.makeText(getContext(), R.string.toast_name_saved,
-                            Toast.LENGTH_SHORT).show();
-                    teamText.setText(teamId);
-                    userText.setText(userId);
-                }
+                submitForm();
             }
         });
         return view;
+    }
+
+    private void submitForm() {
+        if (!validateName()) {
+            return;
+        }
+        if (!validateTeam()) {
+            return;
+        }
+        String userId = userText.getText().toString().trim();
+        String teamId = teamText.getText().toString().trim();
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        prefs.edit().putString(Constants.SHARED_PREF_TEAM_ID, teamId).apply();
+        prefs.edit().putString(Constants.SHARED_PREF_USER_ID, userId).apply();
+        Toast.makeText(getContext(), R.string.toast_name_saved, Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean validateName() {
+        if (userText.getText().toString().trim().isEmpty() ||
+                userText.getText().toString().equals(Constants.DEFAULT_USER_ID)) {
+            userText.setError(getString(R.string.toast_invalid_username));
+            return false;
+        } else {
+            textInputLayoutUser.setErrorEnabled(false);
+        }
+        return true;
+    }
+
+    private boolean validateTeam() {
+        if (teamText.getText().toString().trim().isEmpty() ||
+                teamText.getText().toString().equals(Constants.DEFAULT_TEAM_ID)) {
+            teamText.setError(getString(R.string.toast_invalid_teamname));
+            return false;
+        } else {
+            textInputLayoutTeam.setErrorEnabled(false);
+        }
+        return true;
     }
 
     public void onButtonPressed(Uri uri) {
