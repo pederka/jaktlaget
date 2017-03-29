@@ -47,14 +47,14 @@ public class TeamLandmarksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_landmarks, container, false);
+        View view = inflater.inflate(R.layout.fragment_team_landmarks, container, false);
 
         teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
         db = teamLandmarksDbHelper.getReadableDatabase();
 
         final String[] fromColumns = {TeamLandmarksDbHelper.COLUMN_NAME_DESCRIPTION};
 
-        final int[] toViews = {R.id.lm_list_desc};
+        final int[] toViews = {R.id.team_lm_list_desc};
 
 
         final Cursor cursor = db.query(TeamLandmarksDbHelper.TABLE_NAME,
@@ -67,10 +67,10 @@ public class TeamLandmarksFragment extends Fragment {
 
 
         mAdapter = new TeamLandmarksCursorAdapter(getActivity(),
-                            R.layout.lm_row,
+                            R.layout.team_lm_row,
                         cursor, fromColumns, toViews);
 
-        listView = (ListView) view.findViewById(R.id.lm_list);
+        listView = (ListView) view.findViewById(R.id.team_lm_list);
         listView.setAdapter(mAdapter);
 
         return view;

@@ -2,6 +2,7 @@ package net.ddns.peder.drevet.AsyncTasks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -9,9 +10,12 @@ import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.auth.CognitoCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectListing;
@@ -19,9 +23,12 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
+import net.ddns.peder.drevet.database.PositionsDbHelper;
+import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
 import net.ddns.peder.drevet.utils.JsonUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +38,7 @@ public class DataSyncronizer extends AsyncTask<Void, Void, Integer>{
     private final int FAILED_TEAM = 2;
     private CognitoCredentialsProvider credentialsProvider;
     private Context mContext;
+    private List<String> jsonStrings;
     private String userId;
     private String teamId;
     private final static String tag = "PositionSyncronizer";
@@ -75,16 +83,55 @@ public class DataSyncronizer extends AsyncTask<Void, Void, Integer>{
         ObjectListing list = s3.listObjects(Constants.MY_BUCKET, Constants.OBJECT_KEY_BASE + teamId);
         List<S3ObjectSummary> summaries = list.getObjectSummaries();
 
+        // Get writable database for positions
+        PositionsDbHelper positionsDbHelper = new PositionsDbHelper(mContext);
+        final SQLiteDatabase posdb = positionsDbHelper.getWritableDatabase();
+        // Get writable database for team landmarks
+        TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(mContext);
+        final SQLiteDatabase lmdb = teamLandmarksDbHelper.getWritableDatabase();
+        // Clear landmarks database
+        teamLandmarksDbHelper.clearTable(lmdb);
+
         try {
-            List<File> files = new ArrayList<>();
             Log.i(tag, "Found data from " + summaries.size() + " users:");
             for (int i = 0; i < summaries.size(); i++) {
-                File file = File.createTempFile(Constants.TMP_FILE_NAME, null, mContext.getCacheDir());
-                transferUtility.download(Constants.MY_BUCKET, summaries.get(i).getKey(), file);
-                files.add(file);
+                File file = File.createTempFile(Constants.TMP_FILE_NAME,
+                                    null, mContext.getCacheDir());
+                file.createNewFile();
                 Log.i(tag, "Getting file: " + summaries.get(i).getKey());
+                final TransferObserver transferObserver = transferUtility.download(Constants.MY_BUCKET,
+                                                                summaries.get(i).getKey(), file);
+                transferObserver.setTransferListener(new TransferListener() {
+                    @Override
+                    public void onStateChanged(int id, TransferState state) {
+                        if (state == TransferState.COMPLETED) {
+                            Log.i(tag, "Download number "+id+" complete.");
+                            File file = new File(transferObserver.getAbsoluteFilePath());
+                            try {
+                                FileInputStream is = new FileInputStream(file);
+                                int size = is.available();
+                                byte[] buffer = new byte[size];
+                                is.read(buffer);
+                                is.close();
+                                JsonUtil.importUserInformationFromJsonString(mContext, posdb, lmdb,
+                                                            new String(buffer, "UTF-8"));
+                                file.delete();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                    }
+
+                    @Override
+                    public void onError(int id, Exception ex) {
+                        Log.i(tag, "Download of "+transferObserver.getAbsoluteFilePath()+" failed");
+                    }
+                });
             }
-            JsonUtil.importUserInformationFromFiles(mContext, files);
         } catch (Exception e) {
             e.printStackTrace();
         }
