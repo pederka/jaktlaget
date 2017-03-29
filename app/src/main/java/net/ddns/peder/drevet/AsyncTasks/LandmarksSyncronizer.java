@@ -49,7 +49,6 @@ public class LandmarksSyncronizer extends AsyncTask<Void, Void, Integer>{
                 TeamLandmarksDbHelper.COLUMN_NAME_USER,
                 TeamLandmarksDbHelper.COLUMN_NAME_TEAM,
                 TeamLandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
-                TeamLandmarksDbHelper.COLUMN_NAME_LANDMARKID,
                 TeamLandmarksDbHelper.COLUMN_NAME_LATITUDE,
                 TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE,
     };

@@ -26,11 +26,9 @@ public final class Constants {
     public static final long MAP_LOCATION_UPDATE_INTERVAL = 5000;
 
     // File names
-    public static final String LOCAL_LANDMARKS_FILE = "landmarks_local.json";
-    public static final String TEAM_LANDMARKS_FILE = "landmarks_team.json";
-    public static final String POSITIONS_FILE = "positions.json";
+    public static final String TMP_FILE_NAME = "syncCache";
 
     // For Amazon S3
     public static final String MY_BUCKET = "jaktlaget";
-    public static final String OBJECT_KEY = "jaktlag";
+    public static final String OBJECT_KEY_BASE = "jaktlag/";
 }

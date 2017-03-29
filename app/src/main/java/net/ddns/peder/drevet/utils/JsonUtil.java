@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * Created by peder on 26.03.2017.
@@ -111,19 +112,34 @@ public class JsonUtil {
         return landmarks;
     }
 
-    private static void readUserInformationFromJson(Context context, String userId, File userFile) {
+    public static void importUserInformationFromFiles(Context context, List<File> files) {
+        // Get writable data for positions
         PositionsDbHelper positionsDbHelper = new PositionsDbHelper(context);
-        SQLiteDatabase db = positionsDbHelper.getWritableDatabase();
+        SQLiteDatabase posdb = positionsDbHelper.getWritableDatabase();
+        // Get writable database for team landmarks
+        TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(context);
+        SQLiteDatabase lmdb = teamLandmarksDbHelper.getWritableDatabase();
+        // Import data from every file
+        for (int i=0; i<files.size(); i++) {
+            importUserInformationFromFile(context, posdb, lmdb, files.get(i));
+        }
+        posdb.close();
+        lmdb.close();
+    }
+
+    private static void importUserInformationFromFile(Context context, SQLiteDatabase posdb,
+                                                        SQLiteDatabase lmdb, File userFile) {
         try {
             JSONObject json = new JSONObject(userFile.toString());
             // Get user position and update local database
+            String userId = json.getString(JSON_USER);
             Float latitude = (float)json.getDouble(JSON_LAT);
             Float longitude = (float)json.getDouble(JSON_LON);
             long time = Long.getLong(json.getString(JSON_TIME));
-            updateUserPosition(db, userId, latitude, longitude, time);
+            updateUserPosition(posdb, userId, latitude, longitude, time);
             // Add user shared landmarks to local database
             JSONArray landmarksArray = json.getJSONArray(JSON_LMARRAY);
-            readLandmarksFromJson(context, userId, landmarksArray);
+            readLandmarksFromJson(lmdb, userId, landmarksArray);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -131,25 +147,39 @@ public class JsonUtil {
 
     private static void updateUserPosition(SQLiteDatabase db, String userId, float lat, float lon,
                                              long time) {
+        final String[] PROJECTION = {
+            PositionsDbHelper.COLUMN_NAME_ID,
+            PositionsDbHelper.COLUMN_NAME_USER,
+        };
         ContentValues values = new ContentValues();
         values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, lat);
         values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, lon);
         values.put(PositionsDbHelper.COLUMN_NAME_TIME, time);
-        // Query databare to see if user exists
-
-        // If exists, update
-        String whereClause = PositionsDbHelper.COLUMN_NAME_USER+"= ?";
-        String[] whereArgs = new String[] {userId};
-        db.update(PositionsDbHelper.TABLE_NAME, values, whereClause, whereArgs);
-        // If new user, push new row to database
-        values.put(PositionsDbHelper.COLUMN_NAME_USER, userId);
+        // Query database to see if user exists
+        String selection = PositionsDbHelper.COLUMN_NAME_USER + " = ?";
+        String[] selectionArgs = {userId};
+        Cursor cursor = db.query(PositionsDbHelper.TABLE_NAME,
+                         PROJECTION,
+                         selection,
+                         selectionArgs,
+                         null,
+                         null,
+                         null);
+        if (cursor.getCount() > 0) {
+            // If exists, update
+            String whereClause = PositionsDbHelper.COLUMN_NAME_USER + "= ?";
+            String[] whereArgs = new String[]{userId};
+            db.update(PositionsDbHelper.TABLE_NAME, values, whereClause, whereArgs);
+        } else {
+            // If new user, push new row to database
+            values.put(PositionsDbHelper.COLUMN_NAME_USER, userId);
+            db.insert(PositionsDbHelper.TABLE_NAME, null, values);
+        }
+        cursor.close();
     }
 
-    private static void readLandmarksFromJson(Context context, String userID,
-                                                                        JSONArray landmarksArray) {
-        // Get writable database
-        TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(context);
-        SQLiteDatabase db = teamLandmarksDbHelper.getWritableDatabase();
+    private static void readLandmarksFromJson(SQLiteDatabase lmdb, String userID,
+                                              JSONArray landmarksArray) {
         try {
             for (int i=0; i<landmarksArray.length(); i++) {
                 JSONObject landmark = landmarksArray.getJSONObject(i);
@@ -162,12 +192,11 @@ public class JsonUtil {
                 values.put(TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE,
                                                                 landmark.getDouble(JSON_LON));
                 values.put(TeamLandmarksDbHelper.COLUMN_NAME_TIME, landmark.getString(JSON_TIME));
-                db.insert(TeamLandmarksDbHelper.TABLE_NAME, null, values);
+                lmdb.insert(TeamLandmarksDbHelper.TABLE_NAME, null, values);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        db.close();
     }
 
 }
