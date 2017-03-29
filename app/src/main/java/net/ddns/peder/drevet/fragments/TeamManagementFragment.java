@@ -93,8 +93,6 @@ public class TeamManagementFragment extends Fragment {
                 }
             }
         });
-
-
         return view;
     }
 

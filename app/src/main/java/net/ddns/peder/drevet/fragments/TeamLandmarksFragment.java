@@ -9,25 +9,24 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import net.ddns.peder.drevet.R;
-import net.ddns.peder.drevet.adapters.LandmarksCursorAdapter;
-import net.ddns.peder.drevet.database.LandmarksDbHelper;
+import net.ddns.peder.drevet.adapters.TeamLandmarksCursorAdapter;
+import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
 
 public class TeamLandmarksFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
-    private LandmarksDbHelper landmarksDbHelper;
-    private LandmarksCursorAdapter mAdapter;
+    private TeamLandmarksDbHelper teamLandmarksDbHelper;
+    private TeamLandmarksCursorAdapter mAdapter;
     private ListView listView;
     private SQLiteDatabase db;
 
     private final static String[] PROJECTION = {
-                LandmarksDbHelper.COLUMN_NAME_ID,
-                LandmarksDbHelper.COLUMN_NAME_SHOWED,
-                LandmarksDbHelper.COLUMN_NAME_SHARED,
-                LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+                TeamLandmarksDbHelper.COLUMN_NAME_ID,
+                TeamLandmarksDbHelper.COLUMN_NAME_USER,
+                TeamLandmarksDbHelper.COLUMN_NAME_SHOWED,
+                TeamLandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
     };
 
     public TeamLandmarksFragment() {
@@ -50,15 +49,15 @@ public class TeamLandmarksFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_landmarks, container, false);
 
-        landmarksDbHelper = new LandmarksDbHelper(getContext());
-        db = landmarksDbHelper.getReadableDatabase();
+        teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
+        db = teamLandmarksDbHelper.getReadableDatabase();
 
-        final String[] fromColumns = {LandmarksDbHelper.COLUMN_NAME_DESCRIPTION};
+        final String[] fromColumns = {TeamLandmarksDbHelper.COLUMN_NAME_DESCRIPTION};
 
         final int[] toViews = {R.id.lm_list_desc};
 
 
-        final Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
+        final Cursor cursor = db.query(TeamLandmarksDbHelper.TABLE_NAME,
                                  PROJECTION,
                                  null,
                                  null,
@@ -67,30 +66,12 @@ public class TeamLandmarksFragment extends Fragment {
                                  null);
 
 
-        mAdapter = new LandmarksCursorAdapter(getActivity(),
+        mAdapter = new TeamLandmarksCursorAdapter(getActivity(),
                             R.layout.lm_row,
                         cursor, fromColumns, toViews);
 
         listView = (ListView) view.findViewById(R.id.lm_list);
         listView.setAdapter(mAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
-                                    final int position, final long id) {
-                landmarksDbHelper.deleteItem(db, id);
-                // Update listview
-                Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
-                                    PROJECTION,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null);
-                mAdapter.swapCursor(cursor);
-                mAdapter.notifyDataSetChanged();
-            }
-        });
 
         return view;
     }

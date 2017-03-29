@@ -6,23 +6,23 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 
 <TextView
     android:id="@+id/team_lm_list_desc"
+    android:text="@string/column_description"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:textSize="20sp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+    android:layout_weight="1.5"
+    android:layout_gravity="center">
+</TextView>
+
+<TextView
+    android:id="@+id/team_lm_list_user"
     android:text="@string/column_user"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:textSize="20sp"
     android:textAppearance="@style/TextAppearance.AppCompat.Body2"
     android:layout_weight="1.0"
-    android:layout_gravity="center">
-</TextView>
-
-<TextView
-    android:id="@+id/team_lm_list_user"
-    android:text="@string/column_last_update"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:textSize="20sp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-    android:layout_weight="1.5"
     android:layout_gravity="center">
 </TextView>
 

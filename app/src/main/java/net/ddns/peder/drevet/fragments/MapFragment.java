@@ -276,6 +276,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                                     BitmapDescriptorFactory.HUE_RED));
             map.addMarker(markerOptions);
         }
+        cursor.close();
     }
 
     @Override
