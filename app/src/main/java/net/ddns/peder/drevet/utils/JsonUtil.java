@@ -1,5 +1,6 @@
 package net.ddns.peder.drevet.utils;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -9,6 +10,8 @@ import android.preference.PreferenceManager;
 
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.database.LandmarksDbHelper;
+import net.ddns.peder.drevet.database.PositionsDbHelper;
+import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,6 +30,7 @@ public class JsonUtil {
     private static final String JSON_LAT = "Latitude";
     private static final String JSON_LON = "Longitude";
     private static final String JSON_DESC = "Description";
+    private static final String JSON_LMARRAY = "Landmarks";
 
 
     public static File exportDataToFile(Context context, String outFile) {
@@ -39,7 +43,7 @@ public class JsonUtil {
             JSONArray exportData = new JSONArray();
             exportData.put(writeUserPositionToJson(context));
             JSONObject landmarks = new JSONObject();
-            landmarks.put("Landmarks", writeSharedLandmarksToJsonArray(context));
+            landmarks.put(JSON_LMARRAY, writeSharedLandmarksToJsonArray(context));
             exportData.put(landmarks);
             out.write(exportData.toString().getBytes());
         } catch(Exception e) {
@@ -86,7 +90,6 @@ public class JsonUtil {
         JSONArray landmarks = new JSONArray();
 
         try {
-
             while (cursor.moveToNext()) {
                 JSONObject landmark = new JSONObject();
                 landmark.put(JSON_DESC, cursor.getString(cursor.getColumnIndexOrThrow(
@@ -95,6 +98,8 @@ public class JsonUtil {
                         LandmarksDbHelper.COLUMN_NAME_LATITUDE)));
                 landmark.put(JSON_LON, cursor.getFloat(cursor.getColumnIndexOrThrow(
                         LandmarksDbHelper.COLUMN_NAME_LONGITUDE)));
+                landmark.put(JSON_TIME, cursor.getString(cursor.getColumnIndexOrThrow(
+                        LandmarksDbHelper.COLUMN_NAME_TIME)));
                 landmarks.put(landmark);
             }
         } catch(Exception e) {
@@ -106,8 +111,63 @@ public class JsonUtil {
         return landmarks;
     }
 
-    public static void readLandmarksFromFile(Context context, String inFile) {
+    private static void readUserInformationFromJson(Context context, String userId, File userFile) {
+        PositionsDbHelper positionsDbHelper = new PositionsDbHelper(context);
+        SQLiteDatabase db = positionsDbHelper.getWritableDatabase();
+        try {
+            JSONObject json = new JSONObject(userFile.toString());
+            // Get user position and update local database
+            Float latitude = (float)json.getDouble(JSON_LAT);
+            Float longitude = (float)json.getDouble(JSON_LON);
+            long time = Long.getLong(json.getString(JSON_TIME));
+            updateUserPosition(db, userId, latitude, longitude, time);
+            // Add user shared landmarks to local database
+            JSONArray landmarksArray = json.getJSONArray(JSON_LMARRAY);
+            readLandmarksFromJson(context, userId, landmarksArray);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    private static void updateUserPosition(SQLiteDatabase db, String userId, float lat, float lon,
+                                             long time) {
+        ContentValues values = new ContentValues();
+        values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, lat);
+        values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, lon);
+        values.put(PositionsDbHelper.COLUMN_NAME_TIME, time);
+        // Query databare to see if user exists
+
+        // If exists, update
+        String whereClause = PositionsDbHelper.COLUMN_NAME_USER+"= ?";
+        String[] whereArgs = new String[] {userId};
+        db.update(PositionsDbHelper.TABLE_NAME, values, whereClause, whereArgs);
+        // If new user, push new row to database
+        values.put(PositionsDbHelper.COLUMN_NAME_USER, userId);
+    }
+
+    private static void readLandmarksFromJson(Context context, String userID,
+                                                                        JSONArray landmarksArray) {
+        // Get writable database
+        TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(context);
+        SQLiteDatabase db = teamLandmarksDbHelper.getWritableDatabase();
+        try {
+            for (int i=0; i<landmarksArray.length(); i++) {
+                JSONObject landmark = landmarksArray.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(TeamLandmarksDbHelper.COLUMN_NAME_USER, userID);
+                values.put(TeamLandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+                                                                landmark.getString(JSON_DESC));
+                values.put(TeamLandmarksDbHelper.COLUMN_NAME_LATITUDE,
+                                                                landmark.getDouble(JSON_LAT));
+                values.put(TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE,
+                                                                landmark.getDouble(JSON_LON));
+                values.put(TeamLandmarksDbHelper.COLUMN_NAME_TIME, landmark.getString(JSON_TIME));
+                db.insert(TeamLandmarksDbHelper.TABLE_NAME, null, values);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        db.close();
     }
 
 }

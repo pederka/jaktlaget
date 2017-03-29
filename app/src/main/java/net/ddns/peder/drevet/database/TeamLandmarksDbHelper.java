@@ -9,12 +9,12 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class TeamLandmarksDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "TeamLandmarks.db";
 
     public static final String TABLE_NAME = "landmarks";
     public static final String COLUMN_NAME_ID = "_id";
-    public static final String COLUMN_NAME_LANDMARKID = "landmarkId";
+    public static final String COLUMN_NAME_TIME = "time";
     public static final String COLUMN_NAME_DESCRIPTION = "description";
     public static final String COLUMN_NAME_USER = "user";
     public static final String COLUMN_NAME_TEAM = "team";
@@ -25,7 +25,7 @@ public class TeamLandmarksDbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + TABLE_NAME + " (" +
                     COLUMN_NAME_ID + " INTEGER PRIMARY KEY," +
-                    COLUMN_NAME_LANDMARKID + " TEXT," +
+                    COLUMN_NAME_TIME + " TEXT," +
                     COLUMN_NAME_DESCRIPTION + " TEXT," +
                     COLUMN_NAME_SHOWED + " TEXT," +
                     COLUMN_NAME_USER + " TEXT," +
