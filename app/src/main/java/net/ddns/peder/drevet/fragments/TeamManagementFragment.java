@@ -60,7 +60,7 @@ public class TeamManagementFragment extends Fragment {
         saveUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userId = userText.getText().toString();
+                String userId = userText.getText().toString().trim();
                 if (userId.equals("") || userId.equals(Constants.DEFAULT_USER_ID)) {
                     Toast.makeText(getContext(), R.string.toast_invalid_username,
                                     Toast.LENGTH_SHORT).show();
@@ -70,6 +70,7 @@ public class TeamManagementFragment extends Fragment {
                     prefs.edit().putString(Constants.SHARED_PREF_USER_ID, userId).apply();
                     Toast.makeText(getContext(), R.string.toast_username_saved,
                             Toast.LENGTH_SHORT).show();
+                    userText.setText(userId);
                 }
             }
         });
@@ -78,7 +79,7 @@ public class TeamManagementFragment extends Fragment {
         saveTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String teamId = teamText.getText().toString();
+                String teamId = teamText.getText().toString().trim();
                 if (teamId.equals("") || teamId.equals(Constants.DEFAULT_TEAM_ID)) {
                     Toast.makeText(getContext(), R.string.toast_invalid_teamname,
                             Toast.LENGTH_SHORT).show();
@@ -88,6 +89,7 @@ public class TeamManagementFragment extends Fragment {
                     prefs.edit().putString(Constants.SHARED_PREF_TEAM_ID, teamId).apply();
                     Toast.makeText(getContext(), R.string.toast_teamname_saved,
                             Toast.LENGTH_SHORT).show();
+                    teamText.setText(teamId);
                 }
             }
         });
