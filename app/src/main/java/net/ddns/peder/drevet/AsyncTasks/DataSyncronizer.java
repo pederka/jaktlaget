@@ -95,12 +95,18 @@ public class DataSyncronizer extends AsyncTask<Void, Void, Integer>{
         try {
             Log.i(tag, "Found data from " + summaries.size() + " users:");
             for (int i = 0; i < summaries.size(); i++) {
+                // Skip own landmarks
+                String filename = summaries.get(i).getKey();
+                if (filename.substring(filename.lastIndexOf("/")+1,
+                                                    filename.lastIndexOf(".")).equals(userId)) {
+                    continue;
+                }
                 File file = File.createTempFile(Constants.TMP_FILE_NAME,
                                     null, mContext.getCacheDir());
                 file.createNewFile();
-                Log.i(tag, "Getting file: " + summaries.get(i).getKey());
+                Log.i(tag, "Getting file: " + filename);
                 final TransferObserver transferObserver = transferUtility.download(Constants.MY_BUCKET,
-                                                                summaries.get(i).getKey(), file);
+                                                                filename, file);
                 transferObserver.setTransferListener(new TransferListener() {
                     @Override
                     public void onStateChanged(int id, TransferState state) {
