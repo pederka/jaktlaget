@@ -192,6 +192,7 @@ public class JsonUtil {
                 values.put(TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE,
                                                                 landmark.getDouble(JSON_LON));
                 values.put(TeamLandmarksDbHelper.COLUMN_NAME_TIME, landmark.getString(JSON_TIME));
+                values.put(TeamLandmarksDbHelper.COLUMN_NAME_SHOWED, 1);
                 lmdb.insert(TeamLandmarksDbHelper.TABLE_NAME, null, values);
             }
         } catch (Exception e) {
