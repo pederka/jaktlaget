@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,10 +36,14 @@ import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.database.LandmarksDbHelper;
+import net.ddns.peder.drevet.database.PositionsDbHelper;
+import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
 import net.ddns.peder.drevet.providers.TileProviderFactory;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -49,11 +55,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             new LatLng(58.57, 3.71), new LatLng(71.51, 31.82));
     private String tag = "Map";
     private LandmarksDbHelper landmarksDbHelper;
+    private TeamLandmarksDbHelper teamLandmarksDbHelper;
+    private PositionsDbHelper positionsDbHelper;
     private SQLiteDatabase db;
+    private SQLiteDatabase tldb;
+    private SQLiteDatabase posdb;
     private boolean shared;
     private SharedPreferences sharedPreferences;
     private Handler mHandler;
     private Marker myLocationMarker;
+    private List<Marker> userMarkerList;
+
 
     public MapFragment() {
         // Required empty public constructor
@@ -116,6 +128,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(View view, Bundle savedInstanceState){
         landmarksDbHelper = new LandmarksDbHelper(getContext());
         db = landmarksDbHelper.getReadableDatabase();
+        teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
+        tldb = teamLandmarksDbHelper.getReadableDatabase();
+        positionsDbHelper = new PositionsDbHelper(getContext());
+        posdb = positionsDbHelper.getReadableDatabase();
+        userMarkerList = new ArrayList<>();
         try {
             if (map == null) {
                 mapView = (MapView) view.findViewById(R.id.map);
@@ -129,6 +146,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -225,6 +243,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
 
         addLandMarks(map);
+        addTeamLandmarks(map);
+        updateTeamPositions(map);
 
         // Start update of own loaction
         mHandler.postDelayed(updateMyPosition, Constants.MAP_LOCATION_UPDATE_INTERVAL);
@@ -275,6 +295,81 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(
                                                     BitmapDescriptorFactory.HUE_RED));
             map.addMarker(markerOptions);
+        }
+        cursor.close();
+    }
+
+    private void addTeamLandmarks(GoogleMap map) {
+        final String[] PROJECTION = {
+            TeamLandmarksDbHelper.COLUMN_NAME_ID,
+            TeamLandmarksDbHelper.COLUMN_NAME_SHOWED,
+            TeamLandmarksDbHelper.COLUMN_NAME_USER,
+            TeamLandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+            TeamLandmarksDbHelper.COLUMN_NAME_LATITUDE,
+            TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE,
+        };
+
+        String selection = TeamLandmarksDbHelper.COLUMN_NAME_SHOWED + " = ?";
+        String[] selectionArgs = { "1" };
+        final Cursor cursor = tldb.query(TeamLandmarksDbHelper.TABLE_NAME,
+                         PROJECTION,
+                         selection,
+                         selectionArgs,
+                         null,
+                         null,
+                         null);
+        while (cursor.moveToNext()) {
+            Float latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
+                    TeamLandmarksDbHelper.COLUMN_NAME_LATITUDE));
+            Float longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
+                    TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE));
+            LatLng pos = new LatLng(latitude, longitude);
+            String description = cursor.getString(cursor.getColumnIndexOrThrow(
+                    TeamLandmarksDbHelper.COLUMN_NAME_DESCRIPTION));
+            String user = cursor.getString(cursor.getColumnIndexOrThrow(
+                    TeamLandmarksDbHelper.COLUMN_NAME_USER));
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(pos);
+            markerOptions.title(user+": "+description);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(
+                                                    BitmapDescriptorFactory.HUE_GREEN));
+            map.addMarker(markerOptions);
+        }
+        cursor.close();
+    }
+
+    private void updateTeamPositions(GoogleMap map) {
+        final String[] PROJECTION = {
+            PositionsDbHelper.COLUMN_NAME_ID,
+            PositionsDbHelper.COLUMN_NAME_SHOWED,
+            PositionsDbHelper.COLUMN_NAME_USER,
+            PositionsDbHelper.COLUMN_NAME_LATITUDE,
+            PositionsDbHelper.COLUMN_NAME_LONGITUDE,
+        };
+
+        String selection = PositionsDbHelper.COLUMN_NAME_SHOWED + " = ?";
+        String[] selectionArgs = { "1" };
+        final Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
+                         PROJECTION,
+                         selection,
+                         selectionArgs,
+                         null,
+                         null,
+                         null);
+        userMarkerList.clear();
+        while (cursor.moveToNext()) {
+            Float latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
+                    PositionsDbHelper.COLUMN_NAME_LATITUDE));
+            Float longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
+                    PositionsDbHelper.COLUMN_NAME_LONGITUDE));
+            LatLng pos = new LatLng(latitude, longitude);
+            String user = cursor.getString(cursor.getColumnIndexOrThrow(
+                    PositionsDbHelper.COLUMN_NAME_USER));
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(pos);
+            markerOptions.title(user);
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.raw.other_location));
+            userMarkerList.add(map.addMarker(markerOptions));
         }
         cursor.close();
     }
