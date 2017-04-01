@@ -3,6 +3,7 @@ package net.ddns.peder.drevet.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
 import net.ddns.peder.drevet.fragments.TeamLandmarksFragment;
@@ -12,7 +13,7 @@ import net.ddns.peder.drevet.fragments.TeamManagementFragment;
  * Created by peder on 4/1/17.
  */
 
-public class LandmarksPagerAdapter extends FragmentPagerAdapter {
+public class LandmarksPagerAdapter extends FragmentStatePagerAdapter {
 
 
     public LandmarksPagerAdapter(FragmentManager fm) {

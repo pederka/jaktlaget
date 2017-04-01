@@ -95,8 +95,8 @@ public class LocationService extends Service {
                                                                         this);
         userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
         teamId = sharedPreferences.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
-        LOCATION_INTERVAL = 60000*sharedPreferences.getInt("pref_syncInterval",
-                                (int)Constants.DEFAULT_UPDATE_INTERVAL);
+        LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString("pref_syncInterval",
+                Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
 
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
