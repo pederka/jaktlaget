@@ -23,10 +23,6 @@
             android:id="@+id/nav_team_manage"
             android:icon="@drawable/ic_recent_actors_black_24dp"
             android:title="@string/menu_team_manage" />
-        <item
-            android:id="@+id/nav_team_landmarks"
-            android:icon="@drawable/ic_place_black_24dp"
-            android:title="@string/menu_team_landmarks" />
     </group>
     <group android:checkableBehavior="single"
         android:id="@+id/settings_group">

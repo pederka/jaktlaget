@@ -23,6 +23,7 @@ public final class Constants {
     public static final int NOTIFICATION_ID = 1337;
     public static final long ACTIVITY_GPS_UPDATE_TIME = 5000;
     public static final long ACTIVITY_GPS_DISTANCE = 10;
+    public static final long DEFAULT_UPDATE_INTERVAL = 6*60000;
     public static final long MAP_LOCATION_UPDATE_INTERVAL = 5000;
 
     // File names

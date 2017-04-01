@@ -5,7 +5,7 @@
     <string name="menu_map">Kart</string>
     <string name="menu_team">Jaktlaget</string>
     <string name="menu_team_manage">Laginstillinger</string>
-    <string name="menu_landmarks">Mine kartmerker</string>
+    <string name="menu_landmarks">Kartmerker</string>
     <string name="menu_team_landmarks">Lagets kartmerker</string>
     <string name="menu_settings">Innstillinger</string>
 
@@ -51,4 +51,18 @@
     <string name="less_than_1_min">Mindre enn 1 min</string>
     <string name="more_than_1_hour">Mer enn 1 time</string>
     <string name="minutes">%s min</string>
+
+    <string name="pref_category_sync">Synkronisering</string>
+
+    <string name="pref_autoshowteam">Vis lagmedlemmer</string>
+    <string name="pref_autoshowteam_summary">Automatisk vis lagmedlemmer på kart</string>
+
+    <string name="pref_autoshowlm">Vis lagets kartmerker</string>
+    <string name="pref_autoshowlm_summary">Automatisk vis lagets kartmerker på kart</string>
+
+    <string name="pref_syncInterval">Synkroniseringsintervall</string>
+    <string name="pref_syncInterval_dialog">Velg intervall for oppdatering av lagets posisjoner</string>
+    <string name="pref_syncInterval_default">5</string>
+
+
 </resources>

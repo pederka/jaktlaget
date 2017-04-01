@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <android.support.v7.preference.PreferenceCategory
-        android:title="@string/pref_category_usage">
+        android:title="@string/pref_category_sync">
+        <CheckBoxPreference
+            android:key="pref_autoshowteam"
+            android:title="@string/pref_autoshowteam"
+            android:summary="@string/pref_autoshowteam_summary"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="pref_autoshowlm"
+            android:title="@string/pref_autoshowlm"
+            android:summary="@string/pref_autoshowlm_summary"
+            android:defaultValue="true" />
+        <ListPreference
+            android:key="pref_syncInterval"
+            android:title="@string/pref_syncInterval"
+            android:dialogTitle="@string/pref_syncInterval_dialog"
+            android:entries="@array/pref_syncInterval_entries"
+            android:entryValues="@array/pref_syncInterval_values"
+            android:defaultValue="@string/pref_syncInterval_default" />
 
     </android.support.v7.preference.PreferenceCategory>
 

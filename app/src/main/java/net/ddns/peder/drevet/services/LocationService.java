@@ -13,7 +13,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import net.ddns.peder.drevet.AsyncTasks.PositionSyncronizer;
+import net.ddns.peder.drevet.AsyncTasks.DataSyncronizer;
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
@@ -24,7 +24,7 @@ import net.ddns.peder.drevet.R;
 
 public class LocationService extends Service {
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000;
+    private int LOCATION_INTERVAL;
     private static final float LOCATION_DISTANCE = 10f;
     private static final String tag = "LocationService";
     private String userId;
@@ -54,8 +54,8 @@ public class LocationService extends Service {
                                                             (float)location.getLongitude()).apply();
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
-            PositionSyncronizer posSync = new PositionSyncronizer(getApplicationContext());
-            posSync.execute();
+            DataSyncronizer dataSync = new DataSyncronizer(getApplicationContext());
+            dataSync.execute();
         }
 
         @Override
@@ -95,6 +95,8 @@ public class LocationService extends Service {
                                                                         this);
         userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
         teamId = sharedPreferences.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
+        LOCATION_INTERVAL = 60000*sharedPreferences.getInt("pref_syncInterval",
+                                (int)Constants.DEFAULT_UPDATE_INTERVAL);
 
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);

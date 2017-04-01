@@ -32,8 +32,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.CameraPosition;
 
 import net.ddns.peder.drevet.AsyncTasks.DataSyncronizer;
-import net.ddns.peder.drevet.AsyncTasks.LandmarksSyncronizer;
-import net.ddns.peder.drevet.AsyncTasks.PositionSyncronizer;
+import net.ddns.peder.drevet.fragments.AllLandmarksFragment;
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
 import net.ddns.peder.drevet.fragments.MapFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MapFragment.OnFragmentInteractionListener,
         TeamFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener,
         LandmarksFragment.OnFragmentInteractionListener, TeamLandmarksFragment.OnFragmentInteractionListener,
-        TeamManagementFragment.OnFragmentInteractionListener {
+        TeamManagementFragment.OnFragmentInteractionListener, AllLandmarksFragment.OnFragmentInteractionListener {
 
     private int MY_PERMISSIONS_REQUEST;
     private LocationListener locationListener;
@@ -157,7 +156,15 @@ public class MainActivity extends AppCompatActivity implements
 
         }
 
-        displaySelectedScreen(R.id.nav_map);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID,
+                                                                        Constants.DEFAULT_USER_ID);
+        if (userId.equals(Constants.DEFAULT_USER_ID)) {
+            displaySelectedScreen(R.id.nav_team_manage);
+        } else {
+            displaySelectedScreen(R.id.nav_map);
+        }
+
         //PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
     }
 
@@ -271,14 +278,11 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.nav_team:
                 fragment = new TeamFragment();
                 break;
-            case R.id.nav_team_landmarks:
-                fragment = new TeamLandmarksFragment();
-                break;
             case R.id.nav_team_manage:
                 fragment = new TeamManagementFragment();
                 break;
             case R.id.nav_landmarks:
-                fragment = new LandmarksFragment();
+                fragment = new AllLandmarksFragment();
                 break;
             case R.id.nav_settings:
                 fragment = new SettingsFragment();
