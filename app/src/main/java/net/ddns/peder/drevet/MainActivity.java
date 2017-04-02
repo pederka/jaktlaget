@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -31,7 +32,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.CameraPosition;
 
-import net.ddns.peder.drevet.AsyncTasks.DataSyncronizer;
+import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.fragments.AllLandmarksFragment;
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
 import net.ddns.peder.drevet.fragments.MapFragment;
@@ -42,6 +43,8 @@ import net.ddns.peder.drevet.fragments.TeamManagementFragment;
 import net.ddns.peder.drevet.listeners.MyLocationListener;
 import net.ddns.peder.drevet.services.LocationService;
 
+import static net.ddns.peder.drevet.Constants.SYNC_DELAY_ACTIVITY;
+
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MapFragment.OnFragmentInteractionListener,
         TeamFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener,
@@ -51,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements
     private int MY_PERMISSIONS_REQUEST;
     private LocationListener locationListener;
     private LocationManager locationManager;
+
+    private Handler mHandler;
 
     public CameraPosition cameraPosition;
 
@@ -117,8 +122,8 @@ public class MainActivity extends AppCompatActivity implements
         syncButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DataSyncronizer dataSyncronizer = new DataSyncronizer(MainActivity.this);
-                dataSyncronizer.execute();
+                DataSynchronizer dataSynchronizer = new DataSynchronizer(MainActivity.this);
+                dataSynchronizer.execute();
             }
         });
 
@@ -161,12 +166,26 @@ public class MainActivity extends AppCompatActivity implements
             displaySelectedScreen(R.id.nav_map);
         }
 
+        mHandler = new Handler();
+        mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+
         //PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
     }
+
+    private Runnable syncData = new Runnable() {
+        @Override
+        public void run() {
+            DataSynchronizer dataSynchronizer = new DataSynchronizer(mContext);
+            dataSynchronizer.execute();
+            mHandler.postDelayed(this, SYNC_DELAY_ACTIVITY);
+        }
+    };
+
 
     @Override
     public void onPause() {
         super.onPause();
+        mHandler.removeCallbacks(syncData);
         if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }
@@ -179,6 +198,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onResume() {
         super.onResume();
         stopService(new Intent(getApplicationContext(), LocationService.class));
+        if (mHandler != null) {
+            mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+        }
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED && locationManager != null) {
@@ -193,6 +215,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
         stopService(new Intent(getApplicationContext(), LocationService.class));
+        if (mHandler != null) {
+            mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+        }
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED && locationManager != null) {
@@ -206,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onStop() {
         super.onStop();
+        mHandler.removeCallbacks(syncData);
         if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }
@@ -217,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mHandler.removeCallbacks(syncData);
         if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }

@@ -13,7 +13,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import net.ddns.peder.drevet.AsyncTasks.DataSyncronizer;
+import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
@@ -54,7 +54,7 @@ public class LocationService extends Service {
                                                             (float)location.getLongitude()).apply();
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
-            DataSyncronizer dataSync = new DataSyncronizer(getApplicationContext());
+            DataSynchronizer dataSync = new DataSynchronizer(getApplicationContext());
             dataSync.execute();
         }
 

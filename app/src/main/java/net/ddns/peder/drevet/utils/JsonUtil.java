@@ -113,7 +113,6 @@ public class JsonUtil {
                                                                         context);
             boolean autoshowlm = sharedPreferences.getBoolean("pref_autoshowlm", true);
             boolean autoshowteam = sharedPreferences.getBoolean("pref_autoshowteam", true);
-            Log.i(tag, jsonString);
             JSONObject json = new JSONObject(jsonString);
             // Get user position and update local database
             String userId = json.getString(JSON_USER);

@@ -30,7 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
-public class DataSyncronizer extends AsyncTask<Void, Void, Integer>{
+public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     private final int SUCCESS = 0;
     private final int FAILED_USER = 1;
     private final int FAILED_TEAM = 2;
@@ -41,7 +41,7 @@ public class DataSyncronizer extends AsyncTask<Void, Void, Integer>{
     private String teamId;
     private final static String tag = "PositionSyncronizer";
 
-    public DataSyncronizer(Context context) {
+    public DataSynchronizer(Context context) {
         // Initialize the Amazon Cognito credentials provider
         credentialsProvider = new CognitoCachingCredentialsProvider(
                 context,
