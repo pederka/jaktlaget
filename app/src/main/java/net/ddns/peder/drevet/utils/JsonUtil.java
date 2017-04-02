@@ -18,11 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 
 /**
  * Created by peder on 26.03.2017.
@@ -112,6 +109,10 @@ public class JsonUtil {
     public static void importUserInformationFromJsonString(Context context, SQLiteDatabase posdb,
                                                         SQLiteDatabase lmdb, String jsonString) {
         try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                                                                        context);
+            boolean autoshowlm = sharedPreferences.getBoolean("pref_autoshowlm", true);
+            boolean autoshowteam = sharedPreferences.getBoolean("pref_autoshowteam", true);
             Log.i(tag, jsonString);
             JSONObject json = new JSONObject(jsonString);
             // Get user position and update local database
@@ -120,17 +121,17 @@ public class JsonUtil {
             Float latitude = (float)json.getDouble(JSON_LAT);
             Float longitude = (float)json.getDouble(JSON_LON);
             long time = json.getLong(JSON_TIME);
-            updateUserPosition(posdb, userId, latitude, longitude, time);
+            updateUserPosition(posdb, userId, latitude, longitude, time, autoshowteam);
             // Add user shared landmarks to local database
             JSONArray landmarksArray = json.getJSONArray(JSON_LMARRAY);
-            readLandmarksFromJson(lmdb, userId, landmarksArray);
+            readLandmarksFromJson(lmdb, userId, landmarksArray, autoshowlm);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private static void updateUserPosition(SQLiteDatabase db, String userId, float lat, float lon,
-                                             long time) {
+                                             long time, boolean show) {
         final String[] PROJECTION = {
             PositionsDbHelper.COLUMN_NAME_ID,
             PositionsDbHelper.COLUMN_NAME_USER,
@@ -138,6 +139,7 @@ public class JsonUtil {
         ContentValues values = new ContentValues();
         values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, lat);
         values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, lon);
+        values.put(PositionsDbHelper.COLUMN_NAME_SHOWED, show);
         values.put(PositionsDbHelper.COLUMN_NAME_TIME, time);
         // Query database to see if user exists
         String selection = PositionsDbHelper.COLUMN_NAME_USER + " = ?";
@@ -163,8 +165,9 @@ public class JsonUtil {
     }
 
     private static void readLandmarksFromJson(SQLiteDatabase lmdb, String userID,
-                                              JSONArray landmarksArray) {
+                                              JSONArray landmarksArray, boolean show) {
         try {
+
             Log.i(tag, "Importing "+landmarksArray.length()+" landmarks");
             for (int i=0; i<landmarksArray.length(); i++) {
                 JSONObject landmark = landmarksArray.getJSONObject(i);
@@ -176,7 +179,7 @@ public class JsonUtil {
                                                                 landmark.getDouble(JSON_LAT));
                 values.put(TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE,
                                                                 landmark.getDouble(JSON_LON));
-                values.put(TeamLandmarksDbHelper.COLUMN_NAME_SHOWED, 1);
+                values.put(TeamLandmarksDbHelper.COLUMN_NAME_SHOWED, show);
                 lmdb.insert(TeamLandmarksDbHelper.TABLE_NAME, null, values);
             }
         } catch (Exception e) {

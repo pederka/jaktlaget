@@ -119,10 +119,6 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 DataSyncronizer dataSyncronizer = new DataSyncronizer(MainActivity.this);
                 dataSyncronizer.execute();
-                //LandmarksSyncronizer landmarksSyncronizer = new LandmarksSyncronizer(MainActivity.this);
-                //landmarksSyncronizer.execute();
-                //PositionSyncronizer positionSyncronizer = new PositionSyncronizer(MainActivity.this);
-                //positionSyncronizer.execute();
             }
         });
 
