@@ -24,8 +24,10 @@
     <string name="run_start">Posisjonsdeling stoppet</string>
 
     <string name="lm_dialog_title">Nytt kartmerke</string>
+    <string name="lm_delete_title">Slett kartmerke?</string>
     <string name="lm_ok">Legg til</string>
     <string name="lm_cancel">Avbryt</string>
+    <string name="lm_delete">Slett</string>
 
     <string name="description_hint">Beskrivelse</string>
     <string name="landmark_added">Kartmerke lagt til</string>

@@ -2,9 +2,11 @@ package net.ddns.peder.drevet.adapters;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.widget.ImageButton;
@@ -92,9 +94,23 @@ public class LandmarksCursorAdapter extends SimpleCursorAdapter {
         ImageButton deleteButton = (ImageButton) view.findViewById(R.id.lm_delete_button);
         deleteButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
-                dbHelper.deleteItem(db, itemId);
-                cursor.requery();
-                notifyDataSetChanged();
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(R.string.lm_delete_title);
+                builder.setPositiveButton(R.string.lm_delete, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dbHelper.deleteItem(db, itemId);
+                        cursor.requery();
+                        notifyDataSetChanged();
+                    }
+                });
+                builder.setNegativeButton(R.string.lm_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             }
         });
     }

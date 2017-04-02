@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import net.ddns.peder.drevet.R;
@@ -73,24 +72,6 @@ public class LandmarksFragment extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.lm_list);
         listView.setAdapter(mAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
-                                    final int position, final long id) {
-                landmarksDbHelper.deleteItem(db, id);
-                // Update listview
-                Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
-                                    PROJECTION,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null);
-                mAdapter.swapCursor(cursor);
-                mAdapter.notifyDataSetChanged();
-            }
-        });
 
         return view;
     }

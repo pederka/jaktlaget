@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
         stopService(new Intent(getApplicationContext(), LocationService.class));
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED || locationManager != null) {
+                PackageManager.PERMISSION_GRANTED && locationManager != null) {
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
                                                 Constants.ACTIVITY_GPS_DISTANCE, locationListener);
