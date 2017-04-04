@@ -7,8 +7,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -138,6 +136,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mapView = (MapView) view.findViewById(R.id.map);
                 mapView.onCreate(savedInstanceState);
                 mapView.onResume();
+            }
+            else {
                 if (((MainActivity)getActivity()).cameraPosition != null) {
                     map.moveCamera(CameraUpdateFactory.newCameraPosition((
                                                     (MainActivity)getActivity()).cameraPosition));
@@ -292,8 +292,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(pos);
             markerOptions.title(description);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(
-                                                    BitmapDescriptorFactory.HUE_RED));
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.raw.my_landmark));
             map.addMarker(markerOptions);
         }
         cursor.close();
@@ -331,8 +330,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(pos);
             markerOptions.title(user+": "+description);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(
-                                                    BitmapDescriptorFactory.HUE_GREEN));
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.raw.other_landmark));
             map.addMarker(markerOptions);
         }
         cursor.close();

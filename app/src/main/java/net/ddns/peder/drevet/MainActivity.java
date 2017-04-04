@@ -72,8 +72,19 @@ public class MainActivity extends AppCompatActivity implements
 
         mContext = this;
 
+        mHandler = new Handler();
+
         // Any running service should be stopped when the app is opened
         stopService(new Intent(getApplicationContext(), LocationService.class));
+
+        // If position sharing is active, start periodic sync
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
+                getApplicationContext());
+        runningService = prefs.getBoolean(Constants.SHARED_PREF_RUNNING, false);
+        mHandler.removeCallbacks(syncData);
+        if (runningService) {
+            mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -90,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
+                    mHandler.removeCallbacks(syncData);
                     runningService = false;
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
                             getApplicationContext());
@@ -107,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements
                                 MY_PERMISSIONS_REQUEST);
 
                     }
+                    mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
                     runningService = true;
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
                             getApplicationContext());
@@ -166,8 +179,6 @@ public class MainActivity extends AppCompatActivity implements
             displaySelectedScreen(R.id.nav_map);
         }
 
-        mHandler = new Handler();
-        mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
 
         //PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
     }
@@ -198,7 +209,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onResume() {
         super.onResume();
         stopService(new Intent(getApplicationContext(), LocationService.class));
-        if (mHandler != null) {
+        mHandler.removeCallbacks(syncData);
+        if (mHandler != null && runningService) {
             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
         }
         if (ContextCompat.checkSelfPermission(this,
@@ -215,7 +227,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
         stopService(new Intent(getApplicationContext(), LocationService.class));
-        if (mHandler != null) {
+        mHandler.removeCallbacks(syncData);
+        if (mHandler != null && runningService) {
             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
         }
         if (ContextCompat.checkSelfPermission(this,

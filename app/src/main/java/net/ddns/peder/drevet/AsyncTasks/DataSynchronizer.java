@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.auth.CognitoCredentialsProvider;
@@ -21,7 +20,6 @@ import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import net.ddns.peder.drevet.Constants;
-import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.database.PositionsDbHelper;
 import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
 import net.ddns.peder.drevet.utils.JsonUtil;
@@ -145,13 +143,13 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     @Override
     protected void onPostExecute(Integer result) {
         if (result.equals(SUCCESS)) {
-            Toast.makeText(mContext, R.string.toast_sync_success, Toast.LENGTH_SHORT).show();
+            Log.i(tag, "Sync successful!");
         }
         else if (result.equals(FAILED_USER)) {
-            Toast.makeText(mContext, R.string.toast_no_user_no_sync, Toast.LENGTH_SHORT).show();
+            Log.i(tag, "Sync failed due to missing user");
         }
         else if (result.equals(FAILED_TEAM)) {
-            Toast.makeText(mContext, R.string.toast_no_team_no_sync, Toast.LENGTH_SHORT).show();
+            Log.i(tag, "Sync failed due to missing team");
         }
     }
 }
