@@ -3,8 +3,8 @@
     <string name="app_title">Jaktlaget</string>
     <string name="email">Peder.Aursand@gmail.com</string>
     <string name="menu_map">Kart</string>
-    <string name="menu_team">Jaktlaget</string>
-    <string name="menu_team_manage">Laginstillinger</string>
+    <string name="menu_team">Jegere</string>
+    <string name="menu_team_manage">Jaktlaget</string>
     <string name="menu_landmarks">Kartmerker</string>
     <string name="menu_team_landmarks">Lagets kartmerker</string>
     <string name="menu_settings">Innstillinger</string>
@@ -15,7 +15,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="column_description">Beskrivelse</string>
-    <string name="column_user">Bruker</string>
+    <string name="column_user">Jeger</string>
     <string name="column_show">Vis?</string>
     <string name="column_share">Del?</string>
     <string name="column_last_update">Sist oppdatert</string>
@@ -44,7 +44,7 @@
 
     <string name="save_name_button">Lagre</string>
     <string name="teamname_hint">Lagnavn</string>
-    <string name="username_hint">Brukernavn</string>
+    <string name="username_hint">Jegernavn</string>
 
     <string name="notification_title">Jaktlaget</string>
     <string name="notification_message">Deler din posisjon med laget</string>
@@ -65,6 +65,9 @@
     <string name="pref_syncInterval">Synkroniseringsintervall</string>
     <string name="pref_syncInterval_dialog">Velg intervall for oppdatering av lagets posisjoner</string>
     <string name="pref_syncInterval_default">5</string>
+
+    <string name="teamname_guide">Velg et jegernavn og et lagnavn. Alle jegere med samme lagnavn vil
+                        kunne velge å dele sin posisjon og sine kartmerker med hverandre.</string>
 
 
 </resources>

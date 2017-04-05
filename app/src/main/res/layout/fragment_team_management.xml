@@ -8,6 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/teamname_guide"
+        android:textSize="18dp"/>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
     <android.support.design.widget.TextInputLayout
         android:id="@+id/text_input_layout_user"
         android:layout_width="match_parent"
@@ -31,6 +39,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/teamname_hint"/>
     </android.support.design.widget.TextInputLayout>
+                <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
         <Button
             android:id="@+id/save_teamname_button"
             android:layout_width="match_parent"
