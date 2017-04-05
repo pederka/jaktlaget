@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -63,7 +66,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Handler mHandler;
     private Marker myLocationMarker;
     private List<Marker> userMarkerList;
-
 
     public MapFragment() {
         // Required empty public constructor
@@ -131,6 +133,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         positionsDbHelper = new PositionsDbHelper(getContext());
         posdb = positionsDbHelper.getReadableDatabase();
         userMarkerList = new ArrayList<>();
+        // Get height of map
         try {
             if (map == null) {
                 mapView = (MapView) view.findViewById(R.id.map);
@@ -185,13 +188,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Do stuff with the map here!
         map = googleMap;
 
+
         // Setting a click event handler for the map
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng latLng) {
                 final LatLng coords = latLng;
+                int mapHeight = mapView.getHeight();
+                Projection projection = map.getProjection();
+                Point point = projection.toScreenLocation(latLng);
+                Log.i(tag, "Map height = "+mapHeight);
+                point.set(point.x, point.y-mapHeight/3);
+                map.moveCamera(CameraUpdateFactory.newLatLng(projection.fromScreenLocation(point)));
                 shared = false;
+                final MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.raw.my_landmark));
+                final Marker tempMarker = map.addMarker(markerOptions);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.lm_dialog_title)
                         .setMultiChoiceItems(R.array.lm_choices, null,
@@ -223,6 +237,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 builder.setNegativeButton(R.string.lm_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
+                        tempMarker.remove();
                     }
                 });
                 AlertDialog dialog = builder.create();
