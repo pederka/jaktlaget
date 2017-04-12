@@ -69,5 +69,6 @@
     <string name="teamname_guide">Velg et jegernavn og et lagnavn. Alle jegere med samme lagnavn vil
                         kunne velge å dele sin posisjon og sine kartmerker med hverandre.</string>
 
+    <string name="generate_key_button">Ny krypteringsnøkkel</string>
 
 </resources>
