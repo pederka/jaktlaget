@@ -351,6 +351,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 builder.setPositiveButton(R.string.lm_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String description = input.getText().toString();
+                        markerList.add(tempMarker);
                         saveLandmarkToDatabase(description, shared, coords);
                         Toast.makeText(getContext(), R.string.landmark_added, Toast.LENGTH_SHORT).show();
                     }
@@ -384,15 +385,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         final EditText input = new EditText(getContext());
                         input.setText(desc);
                         builder.setView(input);
+                        final Marker mker = marker;
                         builder.setPositiveButton(R.string.lm_update, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 ContentValues contentValues = new ContentValues();
                                 String desc_new = input.getText().toString();
                                 contentValues.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc_new);
                                 db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection, selectionArgs);
+                                mker.setTitle(desc_new);
                             }
                         });
-                        final Marker mker = marker;
                         builder.setNegativeButton(R.string.lm_delete, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User cancelled the dialog
@@ -402,6 +404,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         });
                         AlertDialog dialog = builder.create();
                         dialog.show();
+                        break;
                     }
                 }
 
