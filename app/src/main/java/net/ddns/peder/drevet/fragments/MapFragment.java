@@ -307,6 +307,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Do stuff with the map here!
         map = googleMap;
 
+        //Disable Map Toolbar:
+        map.getUiSettings().setMapToolbarEnabled(false);
 
         // Setting a click event handler for the map
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
