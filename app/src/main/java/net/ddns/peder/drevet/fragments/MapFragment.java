@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     private OnFragmentInteractionListener mListener;
     private MapView mapView;
     private GoogleMap map;
@@ -365,6 +365,47 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         });
 
+        map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                for(Marker marker : markerList) {
+                    if(Math.abs(marker.getPosition().latitude - latLng.latitude) < 0.05 &&
+                            Math.abs(marker.getPosition().longitude - latLng.longitude) < 0.05) {
+
+                        final String selection = LandmarksDbHelper.COLUMN_NAME_ID + " = ?";
+                        final String[] selectionArgs = {""+marker.getTag()};
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        String desc = marker.getTitle();
+                        builder.setTitle(getString(R.string.lm_title));
+                        final EditText input = new EditText(getContext());
+                        input.setText(desc);
+                        builder.setView(input);
+                        builder.setPositiveButton(R.string.lm_update, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                ContentValues contentValues = new ContentValues();
+                                String desc_new = input.getText().toString();
+                                contentValues.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc_new);
+                                db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection, selectionArgs);
+                            }
+                        });
+                        final Marker mker = marker;
+                        builder.setNegativeButton(R.string.lm_delete, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                                db.delete(LandmarksDbHelper.TABLE_NAME, selection, selectionArgs);
+                                mker.remove();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+                }
+
+            }
+        });
+
         // check if map is created successfully or not
         if (map != null) {
             setUpMap();
@@ -433,7 +474,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             Marker marker = map.addMarker(markerOptions);
             markerList.add(marker);
             marker.setTag(cursor.getInt(cursor.getColumnIndexOrThrow(LandmarksDbHelper.COLUMN_NAME_ID)));
-            map.setOnMarkerClickListener(this);
         }
         cursor.close();
     }
@@ -577,54 +617,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if (map != null) {
             ((MainActivity) getActivity()).cameraPosition = map.getCameraPosition();
         }
-    }
-
-    @Override
-    public boolean onMarkerClick(final Marker marker) {
-        final String[] PROJECTION = {
-            LandmarksDbHelper.COLUMN_NAME_ID,
-            LandmarksDbHelper.COLUMN_NAME_SHOWED,
-            LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
-            LandmarksDbHelper.COLUMN_NAME_LATITUDE,
-            LandmarksDbHelper.COLUMN_NAME_LONGITUDE,
-        };
-        final String selection = LandmarksDbHelper.COLUMN_NAME_ID + " = ?";
-        final String[] selectionArgs = {""+marker.getTag()};
-        final Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
-                         PROJECTION,
-                         selection,
-                         selectionArgs,
-                         null,
-                         null,
-                         null);
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            String desc = cursor.getString(cursor.getColumnIndexOrThrow(
-                                                LandmarksDbHelper.COLUMN_NAME_DESCRIPTION));
-            builder.setTitle(getString(R.string.lm_title));
-            final EditText input = new EditText(getContext());
-            input.setText(desc);
-            builder.setView(input);
-            builder.setPositiveButton(R.string.lm_update, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    ContentValues contentValues = new ContentValues();
-                    String desc_new = input.getText().toString();
-                    contentValues.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc_new);
-                    db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection, selectionArgs);
-                }
-            });
-            builder.setNegativeButton(R.string.lm_delete, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User cancelled the dialog
-                    db.delete(LandmarksDbHelper.TABLE_NAME, selection, selectionArgs);
-                    marker.remove();
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
-        return false;
     }
 
     public interface OnFragmentInteractionListener {
