@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,7 +50,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private OnFragmentInteractionListener mListener;
     private MapView mapView;
     private GoogleMap map;
@@ -66,6 +68,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Handler mHandler;
     private Marker myLocationMarker;
     private List<Marker> userMarkerList;
+    private ImageButton landmarkButton;
+    private boolean landmarks_toggled;
+    private ImageButton teamButton;
+    private boolean team_toggled;
+    private ImageButton weatherButton;
+    private boolean weather_toggled;
+    private ImageButton myPositionButton;
+    private List<Marker> markerList;
 
     public MapFragment() {
         // Required empty public constructor
@@ -120,8 +130,116 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mHandler = new Handler();
+        markerList = new ArrayList<>();
+
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        myPositionButton = (ImageButton) view.findViewById(R.id.button_my_location);
+        myPositionButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
+        myPositionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (map != null && myLocationMarker != null) {
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                            getContext());
+                    double latitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LAT,
+                            0);
+                    double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON,
+                            0);
+                    LatLng pos = new LatLng(latitude, longitude);
+                    map.moveCamera(CameraUpdateFactory.newLatLng(pos));
+                }
+            }
+        });
+
+        landmarkButton = (ImageButton) view.findViewById(R.id.button_landmarks);
+        landmarkButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
+        if (sharedPreferences.getBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE, true)) {
+            landmarks_toggled = true;
+            landmarkButton.setBackgroundResource(R.drawable.buttonshape);
+        } else {
+            landmarks_toggled = false;
+            landmarkButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+        }
+        landmarkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                                                                                getContext());
+                if (landmarks_toggled) {
+                    landmarks_toggled = false;
+                    for (int i=0; i<markerList.size(); i++) {
+                        markerList.get(i).remove();
+                    }
+                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
+                                            false).apply();
+                    landmarkButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+                } else {
+                    landmarks_toggled = true;
+                    addLandMarks(map);
+                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
+                                            true).apply();
+                    landmarkButton.setBackgroundResource(R.drawable.buttonshape);
+                }
+            }
+        });
+        teamButton = (ImageButton) view.findViewById(R.id.button_team);
+        teamButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
+        if (sharedPreferences.getBoolean(Constants.SHARED_PREF_TEAM_TOGGLE, true)) {
+            team_toggled = true;
+            teamButton.setBackgroundResource(R.drawable.buttonshape);
+        } else {
+            team_toggled = false;
+            teamButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+        }
+        teamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                                                                                getContext());
+                if (team_toggled) {
+                    team_toggled = false;
+                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
+                                            false).apply();
+                    teamButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+                } else {
+                    team_toggled = true;
+                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
+                                            true).apply();
+                    teamButton.setBackgroundResource(R.drawable.buttonshape);
+                }
+            }
+        });
+        weatherButton = (ImageButton) view.findViewById(R.id.button_weather);
+        weatherButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
+        if (sharedPreferences.getBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE, true)) {
+            weather_toggled = true;
+            weatherButton.setBackgroundResource(R.drawable.buttonshape);
+        } else {
+            weather_toggled = false;
+            weatherButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+        }
+        weatherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                                                                                getContext());
+                if (weather_toggled) {
+                    weather_toggled = false;
+                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE,
+                                            false).apply();
+                    weatherButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+                } else {
+                    weather_toggled = true;
+                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE,
+                                            true).apply();
+                    weatherButton.setBackgroundResource(R.drawable.buttonshape);
+                }
+            }
+        });
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        return view;
     }
 
     @Override
@@ -149,6 +267,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
     }
 
@@ -256,10 +375,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } else {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
         }
-
-        addLandMarks(map);
+        if (landmarks_toggled) {
+            addLandMarks(map);
+        }
         addTeamLandmarks(map);
-        updateTeamPositions(map);
+        if (team_toggled) {
+            updateTeamPositions(map);
+        }
 
         // Start update of own loaction
         mHandler.postDelayed(updateMyPosition, Constants.MAP_LOCATION_UPDATE_INTERVAL);
@@ -308,7 +430,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             markerOptions.position(pos);
             markerOptions.title(description);
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.raw.my_landmark));
-            map.addMarker(markerOptions);
+            Marker marker = map.addMarker(markerOptions);
+            markerList.add(marker);
+            marker.setTag(cursor.getInt(cursor.getColumnIndexOrThrow(LandmarksDbHelper.COLUMN_NAME_ID)));
+            map.setOnMarkerClickListener(this);
         }
         cursor.close();
     }
@@ -453,6 +578,55 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             ((MainActivity) getActivity()).cameraPosition = map.getCameraPosition();
         }
     }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        final String[] PROJECTION = {
+            LandmarksDbHelper.COLUMN_NAME_ID,
+            LandmarksDbHelper.COLUMN_NAME_SHOWED,
+            LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+            LandmarksDbHelper.COLUMN_NAME_LATITUDE,
+            LandmarksDbHelper.COLUMN_NAME_LONGITUDE,
+        };
+        final String selection = LandmarksDbHelper.COLUMN_NAME_ID + " = ?";
+        final String[] selectionArgs = {""+marker.getTag()};
+        final Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
+                         PROJECTION,
+                         selection,
+                         selectionArgs,
+                         null,
+                         null,
+                         null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            String desc = cursor.getString(cursor.getColumnIndexOrThrow(
+                                                LandmarksDbHelper.COLUMN_NAME_DESCRIPTION));
+            builder.setTitle(getString(R.string.lm_title));
+            final EditText input = new EditText(getContext());
+            input.setText(desc);
+            builder.setView(input);
+            builder.setPositiveButton(R.string.lm_update, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    ContentValues contentValues = new ContentValues();
+                    String desc_new = input.getText().toString();
+                    contentValues.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc_new);
+                    db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection, selectionArgs);
+                }
+            });
+            builder.setNegativeButton(R.string.lm_delete, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User cancelled the dialog
+                    db.delete(LandmarksDbHelper.TABLE_NAME, selection, selectionArgs);
+                    marker.remove();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        return false;
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

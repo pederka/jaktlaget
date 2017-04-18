@@ -13,6 +13,9 @@ public final class Constants {
     public static final String SHARED_PREF_RUNNING = "runningService";
     public static final String SHARED_PREF_USER_ID = "userId";
     public static final String SHARED_PREF_TEAM_ID = "teamId";
+    public static final String SHARED_PREF_LANDMARK_TOGGLE = "landmark_toggle";
+    public static final String SHARED_PREF_TEAM_TOGGLE = "team_toggle";
+    public static final String SHARED_PREF_WEATHER_TOGGLE = "weather_toggle";
 
     // Default names
     public static final String DEFAULT_USER_ID = "noUser";
@@ -33,4 +36,8 @@ public final class Constants {
     // For Amazon S3
     public static final String MY_BUCKET = "jaktlaget";
     public static final String OBJECT_KEY_BASE = "jaktlag/";
+
+    // For SSL socket
+    public static final String SOCKET_ADDR = "34.197.222.14";
+    public static final int SOCKET_PORT = 10024;
 }

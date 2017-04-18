@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.CameraPosition;
 
 import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
+import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
 import net.ddns.peder.drevet.fragments.AllLandmarksFragment;
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
 import net.ddns.peder.drevet.fragments.MapFragment;
@@ -135,8 +136,10 @@ public class MainActivity extends AppCompatActivity implements
         syncButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DataSynchronizer dataSynchronizer = new DataSynchronizer(MainActivity.this);
-                dataSynchronizer.execute();
+                SslSynchronizer sslSynchronizer = new SslSynchronizer(MainActivity.this);
+                sslSynchronizer.execute();
+                //DataSynchronizer dataSynchronizer = new DataSynchronizer(MainActivity.this);
+                //dataSynchronizer.execute();
             }
         });
 

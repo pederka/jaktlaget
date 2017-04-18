@@ -9,4 +9,46 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom|end">
+
+        <ImageButton
+        android:id="@+id/button_team"
+        android:layout_width="50dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_people_black_24dp"
+        android:layout_height="50dp"
+        android:background="@drawable/buttonshape"
+        />
+
+    <ImageButton
+        android:id="@+id/button_landmarks"
+        android:layout_width="50dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_place_black_24dp"
+        android:layout_height="50dp"
+        android:background="@drawable/buttonshape"
+        />
+
+    <ImageButton
+        android:id="@+id/button_weather"
+        android:layout_width="50dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_wb_sunny_black_24dp"
+        android:layout_height="50dp"
+        android:background="@drawable/buttonshape"
+        />
+    </LinearLayout>
+    <ImageButton
+        android:id="@+id/button_my_location"
+        android:layout_width="50dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="bottom|center"
+        android:src="@drawable/ic_my_location_black_24dp"
+        android:layout_height="50dp"
+        android:background="@drawable/buttonshape"
+        />
 </FrameLayout>

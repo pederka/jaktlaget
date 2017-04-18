@@ -83,8 +83,11 @@ public class TeamManagementFragment extends Fragment {
         keyPair = CryptoUtil.CreateOrRetrieveKeyPair(getContext());
         keyText = (TextView) view.findViewById(R.id.key);
         pubKeyText = (TextView) view.findViewById(R.id.pubkey);
-        keyText.setText(keyPair.getPrivate().toString());
-        pubKeyText.setText(keyPair.getPublic().toString());
+
+        String text = "Heisann!";
+        byte[] secret = CryptoUtil.encrypt(text.getBytes(), keyPair.getPublic());
+        keyText.setText(new String(secret.toString()));
+        pubKeyText.setText(new String(CryptoUtil.decrypt(secret, keyPair.getPrivate())));
 
         Button keyResetButton = (Button) view.findViewById(R.id.generate_key_button);
         keyResetButton.setOnClickListener(new View.OnClickListener() {

@@ -22,6 +22,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 
 import org.spongycastle.crypto.engines.AESFastEngine;
 import org.spongycastle.crypto.modes.CBCBlockCipher;
@@ -38,7 +40,7 @@ import javax.crypto.NoSuchPaddingException;
 public class CryptoUtil {
     private static final String PRIVATE_KEY_FILENAME = "MyPrivateKey";
     private static final String PUBLIC_KEY_FILENAME = "MyPublicKey";
-    private static final int outputKeyLength = 256;
+    private static final int outputKeyLength = 4096;
 
     private static KeyPair ReadKeyPair(Context context)
     {
@@ -47,14 +49,14 @@ public class CryptoUtil {
             byte[] privateKeyBytes = ReadData(PRIVATE_KEY_FILENAME, context);
             PKCS8EncodedKeySpec spec =
                     new PKCS8EncodedKeySpec(privateKeyBytes);
-            byte[] publicKeyBytes = ReadData(PRIVATE_KEY_FILENAME, context);
-            PKCS8EncodedKeySpec pubspec =
-                    new PKCS8EncodedKeySpec(privateKeyBytes);
+            byte[] publicKeyBytes = ReadData(PUBLIC_KEY_FILENAME, context);
+            X509EncodedKeySpec pubspec =
+                    new X509EncodedKeySpec(publicKeyBytes);
             try {
                 KeyFactory kf = KeyFactory.getInstance("RSA");
                 PrivateKey privateKey = kf.generatePrivate(spec);
                 kf = KeyFactory.getInstance("RSA");
-                PublicKey publicKey = kf.generatePublic(spec);
+                PublicKey publicKey = kf.generatePublic(pubspec);
                 return new KeyPair(publicKey, privateKey);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -147,7 +149,7 @@ public class CryptoUtil {
     }
 
 
-    private static byte[] encrypt(byte[] data, PrivateKey key) {
+    public static byte[] encrypt(byte[] data, PublicKey key) {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -158,7 +160,7 @@ public class CryptoUtil {
         return null;
     }
 
-    private static byte[] decrypt(byte[] data, PublicKey key) {
+    public static byte[] decrypt(byte[] data, PrivateKey key) {
         try {
             Cipher cipher1 = Cipher.getInstance("RSA");
             cipher1.init(Cipher.DECRYPT_MODE, key);

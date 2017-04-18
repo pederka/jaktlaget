@@ -38,17 +38,24 @@ public class JsonUtil {
         File file = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOCUMENTS), outFile);
         try {
-            file = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS), outFile);
             OutputStream out = new FileOutputStream(file);
-            JSONObject exportData = new JSONObject();
-            writeUserPositionToJson(context, exportData);
-            exportData.put(JSON_LMARRAY, writeSharedLandmarksToJsonArray(context));
-            out.write(exportData.toString().getBytes());
+            out.write(exportDataToJson(context).toString().getBytes());
         } catch(Exception e) {
             e.printStackTrace();
         }
         return file;
+    }
+
+    public static JSONObject exportDataToJson(Context context) {
+        try {
+            JSONObject exportData = new JSONObject();
+            writeUserPositionToJson(context, exportData);
+            exportData.put(JSON_LMARRAY, writeSharedLandmarksToJsonArray(context));
+            return exportData;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static void writeUserPositionToJson(Context context, JSONObject object) {

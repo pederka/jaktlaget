@@ -28,6 +28,8 @@
     <string name="lm_ok">Legg til</string>
     <string name="lm_cancel">Avbryt</string>
     <string name="lm_delete">Slett</string>
+    <string name="lm_update">OK</string>
+    <string name="lm_title">Rediger kartmerke</string>
 
     <string name="description_hint">Beskrivelse</string>
     <string name="landmark_added">Kartmerke lagt til</string>
