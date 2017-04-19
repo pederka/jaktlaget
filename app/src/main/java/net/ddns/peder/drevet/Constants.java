@@ -16,6 +16,7 @@ public final class Constants {
     public static final String SHARED_PREF_LANDMARK_TOGGLE = "landmark_toggle";
     public static final String SHARED_PREF_TEAM_TOGGLE = "team_toggle";
     public static final String SHARED_PREF_WEATHER_TOGGLE = "weather_toggle";
+    public static final String SHARED_PREF_LINE_TOGGLE = "weather_toggle";
 
     // Default names
     public static final String DEFAULT_USER_ID = "noUser";

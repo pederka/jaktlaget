@@ -14,11 +14,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -33,6 +31,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 
@@ -75,8 +75,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private boolean team_toggled;
     private ImageButton weatherButton;
     private boolean weather_toggled;
+     private ImageButton lineButton;
+    private boolean line_toggled;
     private ImageButton myPositionButton;
     private List<Marker> markerList;
+    private List<LatLng> positionHistory;
+    private Polyline traceLine;
 
     public MapFragment() {
         // Required empty public constructor
@@ -107,6 +111,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 if (myLocationMarker != null) {
                     myLocationMarker.remove();
                 }
+                positionHistory.add(latLng);
+                // Make polyline trace
+                if (traceLine != null) {
+                    traceLine.remove();
+                }
+                if (line_toggled) {
+                    traceLine = map.addPolyline(new PolylineOptions()
+                            .addAll(positionHistory)
+                            .width(8)
+                            .color(Color.RED));
+                    // To keep the over the map layers
+                    traceLine.setZIndex(1000);
+                }
+
                 // Set new position
                 myLocationMarker = map.addMarker(new MarkerOptions()
                         .anchor(0.5f, 0.5f)
@@ -114,6 +132,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         .icon(BitmapDescriptorFactory.fromResource(R.raw.my_location)));
                 // Button should show when recent location is available
                 myPositionButton.setVisibility(View.VISIBLE);
+
             } else {
                 // If position is too old, both the location marker and the position button should
                 // be removed
@@ -142,6 +161,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mHandler = new Handler();
         markerList = new ArrayList<>();
+        positionHistory = new ArrayList<>();
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
@@ -166,7 +186,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             //((ViewManager)myPositionButton.getParent()).removeView(myPositionButton);
             myPositionButton.setVisibility(View.INVISIBLE);
         }
-
+        lineButton = (ImageButton) view.findViewById(R.id.button_trace);
+        lineButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
+        if (sharedPreferences.getBoolean(Constants.SHARED_PREF_LINE_TOGGLE, true)) {
+            line_toggled = true;
+            lineButton.setBackgroundResource(R.drawable.buttonshape);
+        } else {
+            line_toggled = false;
+            lineButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+        }
+        lineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                                                                                getContext());
+                if (line_toggled) {
+                    line_toggled = false;
+                    traceLine.remove();
+                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
+                                            false).apply();
+                    lineButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+                } else {
+                    line_toggled = true;
+                    traceLine = map.addPolyline(new PolylineOptions()
+                            .addAll(positionHistory)
+                            .width(8)
+                            .color(Color.RED));
+                    // To keep the over the map layers
+                    traceLine.setZIndex(1000);
+                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
+                                            true).apply();
+                    lineButton.setBackgroundResource(R.drawable.buttonshape);
+                }
+            }
+        });
         landmarkButton = (ImageButton) view.findViewById(R.id.button_landmarks);
         landmarkButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
         if (sharedPreferences.getBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE, true)) {
