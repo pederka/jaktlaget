@@ -319,7 +319,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 int mapHeight = mapView.getHeight();
                 Projection projection = map.getProjection();
                 Point point = projection.toScreenLocation(latLng);
-                Log.i(tag, "Map height = "+mapHeight);
                 point.set(point.x, point.y-mapHeight/3);
                 map.moveCamera(CameraUpdateFactory.newLatLng(projection.fromScreenLocation(point)));
                 shared = false;
@@ -351,7 +350,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 builder.setPositiveButton(R.string.lm_ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String description = input.getText().toString();
-                        markerList.add(tempMarker);
+                        markerOptions.title(description);
+                        Marker finalMarker = map.addMarker(markerOptions);
+                        markerList.add(finalMarker);
                         saveLandmarkToDatabase(description, shared, coords);
                         Toast.makeText(getContext(), R.string.landmark_added, Toast.LENGTH_SHORT).show();
                     }
@@ -359,6 +360,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 builder.setNegativeButton(R.string.lm_cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
+                    }
+                });
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
                         tempMarker.remove();
                     }
                 });
@@ -372,10 +378,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
             @Override
             public void onMapLongClick(LatLng latLng) {
+                Projection projection = map.getProjection();
+                Point point = projection.toScreenLocation(latLng);
+                int mapHeight = mapView.getHeight();
                 for(Marker marker : markerList) {
-                    if(Math.abs(marker.getPosition().latitude - latLng.latitude) < 0.05 &&
-                            Math.abs(marker.getPosition().longitude - latLng.longitude) < 0.05) {
-
+                    Point markerPoint = projection.toScreenLocation(
+                                        new LatLng(marker.getPosition().latitude,
+                                           marker.getPosition().longitude));
+                    if(Math.abs(point.x - markerPoint.x) < 0.05*mapHeight &&
+                            Math.abs(point.y - markerPoint.y) < 0.05*mapHeight) {
                         final String selection = LandmarksDbHelper.COLUMN_NAME_ID + " = ?";
                         final String[] selectionArgs = {""+marker.getTag()};
 
