@@ -7,13 +7,22 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,12 +84,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private boolean team_toggled;
     private ImageButton weatherButton;
     private boolean weather_toggled;
-     private ImageButton lineButton;
+    private ImageButton lineButton;
     private boolean line_toggled;
     private ImageButton myPositionButton;
     private List<Marker> markerList;
     private List<LatLng> positionHistory;
     private Polyline traceLine;
+    private Bitmap myselfBitmap;
+    private Bitmap otherBitmap;
+    private Bitmap landmarkBitmap;
+    private int colorMe;
+    private int colorOther;
 
     public MapFragment() {
         // Required empty public constructor
@@ -120,7 +134,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     traceLine = map.addPolyline(new PolylineOptions()
                             .addAll(positionHistory)
                             .width(8)
-                            .color(Color.RED));
+                            .color(colorMe));
                     // To keep the over the map layers
                     traceLine.setZIndex(1000);
                 }
@@ -129,7 +143,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 myLocationMarker = map.addMarker(new MarkerOptions()
                         .anchor(0.5f, 0.5f)
                         .position(latLng)
-                        .icon(BitmapDescriptorFactory.fromResource(R.raw.my_location)));
+                        .icon(BitmapDescriptorFactory.fromBitmap(myselfBitmap)));
                 // Button should show when recent location is available
                 myPositionButton.setVisibility(View.VISIBLE);
 
@@ -162,6 +176,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mHandler = new Handler();
         markerList = new ArrayList<>();
         positionHistory = new ArrayList<>();
+
+        // Create icons for map
+        colorMe = getResources().getColor(R.color.mapMe);
+        colorOther = getResources().getColor(R.color.mapOther);
+        @SuppressWarnings("RestrictedApi")
+        Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(),
+                            R.drawable.ic_my_location_black_24dp);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+        myselfBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(myselfBitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.setColorFilter(colorMe, PorterDuff.Mode.SRC_ATOP);
+        drawable.draw(canvas);
+
+        drawable = AppCompatDrawableManager.get().getDrawable(getContext(),
+                            R.drawable.ic_person_black_24dp);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+        otherBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(otherBitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.setColorFilter(colorOther, PorterDuff.Mode.SRC_ATOP);
+        drawable.draw(canvas);
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
@@ -348,8 +390,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mapView.getMapAsync(this);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-        }
+             e.printStackTrace();
+         }
+
     }
 
     private void saveLandmarkToDatabase(String desc, boolean shared, LatLng latLng) {
@@ -631,7 +674,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(pos);
             markerOptions.title(user);
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.raw.other_location));
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(otherBitmap));
             userMarkerList.add(map.addMarker(markerOptions));
         }
         cursor.close();
