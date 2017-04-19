@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -95,7 +96,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
        public void run() {
             long currentTime = System.currentTimeMillis();
             long lastPositionTime = sharedPreferences.getLong(Constants.SHARED_PREF_TIME, 0);
-            if ((currentTime-lastPositionTime)/1000 < 600 && map != null) {
+            // Avoid using old locations
+            if (currentTime-lastPositionTime < 1800000 && map != null) {
                 // Getting latitude and longitude of the last known location
                 double latitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LAT, 0);
                 double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON, 0);
@@ -110,6 +112,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         .anchor(0.5f, 0.5f)
                         .position(latLng)
                         .icon(BitmapDescriptorFactory.fromResource(R.raw.my_location)));
+                // Button should show when recent location is available
+                myPositionButton.setVisibility(View.VISIBLE);
+            } else {
+                // If position is too old, both the location marker and the position button should
+                // be removed
+                if (myLocationMarker != null) {
+                    myLocationMarker.remove();
+                }
+                myPositionButton.setVisibility(View.INVISIBLE);
             }
             mHandler.postDelayed(this, Constants.MAP_LOCATION_UPDATE_INTERVAL);
         }
@@ -151,6 +162,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
         });
+        if (myLocationMarker == null) {
+            //((ViewManager)myPositionButton.getParent()).removeView(myPositionButton);
+            myPositionButton.setVisibility(View.INVISIBLE);
+        }
 
         landmarkButton = (ImageButton) view.findViewById(R.id.button_landmarks);
         landmarkButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
@@ -381,7 +396,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Projection projection = map.getProjection();
                 Point point = projection.toScreenLocation(latLng);
                 int mapHeight = mapView.getHeight();
-                for(Marker marker : markerList) {
+                for(final Marker marker : markerList) {
                     Point markerPoint = projection.toScreenLocation(
                                         new LatLng(marker.getPosition().latitude,
                                            marker.getPosition().longitude));
@@ -411,6 +426,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 // User cancelled the dialog
                                 db.delete(LandmarksDbHelper.TABLE_NAME, selection, selectionArgs);
                                 mker.remove();
+                                markerList.remove(marker);
                             }
                         });
                         AlertDialog dialog = builder.create();
