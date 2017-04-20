@@ -8,10 +8,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -244,18 +242,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                                                                 getContext());
                 if (line_toggled) {
                     line_toggled = false;
-                    traceLine.remove();
+                    if (traceLine != null) {
+                        traceLine.remove();
+                    }
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             false).apply();
                     lineButton.setBackgroundResource(R.drawable.buttonshape_inactive);
                 } else {
                     line_toggled = true;
-                    traceLine = map.addPolyline(new PolylineOptions()
-                            .addAll(positionHistory)
-                            .width(8)
-                            .color(Color.RED));
-                    // To keep the over the map layers
-                    traceLine.setZIndex(1000);
+                    if (traceLine != null) {
+                        traceLine = map.addPolyline(new PolylineOptions()
+                                .addAll(positionHistory)
+                                .width(8)
+                                .color(Color.RED));
+                        // To keep the over the map layers
+                        traceLine.setZIndex(1000);
+                    }
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             true).apply();
                     lineButton.setBackgroundResource(R.drawable.buttonshape);
@@ -538,7 +540,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (map != null) {
             setUpMap();
         }
-        if (((MainActivity)getActivity()).cameraPosition != null) {
+        if (getActivity() != null && ((MainActivity)getActivity()).cameraPosition != null) {
             map.moveCamera(CameraUpdateFactory.newCameraPosition((
                                         (MainActivity)getActivity()).cameraPosition));
         } else {

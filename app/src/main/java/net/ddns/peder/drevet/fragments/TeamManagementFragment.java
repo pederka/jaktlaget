@@ -17,12 +17,8 @@ import android.widget.Toast;
 
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
-import net.ddns.peder.drevet.utils.CryptoUtil;
 
 import java.security.KeyPair;
-import java.security.PublicKey;
-
-import javax.crypto.SecretKey;
 
 public class TeamManagementFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
@@ -79,26 +75,6 @@ public class TeamManagementFragment extends Fragment {
                 submitForm();
             }
         });
-
-        keyPair = CryptoUtil.CreateOrRetrieveKeyPair(getContext());
-        keyText = (TextView) view.findViewById(R.id.key);
-        pubKeyText = (TextView) view.findViewById(R.id.pubkey);
-
-        String text = "Heisann!";
-        byte[] secret = CryptoUtil.encrypt(text.getBytes(), keyPair.getPublic());
-        keyText.setText(new String(secret.toString()));
-        pubKeyText.setText(new String(CryptoUtil.decrypt(secret, keyPair.getPrivate())));
-
-        Button keyResetButton = (Button) view.findViewById(R.id.generate_key_button);
-        keyResetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                keyPair = CryptoUtil.renewKeyPair(getContext());
-                keyText.setText(keyPair.getPrivate().toString());
-                pubKeyText.setText(keyPair.getPublic().toString());
-            }
-        });
-
 
         return view;
     }

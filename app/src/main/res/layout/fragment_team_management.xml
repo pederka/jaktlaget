@@ -63,30 +63,7 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="20dp" />
-         <Button
-            android:id="@+id/generate_key_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/buttonshape"
-            android:text="@string/generate_key_button"/>
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-        <TextView
-            android:id="@+id/key"
-            android:layout_width="match_parent"
-            android:textSize="18dp"
-            android:layout_height="wrap_content"
-            />
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-        <TextView
-            android:id="@+id/pubkey"
-            android:layout_width="match_parent"
-            android:textSize="18dp"
-            android:layout_height="wrap_content"
-            />
+
     </LinearLayout>
 
     </ScrollView>
