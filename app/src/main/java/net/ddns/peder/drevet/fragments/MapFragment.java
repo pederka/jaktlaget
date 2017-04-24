@@ -121,7 +121,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 if (myLocationMarker != null) {
                     myLocationMarker.remove();
                 }
-                ((MainActivity)getActivity()).addToMyLocationHistory(latLng);
+                if (getActivity() != null) {
+                    ((MainActivity) getActivity()).addToMyLocationHistory(latLng);
+                }
                 // Make polyline trace
                 if (traceLine != null) {
                     traceLine.remove();

@@ -15,6 +15,7 @@ import net.ddns.peder.drevet.utils.CryptoUtil;
 import net.ddns.peder.drevet.utils.JsonUtil;
 
 import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -96,13 +97,17 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
         try {
             Socket socket = (SSLSocket) socketFactory.createSocket(Constants.SOCKET_ADDR,
                                     Constants.SOCKET_PORT);
-            OutputStream outputStream = socket.getOutputStream();
-            outputStream.write("SYNC peder iver lars jørn".getBytes());
-            outputStream.write(JsonUtil.exportDataToJson(mContext).toString().getBytes());
-            outputStream.flush();
-            InputStream inputStream = socket.getInputStream();
-            BufferedInputStream inputS = new BufferedInputStream(inputStream);
-            outputStream.close();
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+
+            byte[] outdata = JsonUtil.exportDataToJson(mContext).toString().getBytes();
+            int size = outdata.length;
+            dataOutputStream.writeInt(size);
+            dataOutputStream.write(outdata);
+            byte[] teamIdData = teamId.getBytes();
+            size = teamIdData.length;
+            dataOutputStream.writeInt(size);
+            dataOutputStream.write(teamIdData);
+            dataOutputStream.flush();
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
