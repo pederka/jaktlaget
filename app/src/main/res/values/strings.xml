@@ -30,6 +30,10 @@
     <string name="lm_delete">Slett</string>
     <string name="lm_update">OK</string>
     <string name="lm_title">Rediger kartmerke</string>
+    <string name="trace_remove_dialog">Slett alle spor?</string>
+    <string name="trace_remove">Slett</string>
+    <string name="trace_remove_abort">Avbryt</string>
+    <string name="traces_deleted">Alle spor slettet</string>
 
     <string name="description_hint">Beskrivelse</string>
     <string name="landmark_added">Kartmerke lagt til</string>

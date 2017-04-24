@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -31,6 +32,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 
 import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
@@ -41,8 +43,10 @@ import net.ddns.peder.drevet.fragments.SettingsFragment;
 import net.ddns.peder.drevet.fragments.TeamFragment;
 import net.ddns.peder.drevet.fragments.TeamLandmarksFragment;
 import net.ddns.peder.drevet.fragments.TeamManagementFragment;
-import net.ddns.peder.drevet.listeners.MyLocationListener;
 import net.ddns.peder.drevet.services.LocationService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.ddns.peder.drevet.Constants.SYNC_DELAY_ACTIVITY;
 
@@ -55,13 +59,12 @@ public class MainActivity extends AppCompatActivity implements
     private int MY_PERMISSIONS_REQUEST;
     private LocationListener locationListener;
     private LocationManager locationManager;
-
     private Handler mHandler;
-
     public CameraPosition cameraPosition;
-
     private boolean runningService;
     private Context mContext;
+
+    private List<LatLng> myLocationHistory;
 
 
     @Override
@@ -74,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements
         mContext = this;
 
         mHandler = new Handler();
+
+        myLocationHistory = new ArrayList<>();
 
         // Any running service should be stopped when the app is opened
         stopService(new Intent(getApplicationContext(), LocationService.class));
@@ -184,6 +189,18 @@ public class MainActivity extends AppCompatActivity implements
 
 
         //PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
+    }
+
+    public List<LatLng> getMyLocationHistory() {
+        return myLocationHistory;
+    }
+
+    public void addToMyLocationHistory(LatLng latLng) {
+        myLocationHistory.add(latLng);
+    }
+
+    public void clearMyLocationHistory() {
+        myLocationHistory.clear();
     }
 
     private Runnable syncData = new Runnable() {
@@ -342,5 +359,42 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onFragmentInteraction(Uri uri){
         //you can leave it empty
+    }
+
+    private class MyLocationListener implements LocationListener {
+
+        SharedPreferences preferences;
+
+        public MyLocationListener(Context context) {
+            preferences = PreferenceManager.getDefaultSharedPreferences(
+                    context);
+
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            preferences.edit().putFloat(Constants.SHARED_PREF_LAT,
+                                                            (float)location.getLatitude()).apply();
+            preferences.edit().putFloat(Constants.SHARED_PREF_LON,
+                                                            (float)location.getLongitude()).apply();
+            preferences.edit().putLong(Constants.SHARED_PREF_TIME,
+                                                            System.currentTimeMillis()).apply();
+            addToMyLocationHistory(new LatLng(location.getLatitude(), location.getLongitude()));
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
     }
 }

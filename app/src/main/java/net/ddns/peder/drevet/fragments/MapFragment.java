@@ -86,11 +86,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private boolean line_toggled;
     private ImageButton myPositionButton;
     private List<Marker> markerList;
-    private List<LatLng> positionHistory;
     private Polyline traceLine;
     private Bitmap myselfBitmap;
     private Bitmap otherBitmap;
-    private Bitmap landmarkBitmap;
     private int colorMe;
     private int colorOther;
 
@@ -123,18 +121,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 if (myLocationMarker != null) {
                     myLocationMarker.remove();
                 }
-                positionHistory.add(latLng);
+                ((MainActivity)getActivity()).addToMyLocationHistory(latLng);
                 // Make polyline trace
                 if (traceLine != null) {
                     traceLine.remove();
                 }
                 if (line_toggled) {
-                    traceLine = map.addPolyline(new PolylineOptions()
-                            .addAll(positionHistory)
-                            .width(8)
-                            .color(colorMe));
-                    // To keep the over the map layers
-                    traceLine.setZIndex(1000);
+                    showMyTraceLine();
                 }
 
                 // Set new position
@@ -157,8 +150,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-
-
     private void setUpMap() {
         TileProvider wmsTileProvider = TileProviderFactory.getWmsTileProvider();
         map.addTileOverlay(new TileOverlayOptions().tileProvider(wmsTileProvider));
@@ -173,7 +164,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mHandler = new Handler();
         markerList = new ArrayList<>();
-        positionHistory = new ArrayList<>();
 
         // Create icons for map
         colorMe = getResources().getColor(R.color.mapMe);
@@ -243,7 +233,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 if (line_toggled) {
                     line_toggled = false;
                     if (traceLine != null) {
-                        traceLine.remove();
+                        hideMyTraceLine();
                     }
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             false).apply();
@@ -251,17 +241,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 } else {
                     line_toggled = true;
                     if (traceLine != null) {
-                        traceLine = map.addPolyline(new PolylineOptions()
-                                .addAll(positionHistory)
-                                .width(8)
-                                .color(Color.RED));
-                        // To keep the over the map layers
-                        traceLine.setZIndex(1000);
+                        showMyTraceLine();
                     }
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             true).apply();
                     lineButton.setBackgroundResource(R.drawable.buttonshape);
                 }
+            }
+        });
+        lineButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(R.string.trace_remove_dialog);
+                builder.setPositiveButton(R.string.trace_remove, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (traceLine != null) {
+                            ((MainActivity)getActivity()).clearMyLocationHistory();
+                            hideMyTraceLine();
+                        }
+                        Toast.makeText(getContext(), R.string.traces_deleted, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.setNegativeButton(R.string.trace_remove_abort, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return false;
             }
         });
         landmarkButton = (ImageButton) view.findViewById(R.id.button_landmarks);
@@ -752,6 +762,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void showMyTraceLine() {
+        if (map != null) {
+            traceLine = map.addPolyline(new PolylineOptions()
+                    .addAll(((MainActivity) getActivity()).getMyLocationHistory())
+                    .width(8)
+                    .color(colorMe));
+            // To keep the over the map layers
+            traceLine.setZIndex(1000);
+        }
+    }
+
+    private void hideMyTraceLine() {
+        if (map != null) {
+            traceLine.remove();
+        }
     }
 
 }
