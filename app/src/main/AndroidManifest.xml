@@ -15,15 +15,23 @@
         android:theme="@style/AppTheme">
         <service android:name=".services.LocationService" />
         <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true" />
-        <activity android:name=".MainActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleInstance">
+
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleInstance">
+        </activity>
+
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCr_XDVrLYE9uvSX-xTS9oyuql6yEmvQzU"/>
     </application>
 
