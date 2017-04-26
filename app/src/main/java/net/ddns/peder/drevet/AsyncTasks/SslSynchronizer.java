@@ -2,29 +2,21 @@ package net.ddns.peder.drevet.AsyncTasks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
-import net.ddns.peder.drevet.database.PositionsDbHelper;
-import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
-import net.ddns.peder.drevet.utils.CryptoUtil;
+
 import net.ddns.peder.drevet.utils.JsonUtil;
 
 import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.security.KeyPair;
 import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.List;
@@ -32,7 +24,6 @@ import java.util.List;
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
 public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
@@ -98,6 +89,7 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
             Socket socket = (SSLSocket) socketFactory.createSocket(Constants.SOCKET_ADDR,
                                     Constants.SOCKET_PORT);
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 
             byte[] outdata = JsonUtil.exportDataToJson(mContext).toString().getBytes();
             int size = outdata.length;
@@ -108,6 +100,12 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
             dataOutputStream.writeInt(size);
             dataOutputStream.write(teamIdData);
             dataOutputStream.flush();
+
+            byte[] inputSizeBytes = new byte[4];
+            dataInputStream.read(inputSizeBytes, 0, 4);
+            int inputSize = byteArrayToInt(inputSizeBytes);
+            Log.d(tag, "Received int "+inputSize);
+
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,6 +118,14 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
         if (result.equals(SUCCESS)) {
             Log.i(tag, "Sync successful!");
         }
+    }
+
+    public static int byteArrayToInt(byte[] b)
+    {
+        return   b[3] & 0xFF |
+                (b[2] & 0xFF) << 8 |
+                (b[1] & 0xFF) << 16 |
+                (b[0] & 0xFF) << 24;
     }
 }
 

@@ -88,9 +88,6 @@ public class MainActivity extends AppCompatActivity implements
                 getApplicationContext());
         runningService = prefs.getBoolean(Constants.SHARED_PREF_RUNNING, false);
         mHandler.removeCallbacks(syncData);
-        if (runningService) {
-            mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
-        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -135,6 +132,12 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
+        if (runningService) {
+            runSwitch.setChecked(true);
+            mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+        } else {
+            runSwitch.setChecked(false);
+        }
 
         // Sync switch
         final ImageButton syncButton = (ImageButton) findViewById(R.id.sync_button);

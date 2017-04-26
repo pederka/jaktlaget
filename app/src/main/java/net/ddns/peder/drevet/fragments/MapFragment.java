@@ -767,7 +767,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void showMyTraceLine() {
-        if (map != null) {
+        if (map != null && getActivity() != null) {
             traceLine = map.addPolyline(new PolylineOptions()
                     .addAll(((MainActivity) getActivity()).getMyLocationHistory())
                     .width(8)
