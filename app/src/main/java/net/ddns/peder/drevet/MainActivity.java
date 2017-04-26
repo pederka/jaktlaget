@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.LatLng;
 import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
 import net.ddns.peder.drevet.fragments.AllLandmarksFragment;
+import net.ddns.peder.drevet.fragments.AllTeamFragment;
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
 import net.ddns.peder.drevet.fragments.MapFragment;
 import net.ddns.peder.drevet.fragments.SettingsFragment;
@@ -54,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, MapFragment.OnFragmentInteractionListener,
         TeamFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener,
         LandmarksFragment.OnFragmentInteractionListener, TeamLandmarksFragment.OnFragmentInteractionListener,
-        TeamManagementFragment.OnFragmentInteractionListener, AllLandmarksFragment.OnFragmentInteractionListener {
+        TeamManagementFragment.OnFragmentInteractionListener, AllLandmarksFragment.OnFragmentInteractionListener,
+        AllTeamFragment.OnFragmentInteractionListener {
 
     private int MY_PERMISSIONS_REQUEST;
     private LocationListener locationListener;
@@ -334,11 +336,8 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.nav_map:
                 fragment = new MapFragment();
                 break;
-            case R.id.nav_team:
-                fragment = new TeamFragment();
-                break;
             case R.id.nav_team_manage:
-                fragment = new TeamManagementFragment();
+                fragment = new AllTeamFragment();
                 break;
             case R.id.nav_landmarks:
                 fragment = new AllLandmarksFragment();

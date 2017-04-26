@@ -11,18 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import net.ddns.peder.drevet.R;
-import net.ddns.peder.drevet.adapters.LandmarksPagerAdapter;
+import net.ddns.peder.drevet.adapters.TeamPagerAdapter;
 
-public class AllLandmarksFragment extends Fragment {
+public class AllTeamFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
-    private LandmarksPagerAdapter landmarksPagerAdapter;
+    private TeamPagerAdapter teamPagerAdapter;
 
-    public AllLandmarksFragment() {
+    public AllTeamFragment() {
         // Required empty public constructor
     }
 
-    public static AllLandmarksFragment newInstance(String param1, String param2) {
-        AllLandmarksFragment fragment = new AllLandmarksFragment();
+    public static AllTeamFragment newInstance(String param1, String param2) {
+        AllTeamFragment fragment = new AllTeamFragment();
         return fragment;
     }
 
@@ -35,15 +35,15 @@ public class AllLandmarksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_alllandmarks, container, false);
-        landmarksPagerAdapter =
-                new LandmarksPagerAdapter(
+        View view = inflater.inflate(R.layout.fragment_allteam, container, false);
+        teamPagerAdapter =
+                new TeamPagerAdapter(
                         getActivity().getSupportFragmentManager());
-        ViewPager mViewPager = (ViewPager) view.findViewById(R.id.landmarks_pager);
-        mViewPager.setAdapter(landmarksPagerAdapter);
+        ViewPager mViewPager = (ViewPager) view.findViewById(R.id.team_pager);
+        mViewPager.setAdapter(teamPagerAdapter);
 
         // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.landmarks_tabs);
+        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.team_tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         return view;

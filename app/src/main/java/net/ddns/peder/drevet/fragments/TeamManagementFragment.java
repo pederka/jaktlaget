@@ -2,6 +2,8 @@ package net.ddns.peder.drevet.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -12,23 +14,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
+import net.ddns.peder.drevet.adapters.PositionCursorAdapter;
+import net.ddns.peder.drevet.database.PositionsDbHelper;
 
 import java.security.KeyPair;
 
 public class TeamManagementFragment extends Fragment {
-    private OnFragmentInteractionListener mListener;
     private EditText userText;
     private EditText teamText;
-    private TextView keyText;
-    private TextView pubKeyText;
-    private KeyPair keyPair;
     private TextInputLayout textInputLayoutUser;
     private TextInputLayout textInputLayoutTeam;
+    private OnFragmentInteractionListener mListener;
 
     public TeamManagementFragment() {
         // Required empty public constructor
