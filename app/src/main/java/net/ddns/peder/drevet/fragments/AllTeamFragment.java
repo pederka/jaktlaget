@@ -46,6 +46,9 @@ public class AllTeamFragment extends Fragment {
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.team_tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+
+
+
         return view;
     }
 

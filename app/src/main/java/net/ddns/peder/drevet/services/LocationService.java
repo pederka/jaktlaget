@@ -54,7 +54,7 @@ public class LocationService extends Service {
                                                             (float)location.getLongitude()).apply();
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
-            DataSynchronizer dataSync = new DataSynchronizer(getApplicationContext());
+            DataSynchronizer dataSync = new DataSynchronizer(getApplicationContext(), null);
             Log.i(tag, "Syncing after location changed");
             dataSync.execute();
         }

@@ -2,35 +2,37 @@ package net.ddns.peder.drevet.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
-import net.ddns.peder.drevet.adapters.PositionCursorAdapter;
-import net.ddns.peder.drevet.database.PositionsDbHelper;
+import net.ddns.peder.drevet.adapters.TeamPagerAdapter;
+import net.ddns.peder.drevet.interfaces.OnSyncComplete;
 
-import java.security.KeyPair;
-
-public class TeamManagementFragment extends Fragment {
+public class TeamManagementFragment extends Fragment implements OnSyncComplete {
     private EditText userText;
     private EditText teamText;
     private TextInputLayout textInputLayoutUser;
     private TextInputLayout textInputLayoutTeam;
     private OnFragmentInteractionListener mListener;
+    private TeamFragment teamFragment;
+
+    @Override
+    public void onSyncComplete() {
+        teamFragment.updateTeamList();
+        Toast.makeText(getContext(), "Sync complete", Toast.LENGTH_SHORT).show();
+    }
 
     public TeamManagementFragment() {
         // Required empty public constructor
@@ -51,11 +53,15 @@ public class TeamManagementFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team_management, container, false);
-                // Read userid from preferences
+        // Read userid from preferences
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         String userId = prefs.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
         // Read teamid from preferences
         String teamId = prefs.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
+
+        ViewPager vp = (ViewPager) getActivity().findViewById(R.id.team_pager);
+        TeamPagerAdapter teamPagerAdapter = (TeamPagerAdapter)vp.getAdapter();
+        teamFragment = (TeamFragment)teamPagerAdapter.getItem(1);
 
         // Set ids if they exist
         userText = (EditText) view.findViewById(R.id.username_text);

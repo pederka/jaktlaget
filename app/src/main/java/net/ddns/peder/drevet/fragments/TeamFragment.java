@@ -75,6 +75,17 @@ public class TeamFragment extends Fragment {
         return view;
     }
 
+    public void updateTeamList() {
+        final Cursor cursor = db.query(PositionsDbHelper.TABLE_NAME,
+                                 PROJECTION,
+                                 null,
+                                 null,
+                                 null,
+                                 null,
+                                 null);
+        mAdapter.changeCursor(cursor);
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);

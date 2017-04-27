@@ -22,6 +22,7 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.database.PositionsDbHelper;
 import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
+import net.ddns.peder.drevet.interfaces.OnSyncComplete;
 import net.ddns.peder.drevet.utils.JsonUtil;
 
 import java.io.File;
@@ -34,12 +35,13 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     private final int FAILED_TEAM = 2;
     private CognitoCredentialsProvider credentialsProvider;
     private Context mContext;
-    private List<String> jsonStrings;
     private String userId;
     private String teamId;
+    private OnSyncComplete onSyncComplete;
     private final static String tag = "PositionSyncronizer";
 
-    public DataSynchronizer(Context context) {
+    public DataSynchronizer(Context context, OnSyncComplete onSyncComplete) {
+        this.onSyncComplete = onSyncComplete;
         // Initialize the Amazon Cognito credentials provider
         credentialsProvider = new CognitoCachingCredentialsProvider(
                 context,
@@ -143,6 +145,9 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     @Override
     protected void onPostExecute(Integer result) {
         if (result.equals(SUCCESS)) {
+            if (onSyncComplete != null) {
+                onSyncComplete.onSyncComplete();
+            }
             Log.i(tag, "Sync successful!");
         }
         else if (result.equals(FAILED_USER)) {
