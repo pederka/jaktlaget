@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.adapters.TeamPagerAdapter;
@@ -61,7 +62,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
 
         ViewPager vp = (ViewPager) getActivity().findViewById(R.id.team_pager);
         TeamPagerAdapter teamPagerAdapter = (TeamPagerAdapter)vp.getAdapter();
-        teamFragment = (TeamFragment)teamPagerAdapter.getItem(1);
+        teamFragment = (TeamFragment)teamPagerAdapter.getRegisteredFragment(1);
 
         // Set ids if they exist
         userText = (EditText) view.findViewById(R.id.username_text);
@@ -80,6 +81,9 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         saveTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
+                                TeamManagementFragment.this);
+                dataSynchronizer.execute();
                 submitForm();
             }
         });

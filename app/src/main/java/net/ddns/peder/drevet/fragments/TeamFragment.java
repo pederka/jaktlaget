@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ public class TeamFragment extends Fragment {
     private SQLiteDatabase db;
     private PositionCursorAdapter mAdapter;
     private ListView listView;
+    private final String tag = "TeamFragment";
     private final static String[] PROJECTION = {
                 PositionsDbHelper.COLUMN_NAME_ID,
                 PositionsDbHelper.COLUMN_NAME_USER,
@@ -76,7 +78,10 @@ public class TeamFragment extends Fragment {
     }
 
     public void updateTeamList() {
-        final Cursor cursor = db.query(PositionsDbHelper.TABLE_NAME,
+        Log.d(tag, "Updates team list");
+        PositionsDbHelper DbHelper = new PositionsDbHelper(getContext());
+        SQLiteDatabase dbtmp = DbHelper.getReadableDatabase();
+        final Cursor cursor = dbtmp.query(PositionsDbHelper.TABLE_NAME,
                                  PROJECTION,
                                  null,
                                  null,
@@ -84,6 +89,7 @@ public class TeamFragment extends Fragment {
                                  null,
                                  null);
         mAdapter.changeCursor(cursor);
+        mAdapter.notifyDataSetChanged();
     }
 
     public void onButtonPressed(Uri uri) {

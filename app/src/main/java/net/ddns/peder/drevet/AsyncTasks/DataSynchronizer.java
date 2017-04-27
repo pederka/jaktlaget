@@ -56,6 +56,11 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     }
 
     @Override
+    protected void onPreExecute() {
+
+    }
+
+    @Override
     protected Integer doInBackground(Void... params) {
 
         Log.i(tag, "Syncronizing position");
@@ -89,6 +94,8 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         final SQLiteDatabase lmdb = teamLandmarksDbHelper.getWritableDatabase();
         // Clear landmarks database
         teamLandmarksDbHelper.clearTable(lmdb);
+        // Clear positions database
+        positionsDbHelper.clearTable(posdb);
 
         try {
             Log.i(tag, "Found data from " + summaries.size() + " users:");
@@ -144,6 +151,7 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
 
     @Override
     protected void onPostExecute(Integer result) {
+        super.onPostExecute(result);
         if (result.equals(SUCCESS)) {
             if (onSyncComplete != null) {
                 onSyncComplete.onSyncComplete();
