@@ -211,8 +211,8 @@ public class MainActivity extends AppCompatActivity implements
     private Runnable syncData = new Runnable() {
         @Override
         public void run() {
-            DataSynchronizer dataSynchronizer = new DataSynchronizer(mContext, null);
-            dataSynchronizer.execute();
+            SslSynchronizer sslSynchronizer = new SslSynchronizer(getApplicationContext());
+            sslSynchronizer.execute();
             mHandler.postDelayed(this, SYNC_DELAY_ACTIVITY);
         }
     };

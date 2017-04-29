@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
+import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.adapters.TeamPagerAdapter;
@@ -81,10 +82,9 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         saveTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
-                                TeamManagementFragment.this);
-                dataSynchronizer.execute();
                 submitForm();
+                SslSynchronizer sslSynchronizer = new SslSynchronizer(getContext());
+                sslSynchronizer.execute();
             }
         });
 

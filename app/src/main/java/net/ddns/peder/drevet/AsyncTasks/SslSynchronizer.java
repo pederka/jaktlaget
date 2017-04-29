@@ -2,6 +2,7 @@ package net.ddns.peder.drevet.AsyncTasks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -9,6 +10,9 @@ import android.util.Log;
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
 
+import net.ddns.peder.drevet.database.LandmarksDbHelper;
+import net.ddns.peder.drevet.database.PositionsDbHelper;
+import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
 import net.ddns.peder.drevet.utils.JsonUtil;
 
 import java.io.BufferedInputStream;
@@ -34,6 +38,8 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
     private SocketFactory socketFactory;
     private List<String> jsonStrings;
     private String userId;
+    private SQLiteDatabase posdb;
+    private SQLiteDatabase lmdb;
     private String teamId;
     private final static String tag = "SslSyncronizer";
 
@@ -44,6 +50,18 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         userId = sharedPrefs.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
         teamId = sharedPrefs.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
+
+        // Initialize databases
+        PositionsDbHelper positionsDbHelper = new PositionsDbHelper(mContext);
+        posdb = positionsDbHelper.getWritableDatabase();
+        TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(mContext);
+        lmdb = teamLandmarksDbHelper.getWritableDatabase();
+
+        // Clear position database
+        positionsDbHelper.clearTable(posdb);
+
+        // Clear team landmarks database
+        teamLandmarksDbHelper.clearTable(lmdb);
 
         // (could be from a resource or ByteArrayInputStream or ...)
         try {
@@ -91,21 +109,44 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 
+            // Send user name
+            byte[] nameBytes = userId.getBytes();
+            int nameSize = nameBytes.length;
+            dataOutputStream.writeInt(nameSize);
+            dataOutputStream.write(nameBytes);
+
+            // Send team name
+            byte[] teamBytes = teamId.getBytes();
+            int teamSize = teamBytes.length;
+            dataOutputStream.writeInt(teamSize);
+            dataOutputStream.write(teamBytes);
+
+            // Send data
             byte[] outdata = JsonUtil.exportDataToJson(mContext).toString().getBytes();
             int size = outdata.length;
+            Log.d(tag, "Sending "+size+" bytes of data");
             dataOutputStream.writeInt(size);
             dataOutputStream.write(outdata);
-            byte[] teamIdData = teamId.getBytes();
-            size = teamIdData.length;
-            dataOutputStream.writeInt(size);
-            dataOutputStream.write(teamIdData);
             dataOutputStream.flush();
 
+            // Read incoming data size
             byte[] inputSizeBytes = new byte[4];
             dataInputStream.read(inputSizeBytes, 0, 4);
-            int inputSize = byteArrayToInt(inputSizeBytes);
-            Log.d(tag, "Received int "+inputSize);
+            int incomingSize = byteArrayToInt(inputSizeBytes);
+            Log.d(tag, "Received "+incomingSize+" bytes of data");
 
+            if (incomingSize > 0) {
+                // Read incoming data
+                byte[] incomingData = new byte[incomingSize];
+                dataInputStream.read(incomingData, 0, incomingSize);
+                String incomingString = new String(incomingData, "UTF-8");
+                Log.d(tag, "Received string " + incomingString);
+
+                String[] userData = incomingString.split("%");
+                for (int i = 0; i < userData.length; i++) {
+                    JsonUtil.importUserInformationFromJsonString(mContext, posdb, lmdb, userData[i]);
+                }
+            }
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
