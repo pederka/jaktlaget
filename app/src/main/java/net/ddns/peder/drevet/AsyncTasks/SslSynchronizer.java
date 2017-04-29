@@ -6,13 +6,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
 
-import net.ddns.peder.drevet.database.LandmarksDbHelper;
 import net.ddns.peder.drevet.database.PositionsDbHelper;
 import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
+import net.ddns.peder.drevet.interfaces.OnSyncComplete;
 import net.ddns.peder.drevet.utils.JsonUtil;
 
 import java.io.BufferedInputStream;
@@ -34,17 +35,22 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
     private final int SUCCESS = 0;
     private final int FAILED_USER = 1;
     private final int FAILED_TEAM = 2;
+    private final int FAILED_TRANSFER = 3;
     private Context mContext;
     private SocketFactory socketFactory;
-    private List<String> jsonStrings;
     private String userId;
     private SQLiteDatabase posdb;
     private SQLiteDatabase lmdb;
+    private OnSyncComplete onSyncComplete;
     private String teamId;
+    private boolean verbose;
     private final static String tag = "SslSyncronizer";
 
-    public SslSynchronizer(Context context) {
+    public SslSynchronizer(Context context, OnSyncComplete onSyncComplete, boolean verbose) {
         mContext = context;
+
+        this.verbose = verbose;
+        this.onSyncComplete = onSyncComplete;
 
         // Get last location
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -72,7 +78,6 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
             Certificate ca;
             try {
                 ca = cf.generateCertificate(caInput);
-                // System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
             } finally {
                 caInput.close();
             }
@@ -101,6 +106,13 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
 
     @Override
     protected Integer doInBackground(Void... params) {
+
+        if (userId.equals(Constants.DEFAULT_USER_ID)) {
+            return FAILED_USER;
+        }
+        if (teamId.equals(Constants.DEFAULT_TEAM_ID)) {
+            return FAILED_TEAM;
+        }
 
         Log.i(tag, "Synchronizing");
         try {
@@ -150,6 +162,7 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
+            return FAILED_TRANSFER;
         }
         return SUCCESS;
     }
@@ -157,11 +170,37 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
     @Override
     protected void onPostExecute(Integer result) {
         if (result.equals(SUCCESS)) {
+            if (verbose) {
+                Toast.makeText(mContext, "Synkronisering fullført", Toast.LENGTH_SHORT).show();
+            }
             Log.i(tag, "Sync successful!");
+        }
+        else if (result.equals(FAILED_USER)) {
+            if (verbose) {
+                Toast.makeText(mContext, "Kan ikke synkronisere uten brukernavn",
+                                    Toast.LENGTH_SHORT).show();
+            }
+            Log.i(tag, "No user name. Unable to sync.");
+        }
+        else if (result.equals(FAILED_TEAM)) {
+            if (verbose) {
+                Toast.makeText(mContext, "Kan ikke synkronisere uten lagnavn",
+                                    Toast.LENGTH_SHORT).show();
+            }
+            Log.i(tag, "No team name. Unable to sync.");
+        }
+        else if (result.equals(FAILED_TRANSFER)) {
+            if (verbose) {
+                Toast.makeText(mContext, "Synkronisering mislykket", Toast.LENGTH_SHORT).show();
+            }
+            Log.i(tag, "Sync failed.");
+        }
+        if (onSyncComplete != null) {
+                onSyncComplete.onSyncComplete();
         }
     }
 
-    public static int byteArrayToInt(byte[] b)
+    private static int byteArrayToInt(byte[] b)
     {
         return   b[3] & 0xFF |
                 (b[2] & 0xFF) << 8 |

@@ -13,7 +13,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.MainActivity;
@@ -55,7 +54,8 @@ public class LocationService extends Service {
                                                             (float)location.getLongitude()).apply();
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
-            SslSynchronizer sslSynchronizer = new SslSynchronizer(getApplicationContext());
+            SslSynchronizer sslSynchronizer = new SslSynchronizer(getApplicationContext(), null,
+                                                                false);
             Log.i(tag, "Syncing after location changed");
             sslSynchronizer.execute();
         }

@@ -46,12 +46,18 @@
    <Space
             android:layout_width="1dp"
             android:layout_height="15dp"/>
-    <ListView
-        android:id="@+id/lm_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+   <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swiperefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/lm_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
     </ListView>
+   </android.support.v4.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 </FrameLayout>

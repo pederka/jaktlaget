@@ -6,17 +6,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.adapters.PositionCursorAdapter;
 import net.ddns.peder.drevet.database.PositionsDbHelper;
+import net.ddns.peder.drevet.interfaces.OnSyncComplete;
 
-public class TeamFragment extends Fragment {
+public class TeamFragment extends Fragment implements OnSyncComplete {
     private OnFragmentInteractionListener mListener;
     private PositionsDbHelper positionsDbHelper;
     private SQLiteDatabase db;
@@ -29,6 +32,7 @@ public class TeamFragment extends Fragment {
                 PositionsDbHelper.COLUMN_NAME_SHOWED,
                 PositionsDbHelper.COLUMN_NAME_TIME,
     };
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public TeamFragment() {
         // Required empty public constructor
@@ -37,6 +41,12 @@ public class TeamFragment extends Fragment {
     public static TeamFragment newInstance(String param1, String param2) {
         TeamFragment fragment = new TeamFragment();
         return fragment;
+    }
+
+    @Override
+    public void onSyncComplete() {
+        updateTeamList();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -49,6 +59,19 @@ public class TeamFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team, container, false);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        SslSynchronizer sslSynchronizer = new SslSynchronizer(getContext(),
+                                                    TeamFragment.this, false);
+                        sslSynchronizer.execute();
+                    }
+                }
+        );
+
 
         positionsDbHelper = new PositionsDbHelper(getContext());
         db = positionsDbHelper.getReadableDatabase();
@@ -76,6 +99,7 @@ public class TeamFragment extends Fragment {
 
         return view;
     }
+
 
     public void updateTeamList() {
         Log.d(tag, "Updates team list");
