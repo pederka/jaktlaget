@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -106,7 +107,8 @@ public class LocationService extends Service {
         Notification notification = new Notification.Builder(this)
                 .setContentTitle(getText(R.string.notification_title))
                 .setContentText(getText(R.string.notification_message))
-                .setSmallIcon(R.drawable.ic_map_black_24dp)
+                .setSmallIcon(R.mipmap.status_bar)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setContentIntent(pendingIntent)
                 .setTicker(getText(R.string.ticker_text))
                 .build();

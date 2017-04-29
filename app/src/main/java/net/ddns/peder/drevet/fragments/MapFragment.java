@@ -86,9 +86,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private boolean line_toggled;
     private ImageButton myPositionButton;
     private List<Marker> markerList;
+    private List<Marker> teamMarkerList;
     private Polyline traceLine;
     private Bitmap myselfBitmap;
     private Bitmap otherBitmap;
+    private Bitmap myLandmarkBitmap;
+    private Bitmap otherLandmarkBitmap;
     private int colorMe;
     private int colorOther;
 
@@ -176,6 +179,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mHandler = new Handler();
         markerList = new ArrayList<>();
+        teamMarkerList = new ArrayList<>();
 
         // Create icons for map
         colorMe = getResources().getColor(R.color.mapMe);
@@ -205,6 +209,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         drawable.setColorFilter(colorOther, PorterDuff.Mode.SRC_ATOP);
         drawable.draw(canvas);
 
+        drawable = AppCompatDrawableManager.get().getDrawable(getContext(),
+                            R.drawable.ic_star_black_24dp);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+        myLandmarkBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(myLandmarkBitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.setColorFilter(colorMe, PorterDuff.Mode.SRC_ATOP);
+        drawable.draw(canvas);
+
+        drawable = AppCompatDrawableManager.get().getDrawable(getContext(),
+                            R.drawable.ic_star_black_24dp);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+        otherLandmarkBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(otherLandmarkBitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.setColorFilter(colorOther, PorterDuff.Mode.SRC_ATOP);
+        drawable.draw(canvas);
 
         myPositionButton = (ImageButton) view.findViewById(R.id.button_my_location);
         myPositionButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
@@ -304,12 +331,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     for (int i=0; i<markerList.size(); i++) {
                         markerList.get(i).remove();
                     }
+                    for (int i=0; i<teamMarkerList.size(); i++) {
+                        teamMarkerList.get(i).remove();
+                    }
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
                                             false).apply();
                     landmarkButton.setBackgroundResource(R.drawable.buttonshape_inactive);
                 } else {
                     landmarks_toggled = true;
                     addLandMarks(map);
+                    addTeamLandmarks(map);
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
                                             true).apply();
                     landmarkButton.setBackgroundResource(R.drawable.buttonshape);
@@ -457,7 +488,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 shared = false;
                 final MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.raw.my_landmark));
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(myLandmarkBitmap));
                 final Marker tempMarker = map.addMarker(markerOptions);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.lm_dialog_title)
@@ -568,8 +599,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
         if (landmarks_toggled) {
             addLandMarks(map);
+            addTeamLandmarks(map);
         }
-        addTeamLandmarks(map);
         if (team_toggled) {
             updateTeamPositions(map);
         }
@@ -620,7 +651,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(pos);
             markerOptions.title(description);
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.raw.my_landmark));
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(myLandmarkBitmap));
             Marker marker = map.addMarker(markerOptions);
             markerList.add(marker);
             marker.setTag(cursor.getInt(cursor.getColumnIndexOrThrow(LandmarksDbHelper.COLUMN_NAME_ID)));
@@ -660,8 +691,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(pos);
             markerOptions.title(user+": "+description);
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.raw.other_landmark));
-            map.addMarker(markerOptions);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(otherLandmarkBitmap));
+            Marker marker = map.addMarker(markerOptions);
+            teamMarkerList.add(marker);
         }
         cursor.close();
     }
