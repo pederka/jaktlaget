@@ -29,10 +29,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.vision.text.Text;
 
 import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
 import net.ddns.peder.drevet.fragments.AllLandmarksFragment;
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
     public CameraPosition cameraPosition;
     private boolean runningService;
     private Context mContext;
+    private TextView activeText;
 
     private List<LatLng> myLocationHistory;
 
@@ -99,12 +102,15 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        activeText = (TextView)findViewById(R.id.active_text);
+
         // Run switch
         final SwitchCompat runSwitch = (SwitchCompat) findViewById(R.id.run_switch);
         runSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
+                    activeText.setText(getString(R.string.actionbar_inactive));
                     mHandler.removeCallbacks(syncData);
                     runningService = false;
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
@@ -123,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements
                                 MY_PERMISSIONS_REQUEST);
 
                     }
+                    activeText.setText(getString(R.string.actionbar_active));
                     mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
                     runningService = true;
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
@@ -134,22 +141,13 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
         if (runningService) {
+            activeText.setText(getString(R.string.actionbar_active));
             runSwitch.setChecked(true);
             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
         } else {
+            activeText.setText(getString(R.string.actionbar_inactive));
             runSwitch.setChecked(false);
         }
-
-        // Sync switch
-        final ImageButton syncButton = (ImageButton) findViewById(R.id.sync_button);
-        syncButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SslSynchronizer sslSynchronizer = new SslSynchronizer(MainActivity.this, null,
-                                                                            true);
-                sslSynchronizer.execute();
-            }
-        });
 
         // Request permissions
         if (ContextCompat.checkSelfPermission(this,
