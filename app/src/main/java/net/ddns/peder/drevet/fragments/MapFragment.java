@@ -163,6 +163,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        landmarksDbHelper = new LandmarksDbHelper(getContext());
+        db = landmarksDbHelper.getReadableDatabase();
+        teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
+        tldb = teamLandmarksDbHelper.getReadableDatabase();
+        positionsDbHelper = new PositionsDbHelper(getContext());
+        posdb = positionsDbHelper.getReadableDatabase();
+        userMarkerList = new ArrayList<>();
+
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mHandler = new Handler();
         markerList = new ArrayList<>();
@@ -195,7 +205,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         drawable.setColorFilter(colorOther, PorterDuff.Mode.SRC_ATOP);
         drawable.draw(canvas);
 
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         myPositionButton = (ImageButton) view.findViewById(R.id.button_my_location);
         myPositionButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
@@ -322,11 +331,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                                                                                 getContext());
                 if (team_toggled) {
+                    // Clear users
+                    for (int i=0; i<userMarkerList.size(); i++) {
+                        userMarkerList.get(i).remove();
+                    }
                     team_toggled = false;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             false).apply();
                     teamButton.setBackgroundResource(R.drawable.buttonshape_inactive);
                 } else {
+                    updateTeamPositions(map);
                     team_toggled = true;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             true).apply();
@@ -368,13 +382,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
-        landmarksDbHelper = new LandmarksDbHelper(getContext());
-        db = landmarksDbHelper.getReadableDatabase();
-        teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
-        tldb = teamLandmarksDbHelper.getReadableDatabase();
-        positionsDbHelper = new PositionsDbHelper(getContext());
-        posdb = positionsDbHelper.getReadableDatabase();
-        userMarkerList = new ArrayList<>();
+
         // Get height of map
         try {
             if (map == null) {
