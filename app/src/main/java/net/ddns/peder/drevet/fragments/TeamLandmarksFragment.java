@@ -6,22 +6,25 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.adapters.TeamLandmarksCursorAdapter;
 import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
+import net.ddns.peder.drevet.interfaces.OnSyncComplete;
 
-public class TeamLandmarksFragment extends Fragment {
+public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
     private OnFragmentInteractionListener mListener;
     private TeamLandmarksDbHelper teamLandmarksDbHelper;
     private TeamLandmarksCursorAdapter mAdapter;
     private ListView listView;
     private SQLiteDatabase db;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
     private final static String[] PROJECTION = {
                 TeamLandmarksDbHelper.COLUMN_NAME_ID,
                 TeamLandmarksDbHelper.COLUMN_NAME_USER,
@@ -39,6 +42,24 @@ public class TeamLandmarksFragment extends Fragment {
     }
 
     @Override
+    public void onSyncComplete() {
+        // Update list
+        TeamLandmarksDbHelper DbHelper = new TeamLandmarksDbHelper(getContext());
+        SQLiteDatabase dbtmp = DbHelper.getReadableDatabase();
+        final Cursor cursor = dbtmp.query(TeamLandmarksDbHelper.TABLE_NAME,
+                                 PROJECTION,
+                                 null,
+                                 null,
+                                 null,
+                                 null,
+                                 null);
+        mAdapter.changeCursor(cursor);
+        mAdapter.notifyDataSetChanged();
+        // Stop refresh animation
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -48,6 +69,18 @@ public class TeamLandmarksFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team_landmarks, container, false);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        SslSynchronizer sslSynchronizer = new SslSynchronizer(getContext(),
+                                                    TeamLandmarksFragment.this, false);
+                        sslSynchronizer.execute();
+                    }
+                }
+        );
 
         teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
         db = teamLandmarksDbHelper.getReadableDatabase();
