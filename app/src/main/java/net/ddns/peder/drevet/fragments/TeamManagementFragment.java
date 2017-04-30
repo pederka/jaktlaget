@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.Constants;
@@ -32,7 +31,6 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
     @Override
     public void onSyncComplete() {
         teamFragment.updateTeamList();
-        Toast.makeText(getContext(), "Sync complete", Toast.LENGTH_SHORT).show();
     }
 
     public TeamManagementFragment() {
@@ -103,7 +101,6 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         prefs.edit().putString(Constants.SHARED_PREF_TEAM_ID, teamId).apply();
         prefs.edit().putString(Constants.SHARED_PREF_USER_ID, userId).apply();
-        Toast.makeText(getContext(), R.string.toast_name_saved, Toast.LENGTH_SHORT).show();
     }
 
     private boolean validateName() {

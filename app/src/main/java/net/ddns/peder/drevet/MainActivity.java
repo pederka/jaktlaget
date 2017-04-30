@@ -106,34 +106,45 @@ public class MainActivity extends AppCompatActivity implements
         runSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
+                            getApplicationContext());
                 if (!isChecked) {
                     activeText.setText(getString(R.string.actionbar_inactive));
                     mHandler.removeCallbacks(syncData);
                     runningService = false;
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
-                            getApplicationContext());
+
                     prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, false).apply();
                     Toast.makeText(getApplicationContext(), R.string.run_start,
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    // Request permission
-                    if (ContextCompat.checkSelfPermission((Activity) mContext,
-                            Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
+                    String userid = prefs.getString(Constants.SHARED_PREF_USER_ID,
+                                                                        Constants.DEFAULT_USER_ID);
+                    String teamid = prefs.getString(Constants.SHARED_PREF_TEAM_ID,
+                                                                        Constants.DEFAULT_TEAM_ID);
+                    if (!userid.equals(Constants.DEFAULT_USER_ID)
+                                                    && !teamid.equals(Constants.DEFAULT_TEAM_ID)) {
+                        // Request permission
+                        if (ContextCompat.checkSelfPermission((Activity) mContext,
+                                Manifest.permission.ACCESS_FINE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED) {
 
-                        ActivityCompat.requestPermissions((Activity) mContext,
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                MY_PERMISSIONS_REQUEST);
+                            ActivityCompat.requestPermissions((Activity) mContext,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    MY_PERMISSIONS_REQUEST);
 
+                        }
+                        activeText.setText(getString(R.string.actionbar_active));
+                        mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+                        runningService = true;
+                        prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, true).apply();
+                        Toast.makeText(getApplicationContext(), R.string.run_stop,
+                                Toast.LENGTH_SHORT).show();
                     }
-                    activeText.setText(getString(R.string.actionbar_active));
-                    mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
-                    runningService = true;
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
-                            getApplicationContext());
-                    prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, true).apply();
-                    Toast.makeText(getApplicationContext(), R.string.run_stop,
-                            Toast.LENGTH_SHORT).show();
+                    else {
+                         Toast.makeText(getApplicationContext(), R.string.cant_start,
+                                Toast.LENGTH_SHORT).show();
+                         runSwitch.setChecked(false);
+                    }
                 }
             }
         });
