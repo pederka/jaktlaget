@@ -2,6 +2,7 @@ package net.ddns.peder.drevet.AsyncTasks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -31,7 +32,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 
-public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
+public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     private final int SUCCESS = 0;
     private final int FAILED_USER = 1;
     private final int FAILED_TEAM = 2;
@@ -43,10 +44,12 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
     private SQLiteDatabase lmdb;
     private OnSyncComplete onSyncComplete;
     private String teamId;
+    private boolean removeOutdated;
+    private int expirationTime;
     private boolean verbose;
     private final static String tag = "SslSyncronizer";
 
-    public SslSynchronizer(Context context, OnSyncComplete onSyncComplete, boolean verbose) {
+    public DataSynchronizer(Context context, OnSyncComplete onSyncComplete, boolean verbose) {
         mContext = context;
 
         this.verbose = verbose;
@@ -56,6 +59,10 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         userId = sharedPrefs.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
         teamId = sharedPrefs.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
+
+        // Get preferences relating to outdated positions
+        removeOutdated = sharedPrefs.getBoolean("pref_hideoldteam", true);
+        expirationTime = Integer.parseInt(sharedPrefs.getString("pref_hideteamlimit", "30"));
 
         // Initialize databases
         PositionsDbHelper positionsDbHelper = new PositionsDbHelper(mContext);
@@ -159,6 +166,35 @@ public class SslSynchronizer extends AsyncTask<Void, Void, Integer>{
                     JsonUtil.importUserInformationFromJsonString(mContext, posdb, lmdb, userData[i]);
                 }
             }
+
+            // Remove any teammates with outdated positions
+            if (removeOutdated) {
+                final String[] PROJECTION = {
+                        PositionsDbHelper.COLUMN_NAME_ID,
+                        PositionsDbHelper.COLUMN_NAME_TIME,
+                };
+                Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
+                         PROJECTION,
+                         null,
+                         null,
+                         null,
+                         null,
+                         null);
+                long currenttime = System.currentTimeMillis();
+                long exptime = expirationTime*60000;
+                String whereClause = PositionsDbHelper.COLUMN_NAME_ID + "= ?";
+                while (cursor.moveToNext()) {
+                    long time = Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(
+                            PositionsDbHelper.COLUMN_NAME_TIME)));
+                    if (currenttime-time > exptime) {
+                        posdb.delete(PositionsDbHelper.TABLE_NAME, whereClause,
+                                        new String[] {cursor.getString(cursor.getColumnIndexOrThrow(
+                                                    PositionsDbHelper.COLUMN_NAME_ID))});
+                    }
+                }
+                cursor.close();
+            }
+
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();

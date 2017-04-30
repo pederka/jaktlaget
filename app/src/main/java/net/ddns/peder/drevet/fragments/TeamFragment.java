@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
+import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.adapters.PositionCursorAdapter;
 import net.ddns.peder.drevet.database.PositionsDbHelper;
@@ -65,9 +65,9 @@ public class TeamFragment extends Fragment implements OnSyncComplete {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        SslSynchronizer sslSynchronizer = new SslSynchronizer(getContext(),
+                        DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
                                                     TeamFragment.this, false);
-                        sslSynchronizer.execute();
+                        dataSynchronizer.execute();
                     }
                 }
         );

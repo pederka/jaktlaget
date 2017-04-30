@@ -26,17 +26,14 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.vision.text.Text;
 
-import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
+import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.fragments.AllLandmarksFragment;
 import net.ddns.peder.drevet.fragments.AllTeamFragment;
 import net.ddns.peder.drevet.fragments.LandmarksFragment;
@@ -207,9 +204,9 @@ public class MainActivity extends AppCompatActivity implements
     private Runnable syncData = new Runnable() {
         @Override
         public void run() {
-            SslSynchronizer sslSynchronizer = new SslSynchronizer(getApplicationContext(), null,
+            DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(), null,
                                                                                         false);
-            sslSynchronizer.execute();
+            dataSynchronizer.execute();
             mHandler.postDelayed(this, SYNC_DELAY_ACTIVITY);
         }
     };

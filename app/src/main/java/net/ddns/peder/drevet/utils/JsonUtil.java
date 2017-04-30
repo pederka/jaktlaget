@@ -118,7 +118,6 @@ public class JsonUtil {
         try {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                                                                         context);
-            boolean autoshowlm = sharedPreferences.getBoolean("pref_autoshowlm", true);
             boolean autoshowteam = sharedPreferences.getBoolean("pref_autoshowteam", true);
             JSONObject json = new JSONObject(jsonString);
             // Get user position and update local database
@@ -130,7 +129,7 @@ public class JsonUtil {
             updateUserPosition(posdb, userId, latitude, longitude, time, autoshowteam);
             // Add user shared landmarks to local database
             JSONArray landmarksArray = json.getJSONArray(JSON_LMARRAY);
-            readLandmarksFromJson(lmdb, userId, landmarksArray, autoshowlm);
+            readLandmarksFromJson(lmdb, userId, landmarksArray, autoshowteam);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -145,7 +144,6 @@ public class JsonUtil {
         ContentValues values = new ContentValues();
         values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, lat);
         values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, lon);
-        values.put(PositionsDbHelper.COLUMN_NAME_SHOWED, show);
         values.put(PositionsDbHelper.COLUMN_NAME_TIME, time);
         // Query database to see if user exists
         String selection = PositionsDbHelper.COLUMN_NAME_USER + " = ?";
@@ -164,6 +162,7 @@ public class JsonUtil {
             db.update(PositionsDbHelper.TABLE_NAME, values, whereClause, whereArgs);
         } else {
             // If new user, push new row to database
+            values.put(PositionsDbHelper.COLUMN_NAME_SHOWED, show);
             values.put(PositionsDbHelper.COLUMN_NAME_USER, userId);
             db.insert(PositionsDbHelper.TABLE_NAME, null, values);
         }

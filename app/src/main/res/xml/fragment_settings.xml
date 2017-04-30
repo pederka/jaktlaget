@@ -4,16 +4,6 @@
 
     <android.support.v7.preference.PreferenceCategory
         android:title="@string/pref_category_sync">
-        <CheckBoxPreference
-            android:key="pref_autoshowteam"
-            android:title="@string/pref_autoshowteam"
-            android:summary="@string/pref_autoshowteam_summary"
-            android:defaultValue="true" />
-        <CheckBoxPreference
-            android:key="pref_autoshowlm"
-            android:title="@string/pref_autoshowlm"
-            android:summary="@string/pref_autoshowlm_summary"
-            android:defaultValue="true" />
         <ListPreference
             android:key="pref_syncInterval"
             android:title="@string/pref_syncInterval"
@@ -21,7 +11,24 @@
             android:entries="@array/pref_syncInterval_entries"
             android:entryValues="@array/pref_syncInterval_values"
             android:defaultValue="@string/pref_syncInterval_default" />
-
+        <CheckBoxPreference
+            android:key="pref_autoshowteam"
+            android:title="@string/pref_autoshowteam"
+            android:summary="@string/pref_autoshowteam_summary"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="pref_hideoldteam"
+            android:title="@string/pref_hideoldteam"
+            android:summary="@string/pref_hideoldteam_summary"
+            android:defaultValue="true" />
+         <ListPreference
+            android:key="pref_hideteamlimit"
+            android:dependency="pref_hideoldteam"
+            android:title="@string/pref_hideteamlimit"
+            android:dialogTitle="@string/pref_hideteamlimit_dialog"
+            android:entries="@array/pref_hideteamlimit_entries"
+            android:entryValues="@array/pref_hideteamlimit_values"
+            android:defaultValue="@string/pref_hideteamlimit_default" />
     </android.support.v7.preference.PreferenceCategory>
 
 </android.support.v7.preference.PreferenceScreen>

@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import net.ddns.peder.drevet.AsyncTasks.SslSynchronizer;
+import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.adapters.TeamLandmarksCursorAdapter;
 import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
@@ -75,9 +75,9 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        SslSynchronizer sslSynchronizer = new SslSynchronizer(getContext(),
+                        DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
                                                     TeamLandmarksFragment.this, false);
-                        sslSynchronizer.execute();
+                        dataSynchronizer.execute();
                     }
                 }
         );
