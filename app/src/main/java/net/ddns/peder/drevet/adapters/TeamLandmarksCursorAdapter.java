@@ -45,29 +45,5 @@ public class TeamLandmarksCursorAdapter extends SimpleCursorAdapter {
         TextView userView = (TextView) view.findViewById(R.id.team_lm_list_user);
         userView.setText(userId);
 
-        AppCompatCheckBox show = (AppCompatCheckBox) view.findViewById(R.id.show_check_box_team);
-        show.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 AppCompatCheckBox show = (AppCompatCheckBox) v.findViewById(R.id.show_check_box_team);
-                 ContentValues values = new ContentValues();
-                 if (show.isChecked()) {
-                     values.put(TeamLandmarksDbHelper.COLUMN_NAME_SHOWED, 1);
-                 }
-                 else {
-                     values.put(TeamLandmarksDbHelper.COLUMN_NAME_SHOWED, 0);
-                 }
-                 db.update(TeamLandmarksDbHelper.TABLE_NAME, values,
-                                                    TeamLandmarksDbHelper.COLUMN_NAME_ID+" = ?",
-                                                        new String[]{Long.toString(itemId)});
-                 cursor.requery();
-             }
-        });
-
-        // Set show checkbox
-        final boolean isShowed = cursor.getInt(cursor.getColumnIndex(
-                TeamLandmarksDbHelper.COLUMN_NAME_SHOWED)) > 0;
-        show.setChecked(isShowed);
-
     }
 }

@@ -669,12 +669,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE,
         };
 
-        String selection = TeamLandmarksDbHelper.COLUMN_NAME_SHOWED + " = ?";
-        String[] selectionArgs = { "1" };
         final Cursor cursor = tldb.query(TeamLandmarksDbHelper.TABLE_NAME,
                          PROJECTION,
-                         selection,
-                         selectionArgs,
+                         null,
+                         null,
                          null,
                          null,
                          null);

@@ -26,11 +26,4 @@ xmlns:android="http://schemas.android.com/apk/res/android">
     android:layout_gravity="center">
 </TextView>
 
-<android.support.v7.widget.AppCompatCheckBox
-    android:id="@+id/show_check_box_team"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_weight="0.5"/>
-
 </LinearLayout>
