@@ -30,6 +30,8 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
                 TeamLandmarksDbHelper.COLUMN_NAME_USER,
                 TeamLandmarksDbHelper.COLUMN_NAME_SHOWED,
                 TeamLandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+                TeamLandmarksDbHelper.COLUMN_NAME_LATITUDE,
+                TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE,
     };
 
     public TeamLandmarksFragment() {

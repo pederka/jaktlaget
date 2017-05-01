@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.adapters.LandmarksPagerAdapter;
 
@@ -53,6 +54,12 @@ public class AllLandmarksFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((MainActivity)getActivity()).setActionBarTitle("Merker");
     }
 
     @Override

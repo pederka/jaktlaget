@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements
     private boolean runningService;
     private Context mContext;
     private TextView activeText;
+    private TextView action_bar_title;
 
     private List<LatLng> myLocationHistory;
 
@@ -80,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements
         mHandler = new Handler();
 
         myLocationHistory = new ArrayList<>();
+
+        action_bar_title = (TextView) findViewById(R.id.action_bar_title);
 
         // Any running service should be stopped when the app is opened
         stopService(new Intent(getApplicationContext(), LocationService.class));
@@ -403,5 +406,9 @@ public class MainActivity extends AppCompatActivity implements
         public void onProviderDisabled(String provider) {
 
         }
+
+    }
+    public void setActionBarTitle(String title){
+            action_bar_title.setText(title);
     }
 }

@@ -168,6 +168,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+
         landmarksDbHelper = new LandmarksDbHelper(getContext());
         db = landmarksDbHelper.getReadableDatabase();
         teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
@@ -445,7 +446,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         } catch (Exception e) {
              e.printStackTrace();
          }
-
+        ((MainActivity)getActivity()).setActionBarTitle("Kart");
     }
 
     private void saveLandmarkToDatabase(String desc, boolean shared, LatLng latLng) {

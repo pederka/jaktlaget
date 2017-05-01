@@ -27,6 +27,8 @@ public class LandmarksFragment extends Fragment {
                 LandmarksDbHelper.COLUMN_NAME_SHOWED,
                 LandmarksDbHelper.COLUMN_NAME_SHARED,
                 LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+                LandmarksDbHelper.COLUMN_NAME_LATITUDE,
+                LandmarksDbHelper.COLUMN_NAME_LONGITUDE,
     };
 
     public LandmarksFragment() {

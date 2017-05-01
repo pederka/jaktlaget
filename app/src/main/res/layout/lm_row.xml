@@ -1,8 +1,14 @@
 <LinearLayout
 android:id="@+id/lm_row_layout"
-android:layout_height="50dp"
+android:layout_height="wrap_content"
 android:layout_width="fill_parent"
-xmlns:android="http://schemas.android.com/apk/res/android">
+xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
 
 <TextView
     android:id="@+id/lm_list_desc"
@@ -15,7 +21,77 @@ xmlns:android="http://schemas.android.com/apk/res/android">
     android:layout_gravity="center">
 </TextView>
 
-<android.support.v7.widget.AppCompatCheckBox
+
+</LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+ <LinearLayout
+     android:layout_width="0dp"
+     android:layout_height="wrap_content"
+     android:layout_weight="1.5"
+     android:orientation="vertical">
+
+  <TextView
+    android:id="@+id/team_lm_list_lat"
+    android:text="@string/lm_list_lat"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="20sp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+    >
+</TextView>
+<TextView
+    android:id="@+id/team_lm_list_lon"
+    android:text="@string/lm_list_long"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="20sp"
+    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+    >
+</TextView>
+
+ </LinearLayout>
+
+ <LinearLayout
+     android:layout_width="0dp"
+     android:layout_height="wrap_content"
+     android:layout_weight="1.5"
+     android:orientation="vertical">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+   <TextView
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"
+       android:layout_weight="1"
+       android:textSize="20sp"
+       android:text="Vis?"
+       android:textAppearance="@style/TextAppearance.AppCompat.Small"
+       />
+    <TextView
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"
+       android:layout_weight="1"
+        android:textSize="20sp"
+       android:text="Del?"
+       android:textAppearance="@style/TextAppearance.AppCompat.Small"
+       />
+    <Space
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"
+       android:layout_weight="1"
+       />
+  </LinearLayout>
+
+ <LinearLayout
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content">
+
+ <android.support.v7.widget.AppCompatCheckBox
     android:id="@+id/show_check_box"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
@@ -38,5 +114,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
     android:layout_gravity="center"
     />
 
-
+ </LinearLayout>
+ </LinearLayout>
+</LinearLayout>
 </LinearLayout>

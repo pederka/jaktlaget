@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.adapters.TeamPagerAdapter;
 
@@ -50,6 +51,12 @@ public class AllTeamFragment extends Fragment {
 
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((MainActivity)getActivity()).setActionBarTitle("Laget");
     }
 
     public void onButtonPressed(Uri uri) {
