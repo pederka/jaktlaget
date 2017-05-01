@@ -14,10 +14,16 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
+import net.ddns.peder.drevet.utils.LocationHistoryUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by peder on 3/23/17.
@@ -30,12 +36,14 @@ public class LocationService extends Service {
     private static final String tag = "LocationService";
     private String userId;
     private String teamId;
+    private List<LatLng> myLocationHistory;
 
     private class LocationListener implements android.location.LocationListener {
         private Location mLastLocation;
 
         public LocationListener(String provider)
         {
+
             Log.e(tag, "LocationListener " + provider);
             mLastLocation = new Location(provider);
 
@@ -57,7 +65,10 @@ public class LocationService extends Service {
                                                             System.currentTimeMillis()).apply();
             DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(), null,
                                                                 false);
+            myLocationHistory.add(new LatLng(location.getLatitude(), location.getLongitude()));
             Log.i(tag, "Syncing after location changed");
+            LocationHistoryUtil.saveLocationHistoryToPreferences(getApplicationContext(),
+                                                                            myLocationHistory);
             dataSynchronizer.execute();
         }
 
@@ -93,6 +104,12 @@ public class LocationService extends Service {
     {
         Log.e(tag, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
+
+        myLocationHistory = LocationHistoryUtil.loadLocationHistoryFromPreferences(
+                                                                getApplicationContext());
+        if (myLocationHistory == null) {
+            myLocationHistory = new ArrayList<>();
+        }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                                                                         this);

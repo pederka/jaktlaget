@@ -297,6 +297,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     public void onClick(DialogInterface dialog, int id) {
                         if (traceLine != null) {
                             ((MainActivity)getActivity()).clearMyLocationHistory();
+                            // Delete from pshared preferences
+                            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(
+                                    getContext());
+                            pref.edit().remove(Constants.SHARED_PREF_LOCATION_HISTORY).commit();
                             hideMyTraceLine();
                         }
                         Toast.makeText(getContext(), R.string.traces_deleted, Toast.LENGTH_SHORT).show();

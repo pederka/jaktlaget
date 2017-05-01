@@ -24,6 +24,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
@@ -43,6 +44,7 @@ import net.ddns.peder.drevet.fragments.TeamFragment;
 import net.ddns.peder.drevet.fragments.TeamLandmarksFragment;
 import net.ddns.peder.drevet.fragments.TeamManagementFragment;
 import net.ddns.peder.drevet.services.LocationService;
+import net.ddns.peder.drevet.utils.LocationHistoryUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
     private Context mContext;
     private TextView activeText;
     private TextView action_bar_title;
+    private final String tag = "MainActivity";
 
     private List<LatLng> myLocationHistory;
 
@@ -80,7 +83,9 @@ public class MainActivity extends AppCompatActivity implements
 
         mHandler = new Handler();
 
-        myLocationHistory = new ArrayList<>();
+        if (myLocationHistory == null) {
+            myLocationHistory = new ArrayList<>();
+        }
 
         action_bar_title = (TextView) findViewById(R.id.action_bar_title);
 
@@ -225,42 +230,15 @@ public class MainActivity extends AppCompatActivity implements
         }
     };
 
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mHandler.removeCallbacks(syncData);
-        if (locationManager != null) {
-            locationManager.removeUpdates(locationListener);
-        }
-        if (runningService) {
-            startService(new Intent(getApplicationContext(), LocationService.class));
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        stopService(new Intent(getApplicationContext(), LocationService.class));
-        mHandler.removeCallbacks(syncData);
-        if (mHandler != null && runningService) {
-            mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
-        }
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED && locationManager != null) {
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
-                                                Constants.ACTIVITY_GPS_DISTANCE, locationListener);
-
-        }
-    }
-
     @Override
     public void onStart() {
         super.onStart();
         stopService(new Intent(getApplicationContext(), LocationService.class));
         mHandler.removeCallbacks(syncData);
+        myLocationHistory = LocationHistoryUtil.loadLocationHistoryFromPreferences(this);
+        if (myLocationHistory == null) {
+            myLocationHistory = new ArrayList<>();
+        }
         if (mHandler != null && runningService) {
             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
         }
@@ -278,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onStop() {
         super.onStop();
         mHandler.removeCallbacks(syncData);
+        LocationHistoryUtil.saveLocationHistoryToPreferences(this, myLocationHistory);
         if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }
@@ -285,19 +264,6 @@ public class MainActivity extends AppCompatActivity implements
             startService(new Intent(getApplicationContext(), LocationService.class));
         }
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mHandler.removeCallbacks(syncData);
-        if (locationManager != null) {
-            locationManager.removeUpdates(locationListener);
-        }
-        if (runningService) {
-            startService(new Intent(getApplicationContext(), LocationService.class));
-        }
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -411,4 +377,5 @@ public class MainActivity extends AppCompatActivity implements
     public void setActionBarTitle(String title){
             action_bar_title.setText(title);
     }
+
 }
