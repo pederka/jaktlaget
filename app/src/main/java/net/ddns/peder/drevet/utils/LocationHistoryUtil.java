@@ -35,7 +35,9 @@ public class LocationHistoryUtil {
         String json = sharedPrefs.getString(Constants.SHARED_PREF_LOCATION_HISTORY, null);
         Type type = new TypeToken<ArrayList<LatLng>>() {}.getType();
         List<LatLng> myLocationHistory = gson.fromJson(json,type);
-        Log.d(tag, "Loaded "+myLocationHistory.size()+" locations from history");
+        if (myLocationHistory != null) {
+            Log.d(tag, "Loaded " + myLocationHistory.size() + " locations from history");
+        }
         return myLocationHistory;
     }
 }
