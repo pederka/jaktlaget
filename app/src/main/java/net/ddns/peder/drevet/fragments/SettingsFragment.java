@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
+import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -13,6 +14,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.fragment_settings);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((MainActivity)getActivity()).setActionBarTitle("Valg");
     }
 
     public interface OnFragmentInteractionListener {

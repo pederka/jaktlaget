@@ -300,7 +300,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             // Delete from pshared preferences
                             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(
                                     getContext());
-                            pref.edit().remove(Constants.SHARED_PREF_LOCATION_HISTORY).commit();
+                            pref.edit().remove(Constants.SHARED_PREF_LOCATION_HISTORY).apply();
                             hideMyTraceLine();
                         }
                         Toast.makeText(getContext(), R.string.traces_deleted, Toast.LENGTH_SHORT).show();

@@ -24,7 +24,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
@@ -141,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements
                                     MY_PERMISSIONS_REQUEST);
 
                         }
+                        clearMyLocationHistory();
                         activeText.setText(getString(R.string.actionbar_active));
                         mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
                         runningService = true;
@@ -231,8 +231,8 @@ public class MainActivity extends AppCompatActivity implements
     };
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         stopService(new Intent(getApplicationContext(), LocationService.class));
         mHandler.removeCallbacks(syncData);
         myLocationHistory = LocationHistoryUtil.loadLocationHistoryFromPreferences(this);
@@ -253,8 +253,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         mHandler.removeCallbacks(syncData);
         LocationHistoryUtil.saveLocationHistoryToPreferences(this, myLocationHistory);
         if (locationManager != null) {
@@ -355,7 +355,9 @@ public class MainActivity extends AppCompatActivity implements
                                                             (float)location.getLongitude()).apply();
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
-            addToMyLocationHistory(new LatLng(location.getLatitude(), location.getLongitude()));
+            if (runningService) {
+                addToMyLocationHistory(new LatLng(location.getLatitude(), location.getLongitude()));
+            }
         }
 
         @Override

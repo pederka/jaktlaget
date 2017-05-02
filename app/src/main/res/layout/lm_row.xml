@@ -109,7 +109,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_weight="0.5"
-    android:src="@drawable/ic_delete_forever_black_50dp"
+    android:src="@drawable/ic_delete_forever_black_35dp"
     android:background="?android:selectableItemBackground"
     android:layout_gravity="center"
     />
