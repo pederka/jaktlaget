@@ -58,9 +58,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         // Read teamid from preferences
         String teamId = prefs.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
 
-        ViewPager vp = (ViewPager) getActivity().findViewById(R.id.team_pager);
-        TeamPagerAdapter teamPagerAdapter = (TeamPagerAdapter)vp.getAdapter();
-        teamFragment = (TeamFragment)teamPagerAdapter.getRegisteredFragment(1);
+
 
         // Set ids if they exist
         userText = (EditText) view.findViewById(R.id.username_text);
@@ -87,6 +85,14 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ViewPager vp = (ViewPager) getActivity().findViewById(R.id.team_pager);
+        TeamPagerAdapter teamPagerAdapter = (TeamPagerAdapter)vp.getAdapter();
+        teamFragment = (TeamFragment)teamPagerAdapter.getRegisteredFragment(1);
     }
 
     private void submitForm() {
