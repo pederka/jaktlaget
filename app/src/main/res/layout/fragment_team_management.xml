@@ -43,6 +43,16 @@
             android:layout_height="wrap_content"
             android:hint="@string/teamname_hint"/>
     </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_layout_teamcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <EditText
+            android:id="@+id/teamcode_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/teamcode_hint"/>
+    </android.support.design.widget.TextInputLayout>
                 <Space
             android:layout_width="match_parent"
             android:layout_height="15dp" />
@@ -51,18 +61,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/buttonshape"
-            android:text="@string/save_name_button"/>
+            android:text="@string/update_team_button"/>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/colorPrimaryLight"/>
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
+
 
     </LinearLayout>
     </ScrollView>

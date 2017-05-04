@@ -1,5 +1,6 @@
 package net.ddns.peder.drevet.AsyncTasks;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import net.ddns.peder.drevet.Constants;
+import net.ddns.peder.drevet.MainActivity;
 import net.ddns.peder.drevet.R;
 
 import net.ddns.peder.drevet.database.PositionsDbHelper;
@@ -48,12 +50,16 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     private int expirationTime;
     private boolean verbose;
     private final static String tag = "SslSyncronizer";
+    private ProgressDialog dialog;
+
 
     public DataSynchronizer(Context context, OnSyncComplete onSyncComplete, boolean verbose) {
         mContext = context;
 
         this.verbose = verbose;
         this.onSyncComplete = onSyncComplete;
+
+        dialog = new ProgressDialog(context);
 
         // Get last location
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -109,6 +115,14 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    protected void onPreExecute() {
+        if (this.verbose) {
+            this.dialog.setMessage("Kommuniserer med server..");
+            this.dialog.show();
+        }
     }
 
     @Override
@@ -205,6 +219,9 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
 
     @Override
     protected void onPostExecute(Integer result) {
+        if (dialog.isShowing()) {
+            dialog.dismiss();
+        }
         if (result.equals(SUCCESS)) {
             if (verbose) {
                 Toast.makeText(mContext, "Synkronisering fullført", Toast.LENGTH_SHORT).show();
