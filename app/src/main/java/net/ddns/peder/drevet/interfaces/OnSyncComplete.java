@@ -5,5 +5,5 @@ package net.ddns.peder.drevet.interfaces;
  */
 
 public interface OnSyncComplete {
-    void onSyncComplete();
+    void onSyncComplete(int result);
 }

@@ -35,10 +35,11 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManagerFactory;
 
 public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
-    private final int SUCCESS = 0;
-    private final int FAILED_USER = 1;
-    private final int FAILED_TEAM = 2;
-    private final int FAILED_TRANSFER = 3;
+    public static int SUCCESS = 0;
+    public static int FAILED_USER = 1;
+    public static int FAILED_TEAM = 2;
+    public static int FAILED_TRANSFER = 3;
+    public static int FAILED_CODE = 4;
     private Context mContext;
     private SocketFactory socketFactory;
     private String userId;
@@ -75,9 +76,6 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         posdb = positionsDbHelper.getWritableDatabase();
         TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(mContext);
         lmdb = teamLandmarksDbHelper.getWritableDatabase();
-
-        // Clear position database
-        //positionsDbHelper.clearTable(posdb);
 
         // Clear team landmarks database
         teamLandmarksDbHelper.clearTable(lmdb);
@@ -168,7 +166,10 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             int incomingSize = byteArrayToInt(inputSizeBytes);
             Log.d(tag, "Received "+incomingSize+" bytes of data");
 
-            if (incomingSize > 0) {
+            if (incomingSize == -1) {
+                return FAILED_CODE;
+            }
+            else if (incomingSize > 0) {
                 // Read incoming data
                 byte[] incomingData = new byte[incomingSize];
                 dataInputStream.read(incomingData, 0, incomingSize);
@@ -222,34 +223,8 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         if (dialog.isShowing()) {
             dialog.dismiss();
         }
-        if (result.equals(SUCCESS)) {
-            if (verbose) {
-                Toast.makeText(mContext, "Synkronisering fullført", Toast.LENGTH_SHORT).show();
-            }
-            Log.i(tag, "Sync successful!");
-        }
-        else if (result.equals(FAILED_USER)) {
-            if (verbose) {
-                Toast.makeText(mContext, "Kan ikke synkronisere uten brukernavn",
-                                    Toast.LENGTH_SHORT).show();
-            }
-            Log.i(tag, "No user name. Unable to sync.");
-        }
-        else if (result.equals(FAILED_TEAM)) {
-            if (verbose) {
-                Toast.makeText(mContext, "Kan ikke synkronisere uten lagnavn",
-                                    Toast.LENGTH_SHORT).show();
-            }
-            Log.i(tag, "No team name. Unable to sync.");
-        }
-        else if (result.equals(FAILED_TRANSFER)) {
-            if (verbose) {
-                Toast.makeText(mContext, "Synkronisering mislykket", Toast.LENGTH_SHORT).show();
-            }
-            Log.i(tag, "Sync failed.");
-        }
         if (onSyncComplete != null) {
-                onSyncComplete.onSyncComplete();
+                onSyncComplete.onSyncComplete(result);
         }
     }
 

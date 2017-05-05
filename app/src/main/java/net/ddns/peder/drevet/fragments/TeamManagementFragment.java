@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.Constants;
@@ -30,10 +32,26 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
     private TeamFragment teamFragment;
 
     @Override
-    public void onSyncComplete() {
-        teamFragment.updateTeamList();
-        teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
-        codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
+    public void onSyncComplete(int result) {
+        if (result == DataSynchronizer.SUCCESS) {
+            teamFragment.updateTeamList();
+            teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
+            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
+        }
+        else {
+            teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+        if (result == DataSynchronizer.FAILED_TRANSFER) {
+            Toast.makeText(getContext(), R.string.toast_no_contact_server, Toast.LENGTH_SHORT).show();
+        }
+        else if (result == DataSynchronizer.FAILED_TEAM && result == DataSynchronizer.FAILED_USER) {
+            Toast.makeText(getContext(), R.string.toast_no_team_or_user, Toast.LENGTH_SHORT).show();
+        }
+        else if (result == DataSynchronizer.FAILED_CODE) {
+            Toast.makeText(getContext(), R.string.toast_wrong_code, Toast.LENGTH_SHORT).show();
+            teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
+            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);        }
     }
 
     public TeamManagementFragment() {

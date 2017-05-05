@@ -53,6 +53,11 @@
     <string name="toast_invalid_name">Ugyldig brukernavn eller lagnavn</string>
     <string name="toast_teamname_saved">Lagnavn oppdatert</string>
     <string name="toast_name_saved">Brukernavn og lagnavn oppdatert</string>
+    <string name="toast_no_contact_server">Fikk ikke kontakt med server</string>
+    <string name="toast_no_team_or_user">Vennligst oppgi brukernavn og lagnavn</string>
+    <string name="toast_wrong_code">Feil lagkode</string>
+    <string name="toast_sync_failed">Synkronisering mislyktes</string>
+
 
     <string name="save_name_button">Lagre</string>
     <string name="update_team_button">Velg jaktlag</string>

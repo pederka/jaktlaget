@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.R;
@@ -44,8 +45,14 @@ public class TeamFragment extends Fragment implements OnSyncComplete {
     }
 
     @Override
-    public void onSyncComplete() {
-        updateTeamList();
+    public void onSyncComplete(int result) {
+        if (result == DataSynchronizer.SUCCESS) {
+            updateTeamList();
+        }
+        else {
+            Toast.makeText(getContext(), R.string.toast_sync_failed, Toast.LENGTH_SHORT).show();
+        }
+
         swipeRefreshLayout.setRefreshing(false);
     }
 
