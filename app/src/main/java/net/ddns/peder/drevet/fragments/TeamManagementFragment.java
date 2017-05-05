@@ -23,6 +23,7 @@ import net.ddns.peder.drevet.interfaces.OnSyncComplete;
 public class TeamManagementFragment extends Fragment implements OnSyncComplete {
     private EditText userText;
     private EditText teamText;
+    private EditText codeText;
     private TextInputLayout textInputLayoutUser;
     private TextInputLayout textInputLayoutTeam;
     private OnFragmentInteractionListener mListener;
@@ -31,6 +32,8 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
     @Override
     public void onSyncComplete() {
         teamFragment.updateTeamList();
+        teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
+        codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
     }
 
     public TeamManagementFragment() {
@@ -66,9 +69,14 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             userText.setText(userId);
         }
         teamText = (EditText) view.findViewById(R.id.teamname_text);
+        codeText = (EditText) view.findViewById(R.id.teamcode_text);
+        codeText.setText("C7SKTY");
         if (!teamId.equals(Constants.DEFAULT_TEAM_ID)) {
             teamText.setText(teamId);
+            teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
+            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
         }
+
 
         textInputLayoutUser = (TextInputLayout) view.findViewById(R.id.text_input_layout_user);
         textInputLayoutTeam = (TextInputLayout) view.findViewById(R.id.text_input_layout_team);
