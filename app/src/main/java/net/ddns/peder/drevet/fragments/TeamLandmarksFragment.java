@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -112,6 +113,8 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
                         cursor, fromColumns, toViews);
 
         listView = (ListView) view.findViewById(R.id.team_lm_list);
+        LinearLayout emptyText = (LinearLayout) view.findViewById(android.R.id.empty);
+        listView.setEmptyView(emptyText);
         listView.setAdapter(mAdapter);
 
         return view;

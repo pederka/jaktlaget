@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
@@ -102,6 +104,8 @@ public class TeamFragment extends Fragment implements OnSyncComplete {
                         cursor, fromColumns, toViews);
 
         listView = (ListView) view.findViewById(R.id.lm_list);
+        LinearLayout emptyText = (LinearLayout) view.findViewById(android.R.id.empty);
+        listView.setEmptyView(emptyText);
         listView.setAdapter(mAdapter);
 
         return view;
