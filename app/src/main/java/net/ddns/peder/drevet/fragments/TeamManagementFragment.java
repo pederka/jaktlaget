@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -36,7 +35,11 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         if (result == DataSynchronizer.SUCCESS) {
             teamFragment.updateTeamList();
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(
+                                                getContext());
+            codeText.setText(sharedPref.getString(Constants.SHARED_PREF_TEAM_CODE, ""));
             codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
+            Toast.makeText(getContext(), "Registrering vellykket", Toast.LENGTH_SHORT).show();
         }
         else {
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -78,6 +81,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         String userId = prefs.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
         // Read teamid from preferences
         String teamId = prefs.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
+        String code = prefs.getString(Constants.SHARED_PREF_TEAM_CODE, "");
 
 
 
@@ -88,7 +92,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         }
         teamText = (EditText) view.findViewById(R.id.teamname_text);
         codeText = (EditText) view.findViewById(R.id.teamcode_text);
-        codeText.setText("C7SKTY");
+        codeText.setText(code);
         if (!teamId.equals(Constants.DEFAULT_TEAM_ID)) {
             teamText.setText(teamId);
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
@@ -130,9 +134,13 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         }
         String userId = userText.getText().toString().trim();
         String teamId = teamText.getText().toString().trim();
+        String code = codeText.getText().toString().trim();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        prefs.edit().putString(Constants.SHARED_PREF_TEAM_ID, teamId).apply();
-        prefs.edit().putString(Constants.SHARED_PREF_USER_ID, userId).apply();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(Constants.SHARED_PREF_TEAM_ID, teamId);
+        editor.putString(Constants.SHARED_PREF_USER_ID, userId);
+        editor.putString(Constants.SHARED_PREF_TEAM_CODE, code);
+        editor.apply();
     }
 
     private boolean validateName() {

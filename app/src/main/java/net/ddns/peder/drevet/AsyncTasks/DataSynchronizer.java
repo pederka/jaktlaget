@@ -47,11 +47,13 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     private SQLiteDatabase lmdb;
     private OnSyncComplete onSyncComplete;
     private String teamId;
+    private String code;
     private boolean removeOutdated;
     private int expirationTime;
     private boolean verbose;
     private final static String tag = "SslSyncronizer";
     private ProgressDialog dialog;
+    private SharedPreferences sharedPrefs;
 
 
     public DataSynchronizer(Context context, OnSyncComplete onSyncComplete, boolean verbose) {
@@ -63,9 +65,10 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         dialog = new ProgressDialog(context);
 
         // Get last location
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         userId = sharedPrefs.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
         teamId = sharedPrefs.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
+        code = sharedPrefs.getString(Constants.SHARED_PREF_TEAM_CODE, "");
 
         // Get preferences relating to outdated positions
         removeOutdated = sharedPrefs.getBoolean("pref_hideoldteam", true);
@@ -132,7 +135,6 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         if (teamId.equals(Constants.DEFAULT_TEAM_ID)) {
             return FAILED_TEAM;
         }
-
         Log.i(tag, "Synchronizing");
         try {
             Socket socket = (SSLSocket) socketFactory.createSocket(Constants.SOCKET_ADDR,
@@ -146,8 +148,8 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             dataOutputStream.writeInt(nameSize);
             dataOutputStream.write(nameBytes);
 
-            // Send team name
-            byte[] teamBytes = teamId.getBytes();
+            // Send team name and code
+            byte[] teamBytes = (teamId+":"+code).getBytes();
             int teamSize = teamBytes.length;
             dataOutputStream.writeInt(teamSize);
             dataOutputStream.write(teamBytes);
@@ -166,6 +168,7 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             int incomingSize = byteArrayToInt(inputSizeBytes);
             Log.d(tag, "Received "+incomingSize+" bytes of data");
 
+
             if (incomingSize == -1) {
                 return FAILED_CODE;
             }
@@ -181,6 +184,15 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
                     JsonUtil.importUserInformationFromJsonString(mContext, posdb, lmdb, userData[i]);
                 }
             }
+
+            // Read incoming code
+            byte[] codeSizeBytes = new byte[4];
+            dataInputStream.read(codeSizeBytes, 0, 4);
+            int codeSize = byteArrayToInt(codeSizeBytes);
+            byte[] codeBytes = new byte[codeSize];
+            dataInputStream.read(codeBytes, 0, codeSize);
+            String codeString = new String(codeBytes, "UTF-8");
+            sharedPrefs.edit().putString(Constants.SHARED_PREF_TEAM_CODE, codeString).apply();
 
             // Remove any teammates with outdated positions
             if (removeOutdated) {
