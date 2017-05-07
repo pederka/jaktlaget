@@ -1,13 +1,19 @@
 package net.ddns.peder.drevet.providers;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 
 public class TileProviderFactory {
 
-    public static WMSTileProvider getWmsTileProvider() {
-        final String WMS = "http://wms.geonorge.no/skwms1/wms.topo2?request=GetMap&version=1.3.0&layers=topo2_WMS&bbox=%f,%f,%f,%f&width=256&height=256&crs=EPSG:3857&format=image/jpeg";
+    public static WMSTileProvider getWmsTileProvider(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String map_type = sharedPreferences.getString("pref_map_type", "png");
+        final String WMS = "http://wms.geonorge.no/skwms1/wms.topo2?request=GetMap&version=1.3.0&layers=topo2_WMS&bbox=%f,%f,%f,%f&width=256&height=256&crs=EPSG:3857&format=image/"+map_type;
         WMSTileProvider tileProvider = new WMSTileProvider(256, 256) {
             @Override
             public synchronized URL getTileUrl(int x, int y, int zoom) {

@@ -5,6 +5,14 @@
         <item>Del med laget?</item>
     </string-array>
 
+    <string-array name="pref_map_type_entries">
+        <item>png (mer databruk)</item>
+        <item>jpeg (mindre databruk)</item>
+    </string-array>
+    <string-array name="pref_map_type_values">
+        <item>png</item>
+        <item>jpeg</item>
+    </string-array>
 
     <string-array name="pref_syncInterval_entries">
         <item>5 min</item>

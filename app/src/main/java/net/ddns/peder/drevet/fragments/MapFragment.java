@@ -161,7 +161,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     };
 
     private void setUpMap() {
-        TileProvider wmsTileProvider = TileProviderFactory.getWmsTileProvider();
+        TileProvider wmsTileProvider = TileProviderFactory.getWmsTileProvider(getContext());
         map.addTileOverlay(new TileOverlayOptions().tileProvider(wmsTileProvider));
 
         // Make sure the google map is not visible in the background

@@ -77,6 +77,7 @@
     <string name="minutes">%s min</string>
 
     <string name="pref_category_sync">Synkronisering</string>
+    <string name="pref_category_map">Kart</string>
 
     <string name="pref_autoshowteam">Vis lagmedlemmer</string>
     <string name="pref_autoshowteam_summary">Automatisk vis nye lagmedlemmer på kart</string>
@@ -94,6 +95,10 @@
     <string name="pref_hideteamlimit">Utløpstid for posisjoner</string>
     <string name="pref_hideteamlimit_dialog">Velg ny utløpstid for posisjoner</string>
     <string name="pref_hideteamlimit_default">30</string>
+
+    <string name="pref_map_type">Kartformat</string>
+    <string name="pref_map_type_dialog">Velg kartformat</string>
+    <string name="pref_map_type_default">png</string>
 
     <string name="teamname_guide">Velg et jegernavn og et lagnavn. Alle jegere med samme lagnavn vil
                         kunne velge å dele sin posisjon og sine kartmerker med hverandre.</string>
