@@ -62,9 +62,14 @@
             android:layout_height="wrap_content"
             android:background="@drawable/buttonshape"
             android:text="@string/update_team_button"/>
-
-
-
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/code_explain"
+            android:textSize="18dp"/>
     </LinearLayout>
     </ScrollView>
 </FrameLayout>

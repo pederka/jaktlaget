@@ -80,6 +80,9 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(mContext);
         lmdb = teamLandmarksDbHelper.getWritableDatabase();
 
+        // Clear team database
+        positionsDbHelper.clearTable(posdb);
+
         // Clear team landmarks database
         teamLandmarksDbHelper.clearTable(lmdb);
 

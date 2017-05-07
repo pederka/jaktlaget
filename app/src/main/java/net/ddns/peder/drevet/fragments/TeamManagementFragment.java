@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,24 +38,39 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(
                                                 getContext());
-            codeText.setText(sharedPref.getString(Constants.SHARED_PREF_TEAM_CODE, ""));
+            codeText.setError(null);
+            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
+            codeText.setText(sharedPref.getString(Constants.SHARED_PREF_TEAM_CODE, ""));
             Toast.makeText(getContext(), "Registrering vellykket", Toast.LENGTH_SHORT).show();
         }
-        else {
+        else if (result == DataSynchronizer.FAILED_TRANSFER) {
+            Toast.makeText(getContext(), R.string.toast_no_contact_server, Toast.LENGTH_SHORT).show();
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
-        if (result == DataSynchronizer.FAILED_TRANSFER) {
-            Toast.makeText(getContext(), R.string.toast_no_contact_server, Toast.LENGTH_SHORT).show();
-        }
-        else if (result == DataSynchronizer.FAILED_TEAM && result == DataSynchronizer.FAILED_USER) {
+        else if (result == DataSynchronizer.FAILED_TEAM) {
             Toast.makeText(getContext(), R.string.toast_no_team_or_user, Toast.LENGTH_SHORT).show();
+            userText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
+            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+        else if (result == DataSynchronizer.FAILED_USER) {
+            Toast.makeText(getContext(), R.string.toast_no_team_or_user, Toast.LENGTH_SHORT).show();
+            teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            userText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
+            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
         else if (result == DataSynchronizer.FAILED_CODE) {
             Toast.makeText(getContext(), R.string.toast_wrong_code, Toast.LENGTH_SHORT).show();
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
-            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);        }
+            codeText.setError(getString(R.string.wrong_code));
+            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
+            // Set code to empty
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                                            getContext());
+            sharedPreferences.edit().putString(Constants.SHARED_PREF_TEAM_CODE, "").apply();
+        }
     }
 
     public TeamManagementFragment() {
@@ -83,8 +99,6 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         String teamId = prefs.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
         String code = prefs.getString(Constants.SHARED_PREF_TEAM_CODE, "");
 
-
-
         // Set ids if they exist
         userText = (EditText) view.findViewById(R.id.username_text);
         if (!userId.equals(Constants.DEFAULT_USER_ID)) {
@@ -92,13 +106,13 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         }
         teamText = (EditText) view.findViewById(R.id.teamname_text);
         codeText = (EditText) view.findViewById(R.id.teamcode_text);
+        codeText.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         codeText.setText(code);
-        if (!teamId.equals(Constants.DEFAULT_TEAM_ID)) {
+        if (!code.equals("")) {
             teamText.setText(teamId);
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
             codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
         }
-
 
         textInputLayoutUser = (TextInputLayout) view.findViewById(R.id.text_input_layout_user);
         textInputLayoutTeam = (TextInputLayout) view.findViewById(R.id.text_input_layout_team);
@@ -107,30 +121,28 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         saveTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitForm();
-                DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
-                                                                TeamManagementFragment.this, true);
-                dataSynchronizer.execute();
+                if (teamFragment == null) {
+                    ViewPager vp = (ViewPager) getActivity().findViewById(R.id.team_pager);
+                    TeamPagerAdapter teamPagerAdapter = (TeamPagerAdapter) vp.getAdapter();
+                    teamFragment = (TeamFragment) teamPagerAdapter.getRegisteredFragment(1);
+                }
+                if (submitForm()) {
+                    DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
+                            TeamManagementFragment.this, true);
+                    dataSynchronizer.execute();
+                }
             }
         });
 
         return view;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ViewPager vp = (ViewPager) getActivity().findViewById(R.id.team_pager);
-        TeamPagerAdapter teamPagerAdapter = (TeamPagerAdapter)vp.getAdapter();
-        teamFragment = (TeamFragment)teamPagerAdapter.getRegisteredFragment(1);
-    }
-
-    private void submitForm() {
+    private boolean submitForm() {
         if (!validateName()) {
-            return;
+            return false;
         }
         if (!validateTeam()) {
-            return;
+            return false;
         }
         String userId = userText.getText().toString().trim();
         String teamId = teamText.getText().toString().trim();
@@ -141,6 +153,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         editor.putString(Constants.SHARED_PREF_USER_ID, userId);
         editor.putString(Constants.SHARED_PREF_TEAM_CODE, code);
         editor.apply();
+        return true;
     }
 
     private boolean validateName() {
@@ -156,7 +169,8 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
 
     private boolean validateTeam() {
         if (teamText.getText().toString().trim().isEmpty() ||
-                teamText.getText().toString().equals(Constants.DEFAULT_TEAM_ID)) {
+                teamText.getText().toString().equals(Constants.DEFAULT_TEAM_ID) ||
+                teamText.getText().toString().contains(":")) {
             teamText.setError(getString(R.string.toast_invalid_teamname));
             return false;
         } else {

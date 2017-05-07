@@ -64,8 +64,9 @@
     <string name="save_name_button">Lagre</string>
     <string name="update_team_button">Velg jaktlag</string>
     <string name="teamname_hint">Lagnavn</string>
-    <string name="teamcode_hint">Kode for laget</string>
+    <string name="teamcode_hint">Adgangskode for laget*</string>
     <string name="username_hint">Jegernavn</string>
+    <string name="wrong_code">Ugyldig adganskode</string>
 
     <string name="notification_title">Jaktlaget</string>
     <string name="notification_message">Deler din posisjon med laget</string>
@@ -96,7 +97,7 @@
 
     <string name="teamname_guide">Velg et jegernavn og et lagnavn. Alle jegere med samme lagnavn vil
                         kunne velge å dele sin posisjon og sine kartmerker med hverandre.</string>
-
-    <string name="generate_key_button">Ny krypteringsnøkkel</string>
+    <string name="code_explain">*Skriv inn adgangskode for jaktlaget du vil registrere deg på. Hvis du oppretter et nytt
+    lag trenger du ikke skrive inn kode. En kode vil da bli generert for deg som du kan dele med andre.</string>
 
 </resources>

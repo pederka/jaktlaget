@@ -128,8 +128,10 @@ public class MainActivity extends AppCompatActivity implements
                                                                         Constants.DEFAULT_USER_ID);
                     String teamid = prefs.getString(Constants.SHARED_PREF_TEAM_ID,
                                                                         Constants.DEFAULT_TEAM_ID);
+                    String code = prefs.getString(Constants.SHARED_PREF_TEAM_CODE, "");
                     if (!userid.equals(Constants.DEFAULT_USER_ID)
-                                                    && !teamid.equals(Constants.DEFAULT_TEAM_ID)) {
+                                                    && !teamid.equals(Constants.DEFAULT_TEAM_ID) &&
+                                        !code.equals("")) {
                         // Request permission
                         if (ContextCompat.checkSelfPermission((Activity) mContext,
                                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -152,6 +154,11 @@ public class MainActivity extends AppCompatActivity implements
                          Toast.makeText(getApplicationContext(), R.string.cant_start,
                                 Toast.LENGTH_SHORT).show();
                          runSwitch.setChecked(false);
+                         // Switch to team management fragment
+                         Fragment fragment = new AllTeamFragment();
+                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                         ft.replace(R.id.content_frame, fragment);
+                         ft.commit();
                     }
                 }
             }
