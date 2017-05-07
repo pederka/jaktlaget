@@ -41,6 +41,7 @@ public final class Constants {
     public static final String OBJECT_KEY_BASE = "jaktlag/";
 
     // For SSL socket
-    public static final String SOCKET_ADDR = "34.197.222.14";
+    //public static final String SOCKET_ADDR = "34.197.222.14";
+    public static final String SOCKET_ADDR = "peder.ddns.net";
     public static final int SOCKET_PORT = 10024;
 }
