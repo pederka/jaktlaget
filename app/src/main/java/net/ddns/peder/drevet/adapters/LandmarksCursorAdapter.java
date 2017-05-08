@@ -43,17 +43,6 @@ public class LandmarksCursorAdapter extends SimpleCursorAdapter {
         TextView descriptionView = (TextView) view.findViewById(R.id.lm_list_desc);
         descriptionView.setText(description);
 
-        final String lat = cursor.getString(cursor.getColumnIndexOrThrow(
-                                                LandmarksDbHelper.COLUMN_NAME_LATITUDE));
-        final String lon = cursor.getString(cursor.getColumnIndexOrThrow(
-                                                LandmarksDbHelper.COLUMN_NAME_LONGITUDE));
-
-        TextView latView = (TextView) view.findViewById(R.id.team_lm_list_lat);
-        latView.setText(lat);
-
-        TextView longView = (TextView) view.findViewById(R.id.team_lm_list_lon);
-        longView.setText(lon);
-
         AppCompatCheckBox show = (AppCompatCheckBox) view.findViewById(R.id.show_check_box);
         show.setOnClickListener(new View.OnClickListener() {
              @Override

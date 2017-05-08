@@ -10,16 +10,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     >
 
-<TextView
-    android:id="@+id/lm_list_desc"
-    android:text="Description"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:textSize="20sp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-    android:layout_weight="1.5"
-    android:layout_gravity="center">
-</TextView>
 
 
 </LinearLayout>
@@ -31,26 +21,19 @@ xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_width="0dp"
      android:layout_height="wrap_content"
      android:layout_weight="1.5"
+     android:layout_gravity="center_vertical"
      android:orientation="vertical">
 
-  <TextView
-    android:id="@+id/team_lm_list_lat"
-    android:text="@string/lm_list_lat"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textSize="20sp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-    >
-</TextView>
 <TextView
-    android:id="@+id/team_lm_list_lon"
-    android:text="@string/lm_list_long"
-    android:layout_width="wrap_content"
+    android:id="@+id/lm_list_desc"
+    android:text="Description"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textSize="20sp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-    >
+    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+    android:layout_gravity="center">
 </TextView>
+
 
  </LinearLayout>
 
