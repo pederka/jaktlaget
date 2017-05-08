@@ -9,6 +9,8 @@
     <color name="dividerColor">#BDBDBD</color>
     <color name="colorInactive">#A9A9A9</color>
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="colorButtonFramePressed">#FF888888</color>
 
     <color name="mapMe">#00008B</color>
     <color name="mapOther">#FF0000</color>

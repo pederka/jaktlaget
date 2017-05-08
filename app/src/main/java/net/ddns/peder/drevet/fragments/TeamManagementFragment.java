@@ -2,6 +2,7 @@ package net.ddns.peder.drevet.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,6 +21,8 @@ import net.ddns.peder.drevet.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.drevet.Constants;
 import net.ddns.peder.drevet.R;
 import net.ddns.peder.drevet.adapters.TeamPagerAdapter;
+import net.ddns.peder.drevet.database.PositionsDbHelper;
+import net.ddns.peder.drevet.database.TeamLandmarksDbHelper;
 import net.ddns.peder.drevet.interfaces.OnSyncComplete;
 
 public class TeamManagementFragment extends Fragment implements OnSyncComplete {
@@ -133,7 +136,39 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                 }
             }
         });
-
+        Button resetTeamButton = (Button) view.findViewById(R.id.reset_team_button);
+        resetTeamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (teamFragment == null) {
+                    ViewPager vp = (ViewPager) getActivity().findViewById(R.id.team_pager);
+                    TeamPagerAdapter teamPagerAdapter = (TeamPagerAdapter) vp.getAdapter();
+                    teamFragment = (TeamFragment) teamPagerAdapter.getRegisteredFragment(1);
+                }
+                teamText.setText("");
+                codeText.setText("");
+                teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                // Remove team and code from shared preferences
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
+                            getContext());
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
+                editor.putString(Constants.SHARED_PREF_TEAM_CODE, "");
+                editor.apply();
+                // Clear database entries
+                PositionsDbHelper positionsDbHelper = new PositionsDbHelper(getContext());
+                TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
+                SQLiteDatabase posdb = positionsDbHelper.getWritableDatabase();
+                SQLiteDatabase lmdb = teamLandmarksDbHelper.getReadableDatabase();
+                positionsDbHelper.clearTable(posdb);
+                teamLandmarksDbHelper.clearTable(lmdb);
+                posdb.close();
+                lmdb.close();
+                // Update the list in team fragment
+                teamFragment.updateTeamList();
+            }
+        });
         return view;
     }
 

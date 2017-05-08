@@ -62,19 +62,19 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1.0"
-            android:textSize="18dp"
+            android:textSize="15dp"
             android:layout_margin="10dp"
-            android:background="@drawable/buttonshape_inactive"
+            android:background="@drawable/button_secondary_selector"
             android:text="@string/reset_team_button"/>
         <Button
             android:id="@+id/save_teamname_button"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1.0"
-            android:textColor="@color/colorPrimaryLight"
+            android:textColor="@color/white"
             android:layout_margin="10dp"
-            android:textSize="18dp"
-            android:background="@drawable/buttonshape"
+            android:textSize="15dp"
+            android:background="@drawable/button_selector"
             android:text="@string/update_team_button"/>
 
         </LinearLayout>

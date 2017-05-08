@@ -277,7 +277,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             lineButton.setBackgroundResource(R.drawable.buttonshape);
         } else {
             line_toggled = false;
-            lineButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+            lineButton.setBackgroundResource(R.drawable.buttonshape_secondary);
         }
         lineButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -291,7 +291,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             false).apply();
-                    lineButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+                    lineButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
                     line_toggled = true;
                     if (traceLine != null) {
@@ -339,7 +339,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             landmarkButton.setBackgroundResource(R.drawable.buttonshape);
         } else {
             landmarks_toggled = false;
-            landmarkButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+            landmarkButton.setBackgroundResource(R.drawable.buttonshape_secondary);
         }
         landmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -356,7 +356,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
                                             false).apply();
-                    landmarkButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+                    landmarkButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
                     landmarks_toggled = true;
                     addLandMarks(map);
@@ -374,7 +374,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             teamButton.setBackgroundResource(R.drawable.buttonshape);
         } else {
             team_toggled = false;
-            teamButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+            teamButton.setBackgroundResource(R.drawable.buttonshape_secondary);
         }
         teamButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -389,7 +389,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     team_toggled = false;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             false).apply();
-                    teamButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+                    teamButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
                     updateTeamPositions(map);
                     team_toggled = true;
@@ -406,7 +406,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             weatherButton.setBackgroundResource(R.drawable.buttonshape);
         } else {
             weather_toggled = false;
-            weatherButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+            weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
         }
         weatherButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -417,7 +417,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     weather_toggled = false;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE,
                                             false).apply();
-                    weatherButton.setBackgroundResource(R.drawable.buttonshape_inactive);
+                    weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
                     weather_toggled = true;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE,
