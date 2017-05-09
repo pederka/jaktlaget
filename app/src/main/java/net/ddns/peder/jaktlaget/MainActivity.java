@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements
         TeamManagementFragment.OnFragmentInteractionListener, AllLandmarksFragment.OnFragmentInteractionListener,
         AllTeamFragment.OnFragmentInteractionListener {
 
-    private int MY_PERMISSIONS_REQUEST;
+    private final static int MY_PERMISSIONS_REQUEST = 1654;
     private LocationListener locationListener;
     private LocationManager locationManager;
     private Handler mHandler;
@@ -180,27 +180,9 @@ public class MainActivity extends AppCompatActivity implements
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST);
-
         }
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST);
-
-        }
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
-            locationListener = new MyLocationListener(mContext);
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
-                                                Constants.ACTIVITY_GPS_DISTANCE, locationListener);
-
-        }
+        startPositionUpdates();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID,
@@ -213,6 +195,33 @@ public class MainActivity extends AppCompatActivity implements
 
 
         //PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
+    }
+
+    private void startPositionUpdates() {
+         if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            locationListener = new MyLocationListener(mContext);
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
+                                                Constants.ACTIVITY_GPS_DISTANCE, locationListener);
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startPositionUpdates();
+                }
+            }
+        }
     }
 
     public List<LatLng> getMyLocationHistory() {
