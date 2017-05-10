@@ -46,7 +46,10 @@ import net.ddns.peder.jaktlaget.services.LocationService;
 import net.ddns.peder.jaktlaget.utils.LocationHistoryUtil;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static net.ddns.peder.jaktlaget.Constants.SYNC_DELAY_ACTIVITY;
 
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements
     private final String tag = "MainActivity";
 
     private List<LatLng> myLocationHistory;
-
+    private Map<String, List<LatLng>> teamLocationHistory = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,10 @@ public class MainActivity extends AppCompatActivity implements
         mContext = this;
 
         mHandler = new Handler();
+
+        if (teamLocationHistory == null) {
+            teamLocationHistory = new HashMap<>();
+        }
 
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
@@ -224,6 +231,33 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    public Map<String, List<LatLng>> getTeamLocationHistory() {
+        return teamLocationHistory;
+    }
+
+    public void addToTeamLocationHistory(String user, LatLng latLng) {
+        if (teamLocationHistory == null) {
+            teamLocationHistory = new HashMap<>();
+        }
+        if (teamLocationHistory.containsKey(user)) {
+            List<LatLng> userHistory = teamLocationHistory.get(user);
+            LatLng last = userHistory.get(userHistory.size() - 1);
+            // Only add to history of location has changed
+            if (last.latitude != latLng.latitude || last.longitude != latLng.longitude) {
+                userHistory.add(latLng);
+                teamLocationHistory.put(user, userHistory);
+            }
+        } else {
+            List<LatLng> userHistory = new ArrayList<>();
+            userHistory.add(latLng);
+            teamLocationHistory.put(user, userHistory);
+        }
+    }
+
+    public void clearTeamLocationHistory() {
+        teamLocationHistory.clear();
+    }
+
     public List<LatLng> getMyLocationHistory() {
         return myLocationHistory;
     }
@@ -252,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements
         stopService(new Intent(getApplicationContext(), LocationService.class));
         mHandler.removeCallbacks(syncData);
         myLocationHistory = LocationHistoryUtil.loadLocationHistoryFromPreferences(this);
+        teamLocationHistory = LocationHistoryUtil.loadTeamLocationHistoryFromPreferences(this);
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
         }
@@ -273,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onPause();
         mHandler.removeCallbacks(syncData);
         LocationHistoryUtil.saveLocationHistoryToPreferences(this, myLocationHistory);
+        LocationHistoryUtil.saveTeamLocationHistoryToPreferences(this, teamLocationHistory);
         if (locationManager != null) {
             locationManager.removeUpdates(locationListener);
         }

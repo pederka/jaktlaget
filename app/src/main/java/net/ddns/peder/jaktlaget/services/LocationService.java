@@ -6,6 +6,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
@@ -20,10 +22,14 @@ import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;
+import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
+import net.ddns.peder.jaktlaget.interfaces.OnSyncComplete;
 import net.ddns.peder.jaktlaget.utils.LocationHistoryUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by peder on 3/23/17.
@@ -37,9 +43,68 @@ public class LocationService extends Service {
     private String userId;
     private String teamId;
     private List<LatLng> myLocationHistory;
+    private Map<String, List<LatLng>> teamLocationHistory = new HashMap<>();
 
-    private class LocationListener implements android.location.LocationListener {
+    private class LocationListener implements android.location.LocationListener, OnSyncComplete {
         private Location mLastLocation;
+
+        @Override
+        public void onSyncComplete(int result) {
+            if (result == DataSynchronizer.SUCCESS) {
+                PositionsDbHelper positionsDbHelper = new PositionsDbHelper(getApplicationContext());
+                SQLiteDatabase posdb = positionsDbHelper.getReadableDatabase();
+                final String[] PROJECTION = {
+                        PositionsDbHelper.COLUMN_NAME_ID,
+                        PositionsDbHelper.COLUMN_NAME_SHOWED,
+                        PositionsDbHelper.COLUMN_NAME_USER,
+                        PositionsDbHelper.COLUMN_NAME_LATITUDE,
+                        PositionsDbHelper.COLUMN_NAME_LONGITUDE
+                };
+
+                String selection = PositionsDbHelper.COLUMN_NAME_SHOWED + " = ?";
+                String[] selectionArgs = {"1"};
+                final Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
+                        PROJECTION,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        null);
+                while (cursor.moveToNext()) {
+                    Float latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
+                            PositionsDbHelper.COLUMN_NAME_LATITUDE));
+                    Float longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
+                            PositionsDbHelper.COLUMN_NAME_LONGITUDE));
+                    LatLng pos = new LatLng(latitude, longitude);
+                    String user = cursor.getString(cursor.getColumnIndexOrThrow(
+                            PositionsDbHelper.COLUMN_NAME_USER));
+                    addToTeamLocationHistory(user, pos);
+                }
+                LocationHistoryUtil.saveTeamLocationHistoryToPreferences(getApplicationContext(),
+                                            teamLocationHistory);
+                cursor.close();
+            }
+        }
+
+        private void addToTeamLocationHistory(String user, LatLng latLng) {
+            if (teamLocationHistory == null) {
+                teamLocationHistory = new HashMap<>();
+            }
+            if (teamLocationHistory.containsKey(user)) {
+                List<LatLng> userHistory = teamLocationHistory.get(user);
+                LatLng last = userHistory.get(userHistory.size() - 1);
+                // Only add to history of location has changed
+                if (last.latitude != latLng.latitude || last.longitude != latLng.longitude) {
+                    userHistory.add(latLng);
+                    teamLocationHistory.put(user, userHistory);
+                }
+            } else {
+                List<LatLng> userHistory = new ArrayList<>();
+                userHistory.add(latLng);
+                teamLocationHistory.put(user, userHistory);
+            }
+        }
+
 
         public LocationListener(String provider)
         {
@@ -63,8 +128,9 @@ public class LocationService extends Service {
                                                             (float)location.getLongitude()).apply();
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
-            DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(), null,
-                                                                false);
+            DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(),
+                                                                            this,
+                                                                            false);
             myLocationHistory.add(new LatLng(location.getLatitude(), location.getLongitude()));
             Log.i(tag, "Syncing after location changed");
             LocationHistoryUtil.saveLocationHistoryToPreferences(getApplicationContext(),
@@ -107,6 +173,8 @@ public class LocationService extends Service {
 
         myLocationHistory = LocationHistoryUtil.loadLocationHistoryFromPreferences(
                                                                 getApplicationContext());
+        teamLocationHistory = LocationHistoryUtil.loadTeamLocationHistoryFromPreferences(
+                                                    getApplicationContext());
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
         }

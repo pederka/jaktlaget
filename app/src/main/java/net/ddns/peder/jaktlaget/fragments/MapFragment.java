@@ -58,9 +58,12 @@ import net.ddns.peder.jaktlaget.providers.TileProviderFactory;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private OnFragmentInteractionListener mListener;
@@ -92,6 +95,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private List<Marker> markerList;
     private List<Marker> teamMarkerList;
     private Polyline traceLine;
+    private List<Polyline> teamTraceLines;
     private Bitmap myselfBitmap;
     private Bitmap otherBitmap;
     private Bitmap myLandmarkBitmap;
@@ -289,6 +293,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     if (traceLine != null) {
                         hideMyTraceLine();
                     }
+                    hideTeamTraceLine();
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             false).apply();
                     lineButton.setBackgroundResource(R.drawable.buttonshape_secondary);
@@ -297,6 +302,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     if (traceLine != null) {
                         showMyTraceLine();
                     }
+                    showTeamTraceLine();
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             true).apply();
                     lineButton.setBackgroundResource(R.drawable.buttonshape);
@@ -312,11 +318,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     public void onClick(DialogInterface dialog, int id) {
                         if (traceLine != null) {
                             ((MainActivity)getActivity()).clearMyLocationHistory();
+                            ((MainActivity)getActivity()).clearTeamLocationHistory();
                             // Delete from pshared preferences
-                            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(
-                                    getContext());
-                            pref.edit().remove(Constants.SHARED_PREF_LOCATION_HISTORY).apply();
+                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
+                                    getContext()).edit();
+                            editor.remove(Constants.SHARED_PREF_LOCATION_HISTORY);
+                            editor.remove(Constants.SHARED_PREF_TEAM_LOCATION_HISTORY);
+                            editor.apply();
                             hideMyTraceLine();
+                            hideTeamTraceLine();
                         }
                         Toast.makeText(getContext(), R.string.traces_deleted, Toast.LENGTH_SHORT).show();
                     }
@@ -723,6 +733,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             PositionsDbHelper.COLUMN_NAME_USER,
             PositionsDbHelper.COLUMN_NAME_LATITUDE,
             PositionsDbHelper.COLUMN_NAME_LONGITUDE,
+
         };
 
         String selection = PositionsDbHelper.COLUMN_NAME_SHOWED + " = ?";
@@ -743,12 +754,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             LatLng pos = new LatLng(latitude, longitude);
             String user = cursor.getString(cursor.getColumnIndexOrThrow(
                     PositionsDbHelper.COLUMN_NAME_USER));
+            ((MainActivity)getActivity()).addToTeamLocationHistory(user, pos);
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(pos);
             markerOptions.title(user);
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(otherBitmap));
             userMarkerList.add(map.addMarker(markerOptions));
         }
+        showTeamTraceLine();
         cursor.close();
     }
 
@@ -841,4 +854,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    private void showTeamTraceLine() {
+        if (map != null && getActivity() != null) {
+            if (teamTraceLines == null) {
+                teamTraceLines = new ArrayList<>();
+            }
+            teamTraceLines.clear();
+            Map<String, List<LatLng>> teamLocationHistory =
+                                        ((MainActivity) getActivity()).getTeamLocationHistory();
+            List<String> users = new ArrayList<>();
+            users.addAll(teamLocationHistory.keySet());
+            for (int i=0; i<teamLocationHistory.size(); i++) {
+                Polyline line =  map.addPolyline(new PolylineOptions()
+                    .addAll(teamLocationHistory.get(users.get(i)))
+                    .width(8)
+                    .color(colorOther)
+                    .zIndex(999)
+                );
+                teamTraceLines.add(line);
+            }
+        }
+    }
+
+    private void hideTeamTraceLine() {
+        if (map != null && teamTraceLines != null) {
+            for (Polyline line : teamTraceLines) {
+                line.remove();
+            }
+        }
+    }
 }

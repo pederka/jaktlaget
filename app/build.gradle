@@ -1,14 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'peder.ddns.net'
+            keyPassword 'pkaakp3989341'
+            storeFile file('/home/peder/Documents/android-keystore/peder.ddns.net-key.jks')
+            storePassword 'pkaakp3989341'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "net.ddns.peder.jaktlaget"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.01"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
@@ -23,25 +31,22 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:design:25.3.0'
     compile 'com.android.support:support-v4:25.3.0'
     compile 'com.android.support:preference-v7:25.3.0'
     compile 'com.android.support:preference-v14:25.3.0'
-
     compile 'com.google.code.gson:gson:2.7'
-
     compile 'com.google.android.gms:play-services:10.2.0'
-
     testCompile 'junit:junit:4.12'
 }

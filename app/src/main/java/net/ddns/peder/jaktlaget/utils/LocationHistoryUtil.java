@@ -14,6 +14,7 @@ import net.ddns.peder.jaktlaget.Constants;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class LocationHistoryUtil {
 
@@ -40,4 +41,30 @@ public class LocationHistoryUtil {
         }
         return myLocationHistory;
     }
+
+    static public void saveTeamLocationHistoryToPreferences(Context context,
+                                                   Map<String, List<LatLng>> teamLocationHistory) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(teamLocationHistory);
+        editor.putString(Constants.SHARED_PREF_TEAM_LOCATION_HISTORY, json);
+        editor.apply();
+        if (teamLocationHistory != null) {
+            Log.d(tag, "Saved " + teamLocationHistory.size() + " team member's location histories");
+        }
+    }
+
+    static public Map<String, List<LatLng>> loadTeamLocationHistoryFromPreferences(Context context) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Gson gson = new Gson();
+        String json = sharedPrefs.getString(Constants.SHARED_PREF_TEAM_LOCATION_HISTORY, null);
+        Type type = new TypeToken<Map<String, List<LatLng>>>() {}.getType();
+        Map<String, List<LatLng>> teamLocationHistory = gson.fromJson(json,type);
+        if (teamLocationHistory != null) {
+            Log.d(tag, "Loaded " + teamLocationHistory.size() + " team member's locations from history");
+        }
+        return teamLocationHistory;
+    }
+
 }
