@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
@@ -33,6 +34,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
     private TextInputLayout textInputLayoutTeam;
     private OnFragmentInteractionListener mListener;
     private TeamFragment teamFragment;
+    private int codeTextId;
 
     @Override
     public void onSyncComplete(int result) {
@@ -41,32 +43,39 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(
                                                 getContext());
+            codeText = addCodeText(sharedPref.getString(Constants.SHARED_PREF_TEAM_CODE, ""), getView());
             codeText.setError(null);
             codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
-            codeText.setText(sharedPref.getString(Constants.SHARED_PREF_TEAM_CODE, ""));
-            Toast.makeText(getContext(), "Registrering vellykket", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.toast_sync_success, Toast.LENGTH_SHORT).show();
         }
         else if (result == DataSynchronizer.FAILED_TRANSFER) {
             Toast.makeText(getContext(), R.string.toast_no_contact_server, Toast.LENGTH_SHORT).show();
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            if (codeText != null) {
+                codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
         }
         else if (result == DataSynchronizer.FAILED_TEAM) {
             Toast.makeText(getContext(), R.string.toast_no_team_or_user, Toast.LENGTH_SHORT).show();
             userText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
-            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            if (codeText != null) {
+                codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
         }
         else if (result == DataSynchronizer.FAILED_USER) {
             Toast.makeText(getContext(), R.string.toast_no_team_or_user, Toast.LENGTH_SHORT).show();
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             userText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
-            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            if (codeText != null) {
+                codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
         }
         else if (result == DataSynchronizer.FAILED_CODE) {
             Toast.makeText(getContext(), R.string.toast_wrong_code, Toast.LENGTH_SHORT).show();
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
+            codeText = addCodeText("", getView());
             codeText.setError(getString(R.string.wrong_code));
             codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
             // Set code to empty
@@ -108,12 +117,10 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             userText.setText(userId);
         }
         teamText = (EditText) view.findViewById(R.id.teamname_text);
-        codeText = (EditText) view.findViewById(R.id.teamcode_text);
-        codeText.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-        codeText.setText(code);
         if (!code.equals("")) {
             teamText.setText(teamId);
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
+            codeText = addCodeText(code, view);
             codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
         }
 
@@ -146,9 +153,8 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                     teamFragment = (TeamFragment) teamPagerAdapter.getRegisteredFragment(1);
                 }
                 teamText.setText("");
-                codeText.setText("");
                 teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                removeCodeText(getView());
                 // Remove team and code from shared preferences
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
                             getContext());
@@ -172,6 +178,24 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         return view;
     }
 
+    private EditText addCodeText(String code, View view) {
+        LayoutInflater li = (LayoutInflater)getActivity().getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        if (view.findViewById(R.id.team_code_inputlayout) == null) {
+            ((LinearLayout) view.findViewById(R.id.team_code_container)).addView(li.inflate(R.layout.team_code_edittext,
+                    (ViewGroup) view.findViewById(R.id.team_code_inputlayout), false));
+        }
+        EditText codeText = (EditText) view.findViewById(R.id.team_code_edittext_field);
+        codeText.setText(code);
+        return codeText;
+    }
+
+    private void removeCodeText(View view) {
+        ((LinearLayout) view.findViewById(R.id.team_code_container)).removeView(
+                                view.findViewById(R.id.team_code_inputlayout));
+    }
+
+
     private boolean submitForm() {
         if (!validateName()) {
             return false;
@@ -181,12 +205,14 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         }
         String userId = userText.getText().toString().trim();
         String teamId = teamText.getText().toString().trim();
-        String code = codeText.getText().toString().trim();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor = prefs.edit();
+        if (codeText != null) {
+            String code = codeText.getText().toString().trim();
+            editor.putString(Constants.SHARED_PREF_TEAM_CODE, code);
+        }
         editor.putString(Constants.SHARED_PREF_TEAM_ID, teamId);
         editor.putString(Constants.SHARED_PREF_USER_ID, userId);
-        editor.putString(Constants.SHARED_PREF_TEAM_CODE, code);
         editor.apply();
         return true;
     }

@@ -3,14 +3,42 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_alignParentTop="true"
         >
+    <Space
+            android:layout_width="0dp"
+            android:layout_height="15dp"
+            android:layout_weight="1.5"/>
+    <TextView
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"
+       android:layout_weight="0.5"
+       android:textSize="20sp"
+       android:text="Vis"
+       android:textAppearance="@style/TextAppearance.AppCompat.Small"
+       />
 
+    <TextView
+       android:layout_width="0dp"
+       android:layout_height="wrap_content"
+       android:layout_weight="0.5"
+        android:textSize="20sp"
+       android:text="Del"
+       android:textAppearance="@style/TextAppearance.AppCompat.Small"
+       />
+    <Space
+            android:layout_width="0dp"
+            android:layout_height="15dp"
+            android:layout_weight="0.5"/>
     </LinearLayout>
    <Space
             android:layout_width="1dp"
@@ -34,5 +62,6 @@
         android:text="@string/empty_landmarks" />
    </LinearLayout>
 
+    </LinearLayout>
 
 </RelativeLayout>

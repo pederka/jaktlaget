@@ -48,7 +48,7 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     private boolean removeOutdated;
     private int expirationTime;
     private boolean verbose;
-    private final static String tag = "SslSyncronizer";
+    private final static String tag = "DataSyncronizer";
     private ProgressDialog dialog;
     private SharedPreferences sharedPrefs;
 

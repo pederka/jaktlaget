@@ -7,14 +7,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
-
-
-
-</LinearLayout>
-<LinearLayout
-    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
  <LinearLayout
@@ -37,38 +29,12 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
  </LinearLayout>
 
+
  <LinearLayout
      android:layout_width="0dp"
      android:layout_height="wrap_content"
-     android:layout_weight="1."
-     android:orientation="vertical">
-
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-
-   <TextView
-       android:layout_width="0dp"
-       android:layout_height="wrap_content"
-       android:layout_weight="1"
-       android:textSize="20sp"
-       android:text="Vis?"
-       android:textAppearance="@style/TextAppearance.AppCompat.Small"
-       />
-    <TextView
-       android:layout_width="0dp"
-       android:layout_height="wrap_content"
-       android:layout_weight="1"
-        android:textSize="20sp"
-       android:text="Del?"
-       android:textAppearance="@style/TextAppearance.AppCompat.Small"
-       />
-   </LinearLayout>
-
-
- <LinearLayout
-     android:layout_width="match_parent"
-     android:layout_height="wrap_content">
+     android:layout_weight="1.0"
+     android:layout_gravity="center">
 
  <android.support.v7.widget.AppCompatCheckBox
     android:id="@+id/show_check_box"
@@ -83,8 +49,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_weight="1"/>
-  </LinearLayout>
-
 
  </LinearLayout>
  <ImageButton
@@ -92,7 +56,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_weight="0.5"
-    android:src="@drawable/ic_delete_forever_black_35dp"
+    android:src="@drawable/ic_delete_forever_primary_color_24dp"
     android:background="?android:selectableItemBackground"
     android:layout_gravity="center"
     />
