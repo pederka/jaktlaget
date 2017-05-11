@@ -677,6 +677,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             String description = cursor.getString(cursor.getColumnIndexOrThrow(
                     LandmarksDbHelper.COLUMN_NAME_DESCRIPTION));
             MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.anchor(0.5f, 0.5f);
             markerOptions.position(pos);
             markerOptions.title(description);
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(myLandmarkBitmap));
@@ -716,6 +717,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     TeamLandmarksDbHelper.COLUMN_NAME_USER));
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(pos);
+            markerOptions.anchor(0.5f, 0.5f);
             markerOptions.title(user+": "+description);
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(otherLandmarkBitmap));
             Marker marker = map.addMarker(markerOptions);
@@ -755,6 +757,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             ((MainActivity)getActivity()).addToTeamLocationHistory(user, pos);
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(pos);
+            markerOptions.anchor(0.5f, 0.5f);
             markerOptions.title(user);
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(otherBitmap));
             userMarkerList.add(map.addMarker(markerOptions));
