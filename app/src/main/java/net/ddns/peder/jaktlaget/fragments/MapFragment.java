@@ -58,12 +58,10 @@ import net.ddns.peder.jaktlaget.providers.TileProviderFactory;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private OnFragmentInteractionListener mListener;
@@ -862,16 +860,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             teamTraceLines.clear();
             Map<String, List<LatLng>> teamLocationHistory =
                                         ((MainActivity) getActivity()).getTeamLocationHistory();
-            List<String> users = new ArrayList<>();
-            users.addAll(teamLocationHistory.keySet());
-            for (int i=0; i<teamLocationHistory.size(); i++) {
-                Polyline line =  map.addPolyline(new PolylineOptions()
-                    .addAll(teamLocationHistory.get(users.get(i)))
-                    .width(8)
-                    .color(colorOther)
-                    .zIndex(999)
-                );
-                teamTraceLines.add(line);
+            if (teamLocationHistory != null) {
+                List<String> users = new ArrayList<>();
+                users.addAll(teamLocationHistory.keySet());
+                for (int i = 0; i < teamLocationHistory.size(); i++) {
+                    Polyline line = map.addPolyline(new PolylineOptions()
+                            .addAll(teamLocationHistory.get(users.get(i)))
+                            .width(8)
+                            .color(colorOther)
+                            .zIndex(999)
+                    );
+                    teamTraceLines.add(line);
+                }
             }
         }
     }
