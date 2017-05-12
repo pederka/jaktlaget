@@ -15,7 +15,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_weight="1.5"
      android:layout_gravity="center_vertical"
      android:orientation="vertical">
-
 <TextView
     android:id="@+id/lm_list_desc"
     android:text="Description"

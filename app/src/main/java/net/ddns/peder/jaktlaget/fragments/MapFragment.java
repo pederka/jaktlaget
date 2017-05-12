@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -37,6 +38,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -81,6 +83,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Handler mHandler;
     private Marker myLocationMarker;
     private List<Marker> userMarkerList;
+    private List<Marker> userNameMarkerList;
     private ImageButton landmarkButton;
     private boolean landmarks_toggled;
     private ImageButton teamButton;
@@ -193,6 +196,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         positionsDbHelper = new PositionsDbHelper(getContext());
         posdb = positionsDbHelper.getReadableDatabase();
         userMarkerList = new ArrayList<>();
+        userNameMarkerList = new ArrayList<>();
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mHandler = new Handler();
@@ -393,6 +397,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     // Clear users
                     for (int i=0; i<userMarkerList.size(); i++) {
                         userMarkerList.get(i).remove();
+                        userNameMarkerList.get(i).remove();
                     }
                     team_toggled = false;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
@@ -746,6 +751,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                          null,
                          null);
         userMarkerList.clear();
+        userNameMarkerList.clear();
         while (cursor.moveToNext()) {
             Float latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
                     PositionsDbHelper.COLUMN_NAME_LATITUDE));
@@ -758,9 +764,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(pos);
             markerOptions.anchor(0.5f, 0.5f);
-            markerOptions.title(user);
+            //markerOptions.title(user);
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(otherBitmap));
             userMarkerList.add(map.addMarker(markerOptions));
+            // Add name
+            MarkerOptions nameMarkerOptions = new MarkerOptions();
+            nameMarkerOptions.position(pos);
+            markerOptions.anchor(0.5f, 1.0f);
+            nameMarkerOptions.icon(createPureTextIcon(user));
+            userNameMarkerList.add(map.addMarker(nameMarkerOptions));
         }
         showTeamTraceLine();
         cursor.close();
@@ -885,5 +897,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 line.remove();
             }
         }
+    }
+
+    public BitmapDescriptor createPureTextIcon(String text) {
+
+        Paint textPaint = new Paint(); // Adapt to your needs
+
+        textPaint.setTextSize(45);
+        textPaint.setColor(colorOther);
+
+        float textWidth = textPaint.measureText(text);
+        float textHeight = textPaint.getTextSize();
+        int width = (int) (textWidth);
+        int height = (int) (textHeight*1.4);
+
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(image);
+
+        canvas.translate(0, height*1.7f/3);
+        //canvas.translate(0, height);
+
+        // For development only:
+        // Set a background in order to see the
+        // full size and positioning of the bitmap.
+        // Remove that for a fully transparent icon.
+        //canvas.drawColor(Color.LTGRAY);
+
+        canvas.drawText(text, 0, 0, textPaint);
+        return BitmapDescriptorFactory.fromBitmap(image);
     }
 }
