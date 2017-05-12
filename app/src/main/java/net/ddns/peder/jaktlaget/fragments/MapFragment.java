@@ -26,6 +26,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -541,6 +542,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         }
                 );
                 final EditText input = new EditText(getContext());
+                input.setMaxLines(1);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
                 input.setHint(getString(R.string.description_hint));
                 builder.setView(input);
 
@@ -592,6 +595,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         builder.setTitle(getString(R.string.lm_title));
                         final EditText input = new EditText(getContext());
                         input.setText(desc);
+                        input.setMaxLines(1);
+                        input.setInputType(InputType.TYPE_CLASS_TEXT);
                         builder.setView(input);
                         final Marker mker = marker;
                         builder.setPositiveButton(R.string.lm_update, new DialogInterface.OnClickListener() {
