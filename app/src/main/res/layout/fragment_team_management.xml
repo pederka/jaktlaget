@@ -30,6 +30,9 @@
             android:id="@+id/username_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:maxLines="1"
             android:hint="@string/username_hint"/>
 
     </android.support.design.widget.TextInputLayout>
@@ -41,6 +44,9 @@
             android:id="@+id/teamname_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="text"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
             android:hint="@string/teamname_hint"/>
     </android.support.design.widget.TextInputLayout>
     <LinearLayout
