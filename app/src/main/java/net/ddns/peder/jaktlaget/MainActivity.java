@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements
         AllTeamFragment.OnFragmentInteractionListener {
 
     private final static int MY_PERMISSIONS_REQUEST = 1654;
+    private final static int ACTIVATE_PERMISSION_REQUEST = 1655;
     private LocationListener locationListener;
     private LocationManager locationManager;
     private Handler mHandler;
@@ -136,19 +137,22 @@ public class MainActivity extends AppCompatActivity implements
                     String teamid = prefs.getString(Constants.SHARED_PREF_TEAM_ID,
                                                                         Constants.DEFAULT_TEAM_ID);
                     String code = prefs.getString(Constants.SHARED_PREF_TEAM_CODE, "");
-                    if (!userid.equals(Constants.DEFAULT_USER_ID)
-                                                    && !teamid.equals(Constants.DEFAULT_TEAM_ID) &&
-                                        !code.equals("")) {
-                        // Request permission
-                        if (ContextCompat.checkSelfPermission((Activity) mContext,
+                    if (userid.equals(Constants.DEFAULT_USER_ID)
+                                                    || teamid.equals(Constants.DEFAULT_TEAM_ID)
+                                        || code.equals("")) {
+                                                 Toast.makeText(getApplicationContext(), R.string.cant_start,
+                                Toast.LENGTH_SHORT).show();
+                         runSwitch.setChecked(false);
+                         // Switch to team management fragment
+                         Fragment fragment = new AllTeamFragment();
+                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                         ft.replace(R.id.content_frame, fragment);
+                         ft.commit();
+                    }
+                    else if (ContextCompat.checkSelfPermission((Activity) mContext,
                                 Manifest.permission.ACCESS_FINE_LOCATION)
-                                != PackageManager.PERMISSION_GRANTED) {
+                                == PackageManager.PERMISSION_GRANTED) {
 
-                            ActivityCompat.requestPermissions((Activity) mContext,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    MY_PERMISSIONS_REQUEST);
-
-                        }
                         clearMyLocationHistory();
                         activeText.setText(getString(R.string.actionbar_active));
                         mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
@@ -158,14 +162,11 @@ public class MainActivity extends AppCompatActivity implements
                                 Toast.LENGTH_SHORT).show();
                     }
                     else {
-                         Toast.makeText(getApplicationContext(), R.string.cant_start,
-                                Toast.LENGTH_SHORT).show();
-                         runSwitch.setChecked(false);
-                         // Switch to team management fragment
-                         Fragment fragment = new AllTeamFragment();
-                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                         ft.replace(R.id.content_frame, fragment);
-                         ft.commit();
+                        // Request permission
+                        ActivityCompat.requestPermissions((Activity) mContext,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                ACTIVATE_PERMISSION_REQUEST);
+                        runSwitch.setChecked(false);
                     }
                 }
             }
@@ -227,6 +228,21 @@ public class MainActivity extends AppCompatActivity implements
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startPositionUpdates();
                 }
+            }
+            case ACTIVATE_PERMISSION_REQUEST: {
+                 if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                      final SwitchCompat runSwitch = (SwitchCompat) findViewById(R.id.run_switch);
+                      runSwitch.setChecked(true);
+                      clearMyLocationHistory();
+                      activeText.setText(getString(R.string.actionbar_active));
+                      mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+                      runningService = true;
+                      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                      prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, true).apply();
+                      Toast.makeText(getApplicationContext(), R.string.run_stop,
+                      Toast.LENGTH_SHORT).show();
+                 }
             }
         }
     }
