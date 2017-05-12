@@ -10,7 +10,7 @@
             android:title="@string/menu_map" />
         <item
             android:id="@+id/nav_landmarks"
-            android:icon="@drawable/ic_place_black_24dp"
+            android:icon="@drawable/ic_place_24dp"
             android:title="@string/menu_landmarks" />
         <item
             android:id="@+id/nav_team_manage"
