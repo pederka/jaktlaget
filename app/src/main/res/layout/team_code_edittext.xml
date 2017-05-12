@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/team_code_inputlayout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content">
-
-<EditText
-    android:id="@+id/team_code_edittext_field"
+    android:id="@+id/team_code_inputlayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:imeOptions="actionDone"
-    android:maxLines="1"
-    android:hint="@string/teamcode_hint" />
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/team_code_edittext_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/teamcode_hint"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:maxLines="1" />
 
 </android.support.design.widget.TextInputLayout>

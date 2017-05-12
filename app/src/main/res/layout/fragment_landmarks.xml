@@ -1,66 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="true"
-        >
-    <Space
-            android:layout_width="0dp"
-            android:layout_height="15dp"
-            android:layout_weight="1.5"/>
-    <TextView
-       android:layout_width="0dp"
-       android:layout_height="wrap_content"
-       android:layout_weight="0.5"
-       android:textSize="20sp"
-       android:text="Vis"
-       android:textAppearance="@style/TextAppearance.AppCompat.Small"
-       />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal">
 
-    <TextView
-       android:layout_width="0dp"
-       android:layout_height="wrap_content"
-       android:layout_weight="0.5"
-        android:textSize="20sp"
-       android:text="Del"
-       android:textAppearance="@style/TextAppearance.AppCompat.Small"
-       />
-    <Space
-            android:layout_width="0dp"
-            android:layout_height="15dp"
-            android:layout_weight="0.5"/>
-    </LinearLayout>
-   <Space
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_weight="1.5" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="Vis"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="Del"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="20sp" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="15dp"
+                android:layout_weight="0.5" />
+        </LinearLayout>
+
+        <Space
             android:layout_width="1dp"
-            android:layout_height="15dp"/>
-    <ListView
-        android:id="@+id/lm_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-    </ListView>
+            android:layout_height="15dp" />
+
+        <ListView
+            android:id="@+id/lm_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></ListView>
+
         <LinearLayout
             android:id="@android:id/empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:text="@string/empty_landmarks" />
-   </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/empty_landmarks"
+                android:textSize="20dp" />
+        </LinearLayout>
 
     </LinearLayout>
 

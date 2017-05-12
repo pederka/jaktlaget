@@ -1,64 +1,63 @@
-<LinearLayout
-android:id="@+id/lm_row_layout"
-android:layout_height="wrap_content"
-android:layout_width="fill_parent"
-xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lm_row_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
- <LinearLayout
-     android:layout_width="0dp"
-     android:layout_height="wrap_content"
-     android:layout_weight="1.5"
-     android:layout_gravity="center_vertical"
-     android:orientation="vertical">
-<TextView
-    android:id="@+id/lm_list_desc"
-    android:text="Description"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="20sp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-    android:layout_gravity="center">
-</TextView>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.5"
+            android:orientation="vertical">
 
-
- </LinearLayout>
+            <TextView
+                android:id="@+id/lm_list_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textSize="20sp"></TextView>
 
 
- <LinearLayout
-     android:layout_width="0dp"
-     android:layout_height="wrap_content"
-     android:layout_weight="1.0"
-     android:layout_gravity="center">
+        </LinearLayout>
 
- <android.support.v7.widget.AppCompatCheckBox
-    android:id="@+id/show_check_box"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_weight="1"/>
 
-<android.support.v7.widget.AppCompatCheckBox
-    android:id="@+id/share_check_box"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_weight="1"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1.0">
 
- </LinearLayout>
- <ImageButton
-    android:id="@+id/lm_delete_button"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_weight="0.5"
-    android:src="@drawable/ic_delete_forever_primary_color_24dp"
-    android:background="?android:selectableItemBackground"
-    android:layout_gravity="center"
-    />
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/show_check_box"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1" />
 
-</LinearLayout>
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/share_check_box"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/lm_delete_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_delete_forever_primary_color_24dp" />
+
+    </LinearLayout>
 </LinearLayout>
