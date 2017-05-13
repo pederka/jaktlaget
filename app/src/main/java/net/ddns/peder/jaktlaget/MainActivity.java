@@ -228,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startPositionUpdates();
                 }
+                break;
             }
             case ACTIVATE_PERMISSION_REQUEST: {
                  if (grantResults.length > 0
@@ -243,8 +244,14 @@ public class MainActivity extends AppCompatActivity implements
                       Toast.makeText(getApplicationContext(), R.string.run_stop,
                       Toast.LENGTH_SHORT).show();
                  }
+                 break;
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
     }
 
     public Map<String, List<LatLng>> getTeamLocationHistory() {

@@ -11,8 +11,13 @@ import java.util.Locale;
 public class TileProviderFactory {
 
     public static WMSTileProvider getWmsTileProvider(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String map_type = sharedPreferences.getString("pref_map_type", "png");
+        String map_type;
+        if (context != null) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            map_type = sharedPreferences.getString("pref_map_type", "png");
+        } else {
+            map_type = "png";
+        }
         final String WMS = "http://wms.geonorge.no/skwms1/wms.topo2?request=GetMap&version=1.3.0&layers=topo2_WMS&bbox=%f,%f,%f,%f&width=256&height=256&crs=EPSG:3857&format=image/"+map_type;
         WMSTileProvider tileProvider = new WMSTileProvider(256, 256) {
             @Override
