@@ -88,6 +88,9 @@
                  android:layout_gravity="center"
                  android:layout_height="48dp"
                  android:background="@drawable/button_secondary_selector"/>
+             <Space
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
 
             </LinearLayout>
 
