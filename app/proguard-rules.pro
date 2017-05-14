@@ -24,17 +24,3 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 # Class names are needed in reflection
-
--keepnames class com.amazonaws.**
--keep class com.amazonaws.services.**.*Handler
--dontwarn com.amazonaws.http.**
--dontwarn com.amazonaws.metrics.**
--keep class com.amazonaws.auth.AWS4Signer
--keep class com.amazonaws.services.s3.internal.S3Signer
--dontwarn
--keep public class net.ddns.peder.drevet.dynamoDB.Landmark {
-    *;
-}
--keep public class net.ddns.peder.drevet.dynamoDB.Position {
-    *;
-}

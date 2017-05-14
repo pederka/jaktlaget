@@ -173,6 +173,8 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         }
         EditText codeText = (EditText) view.findViewById(R.id.team_code_edittext_field);
         codeText.setText(code);
+        codeText.setFilters(new InputFilter[] {new InputFilter.AllCaps(),
+                                                new InputFilter.LengthFilter(Constants.CODE_LENGTH)});
         return codeText;
     }
 
@@ -189,8 +191,8 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         if (!validateTeam()) {
             return false;
         }
-        String userId = userText.getText().toString().trim();
-        String teamId = teamText.getText().toString().trim();
+        String userId = userText.getText().toString().trim().replaceAll("\\s+","");
+        String teamId = teamText.getText().toString().trim().replaceAll("\\s+","");
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor = prefs.edit();
         if (codeText != null) {

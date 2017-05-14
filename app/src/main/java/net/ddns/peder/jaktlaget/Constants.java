@@ -33,6 +33,7 @@ public final class Constants {
     public static final long DEFAULT_UPDATE_INTERVAL = 6*60000;
     public static final long MAP_LOCATION_UPDATE_INTERVAL = 5000;
     public static final long SYNC_DELAY_ACTIVITY = 60000;
+    public static final int CODE_LENGTH = 4;
 
     // File names
     public static final String TMP_FILE_NAME = "syncCache";
