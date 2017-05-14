@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import net.ddns.peder.jaktlaget.Constants;
+import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
@@ -77,6 +78,10 @@ public class TeamInfoFragment extends Fragment {
                 teamLandmarksDbHelper.clearTable(lmdb);
                 posdb.close();
                 lmdb.close();
+                // Cancel any position services
+                if (((MainActivity)getActivity()).isActive()) {
+                    ((MainActivity)getActivity()).goInactive();
+                }
                 // Go to team management fragment
                 Fragment fragment = new TeamManagementFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();

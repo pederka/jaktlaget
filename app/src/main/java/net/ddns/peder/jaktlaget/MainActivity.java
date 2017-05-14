@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView activeText;
     private TextView action_bar_title;
     private final String tag = "MainActivity";
+    private SwitchCompat runSwitch;
 
     private List<LatLng> myLocationHistory;
     private Map<String, List<LatLng>> teamLocationHistory = new HashMap<>();
@@ -118,57 +119,14 @@ public class MainActivity extends AppCompatActivity implements
         activeText = (TextView)findViewById(R.id.active_text);
 
         // Run switch
-        final SwitchCompat runSwitch = (SwitchCompat) findViewById(R.id.run_switch);
+        runSwitch = (SwitchCompat) findViewById(R.id.run_switch);
         runSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
-                            getApplicationContext());
                 if (!isChecked) {
-                    activeText.setText(getString(R.string.actionbar_inactive));
-                    mHandler.removeCallbacks(syncData);
-                    runningService = false;
-
-                    prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, false).apply();
-                    Toast.makeText(getApplicationContext(), R.string.run_start,
-                            Toast.LENGTH_SHORT).show();
+                    goInactive();
                 } else {
-                    String userid = prefs.getString(Constants.SHARED_PREF_USER_ID,
-                                                                        Constants.DEFAULT_USER_ID);
-                    String teamid = prefs.getString(Constants.SHARED_PREF_TEAM_ID,
-                                                                        Constants.DEFAULT_TEAM_ID);
-                    String code = prefs.getString(Constants.SHARED_PREF_TEAM_CODE, "");
-                    if (userid.equals(Constants.DEFAULT_USER_ID)
-                                                    || teamid.equals(Constants.DEFAULT_TEAM_ID)
-                                        || code.equals("")) {
-                                                 Toast.makeText(getApplicationContext(), R.string.cant_start,
-                                Toast.LENGTH_SHORT).show();
-                         runSwitch.setChecked(false);
-                         // Switch to team management fragment
-                         Fragment fragment = new TeamManagementFragment();
-                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                         ft.replace(R.id.content_frame, fragment);
-                         ft.commit();
-                    }
-                    else if (ContextCompat.checkSelfPermission((Activity) mContext,
-                                Manifest.permission.ACCESS_FINE_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED) {
-
-                        clearMyLocationHistory();
-                        activeText.setText(getString(R.string.actionbar_active));
-                        mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
-                        runningService = true;
-                        prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, true).apply();
-                        Toast.makeText(getApplicationContext(), R.string.run_stop,
-                                Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        // Request permission
-                        ActivityCompat.requestPermissions((Activity) mContext,
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                ACTIVATE_PERMISSION_REQUEST);
-                        runSwitch.setChecked(false);
-                    }
+                    goActive();
                 }
             }
         });
@@ -248,6 +206,63 @@ public class MainActivity extends AppCompatActivity implements
                  break;
             }
         }
+    }
+
+    public boolean isActive() {
+        return runningService;
+    }
+
+    public void goInactive() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        activeText.setText(getString(R.string.actionbar_inactive));
+        mHandler.removeCallbacks(syncData);
+        runningService = false;
+        runSwitch.setChecked(false);
+
+        prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, false).apply();
+        Toast.makeText(getApplicationContext(), R.string.run_start,
+        Toast.LENGTH_SHORT).show();
+    }
+
+    public void goActive() {
+         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+         String userid = prefs.getString(Constants.SHARED_PREF_USER_ID,
+                                                             Constants.DEFAULT_USER_ID);
+         String teamid = prefs.getString(Constants.SHARED_PREF_TEAM_ID,
+                                                             Constants.DEFAULT_TEAM_ID);
+         String code = prefs.getString(Constants.SHARED_PREF_TEAM_CODE, "");
+         if (userid.equals(Constants.DEFAULT_USER_ID)
+                                         || teamid.equals(Constants.DEFAULT_TEAM_ID)
+                             || code.equals("")) {
+                                      Toast.makeText(getApplicationContext(), R.string.cant_start,
+                     Toast.LENGTH_SHORT).show();
+              runSwitch.setChecked(false);
+              // Switch to team management fragment
+              Fragment fragment = new TeamManagementFragment();
+              FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+              ft.replace(R.id.content_frame, fragment);
+              ft.commit();
+         }
+         else if (ContextCompat.checkSelfPermission((Activity) mContext,
+                     Manifest.permission.ACCESS_FINE_LOCATION)
+                     == PackageManager.PERMISSION_GRANTED) {
+
+             clearMyLocationHistory();
+             activeText.setText(getString(R.string.actionbar_active));
+             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+             runningService = true;
+             runSwitch.setChecked(true);
+             prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, true).apply();
+             Toast.makeText(getApplicationContext(), R.string.run_stop,
+                     Toast.LENGTH_SHORT).show();
+         }
+         else {
+             // Request permission
+             ActivityCompat.requestPermissions((Activity) mContext,
+                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                     ACTIVATE_PERMISSION_REQUEST);
+             runSwitch.setChecked(false);
+         }
     }
 
     @Override
