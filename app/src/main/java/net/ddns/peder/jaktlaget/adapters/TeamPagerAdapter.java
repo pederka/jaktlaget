@@ -7,6 +7,7 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import net.ddns.peder.jaktlaget.fragments.TeamFragment;
+import net.ddns.peder.jaktlaget.fragments.TeamInfoFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamManagementFragment;
 
 /**
@@ -25,13 +26,13 @@ public class TeamPagerAdapter extends FragmentStatePagerAdapter {
         Fragment fragment;
         switch (i) {
             case (0):
-                fragment = new TeamManagementFragment();
+                fragment = new TeamInfoFragment();
                 break;
             case (1):
                 fragment = new TeamFragment();
                 break;
             default:
-                fragment = new TeamManagementFragment();
+                fragment = new TeamInfoFragment();
         }
         return fragment;
     }
@@ -46,7 +47,7 @@ public class TeamPagerAdapter extends FragmentStatePagerAdapter {
         // Generate title based on item position
         switch (position) {
             case (0):
-                return "Lagvalg";
+                return "Laginfo";
             case (1):
                 return "Jegere";
             default:

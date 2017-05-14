@@ -40,6 +40,7 @@ import net.ddns.peder.jaktlaget.fragments.LandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.MapFragment;
 import net.ddns.peder.jaktlaget.fragments.SettingsFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamFragment;
+import net.ddns.peder.jaktlaget.fragments.TeamInfoFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamLandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamManagementFragment;
 import net.ddns.peder.jaktlaget.services.LocationService;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
         TeamFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener,
         LandmarksFragment.OnFragmentInteractionListener, TeamLandmarksFragment.OnFragmentInteractionListener,
         TeamManagementFragment.OnFragmentInteractionListener, AllLandmarksFragment.OnFragmentInteractionListener,
-        AllTeamFragment.OnFragmentInteractionListener {
+        AllTeamFragment.OnFragmentInteractionListener, TeamInfoFragment.OnFragmentInteractionListener {
 
     private final static int MY_PERMISSIONS_REQUEST = 1654;
     private final static int ACTIVATE_PERMISSION_REQUEST = 1655;
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements
                                 Toast.LENGTH_SHORT).show();
                          runSwitch.setChecked(false);
                          // Switch to team management fragment
-                         Fragment fragment = new AllTeamFragment();
+                         Fragment fragment = new TeamManagementFragment();
                          FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                          ft.replace(R.id.content_frame, fragment);
                          ft.commit();
@@ -386,7 +387,13 @@ public class MainActivity extends AppCompatActivity implements
                 fragment = new MapFragment();
                 break;
             case R.id.nav_team_manage:
-                fragment = new AllTeamFragment();
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                String code = sharedPreferences.getString(Constants.SHARED_PREF_TEAM_CODE, "");
+                if (code.equals("")) {
+                    fragment = new TeamManagementFragment();
+                } else {
+                    fragment = new AllTeamFragment();
+                }
                 break;
             case R.id.nav_landmarks:
                 fragment = new AllLandmarksFragment();

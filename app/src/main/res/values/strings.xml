@@ -101,6 +101,11 @@
     <string name="pref_map_type_dialog">Velg kartformat</string>
     <string name="pref_map_type_default">png</string>
 
+    <string name="hunter_name">Jegernavn:</string>
+    <string name="team_name">Jaktlag:</string>
+    <string name="code">Adgangskode:</string>
+    <string name="leave_team">Nullstill lag</string>
+
     <string name="teamname_guide">Alle jegere med samme lag deler sin posisjon og sine kartmerker med hverandre når appen er aktiv.</string>
     <string name="code_explain">*Hvis du oppretter et nytt lag trenger du ikke skrive inn kode. En kode vil da bli laget for deg som du kan dele med andre.</string>
 

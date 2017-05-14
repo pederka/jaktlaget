@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
@@ -33,21 +34,16 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
     private TextInputLayout textInputLayoutUser;
     private TextInputLayout textInputLayoutTeam;
     private OnFragmentInteractionListener mListener;
-    private TeamFragment teamFragment;
     private int codeTextId;
 
     @Override
     public void onSyncComplete(int result) {
         if (result == DataSynchronizer.SUCCESS) {
-            teamFragment.updateTeamList();
-            teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(
-                                                getContext());
-            codeText = addCodeText(sharedPref.getString(Constants.SHARED_PREF_TEAM_CODE, ""), getView());
-            codeText.setError(null);
-            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check_24dp, 0);
-            Toast.makeText(getContext(), R.string.toast_sync_success, Toast.LENGTH_SHORT).show();
+             // Switch to team information
+             Fragment fragment = new AllTeamFragment();
+             FragmentTransaction ft = getFragmentManager().beginTransaction();
+             ft.replace(R.id.content_frame, fragment);
+             ft.commit();
         }
         else if (result == DataSynchronizer.FAILED_TRANSFER) {
             Toast.makeText(getContext(), R.string.toast_no_contact_server, Toast.LENGTH_SHORT).show();
@@ -131,11 +127,6 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         saveTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (teamFragment == null) {
-                    ViewPager vp = (ViewPager) getActivity().findViewById(R.id.team_pager);
-                    TeamPagerAdapter teamPagerAdapter = (TeamPagerAdapter) vp.getAdapter();
-                    teamFragment = (TeamFragment) teamPagerAdapter.getRegisteredFragment(1);
-                }
                 if (submitForm()) {
                     DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
                             TeamManagementFragment.this, true);
@@ -147,11 +138,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         resetTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (teamFragment == null) {
-                    ViewPager vp = (ViewPager) getActivity().findViewById(R.id.team_pager);
-                    TeamPagerAdapter teamPagerAdapter = (TeamPagerAdapter) vp.getAdapter();
-                    teamFragment = (TeamFragment) teamPagerAdapter.getRegisteredFragment(1);
-                }
+                userText.setText("");
                 teamText.setText("");
                 teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 removeCodeText(getView());
@@ -159,6 +146,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
                             getContext());
                 SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
                 editor.putString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
                 editor.putString(Constants.SHARED_PREF_TEAM_CODE, "");
                 editor.apply();
@@ -171,8 +159,6 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                 teamLandmarksDbHelper.clearTable(lmdb);
                 posdb.close();
                 lmdb.close();
-                // Update the list in team fragment
-                teamFragment.updateTeamList();
             }
         });
         return view;
