@@ -1,0 +1,63 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context="net.ddns.peder.jaktlaget.fragments.TeamFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_intro_header"
+                android:textSize="18dp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_intro"
+                android:textSize="18dp" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_privacy_header"
+                android:textSize="18dp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_privacy"
+                android:textSize="18dp" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_credits_header"
+                android:textSize="18dp"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_credits"
+                android:textSize="18dp" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+
+            </LinearLayout>
+
+    </ScrollView>
+</FrameLayout>

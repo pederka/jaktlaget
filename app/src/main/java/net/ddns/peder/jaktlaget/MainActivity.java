@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
+import net.ddns.peder.jaktlaget.fragments.AboutFragment;
 import net.ddns.peder.jaktlaget.fragments.AllLandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.AllTeamFragment;
 import net.ddns.peder.jaktlaget.fragments.LandmarksFragment;
@@ -47,7 +48,6 @@ import net.ddns.peder.jaktlaget.services.LocationService;
 import net.ddns.peder.jaktlaget.utils.LocationHistoryUtil;
 
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements
         TeamFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener,
         LandmarksFragment.OnFragmentInteractionListener, TeamLandmarksFragment.OnFragmentInteractionListener,
         TeamManagementFragment.OnFragmentInteractionListener, AllLandmarksFragment.OnFragmentInteractionListener,
-        AllTeamFragment.OnFragmentInteractionListener, TeamInfoFragment.OnFragmentInteractionListener {
+        AllTeamFragment.OnFragmentInteractionListener, TeamInfoFragment.OnFragmentInteractionListener,
+        AboutFragment.OnFragmentInteractionListener {
 
     private final static int MY_PERMISSIONS_REQUEST = 1654;
     private final static int ACTIVATE_PERMISSION_REQUEST = 1655;
@@ -415,6 +416,9 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.nav_settings:
                 fragment = new SettingsFragment();
+                break;
+            case R.id.nav_about:
+                fragment = new AboutFragment();
                 break;
         }
 
