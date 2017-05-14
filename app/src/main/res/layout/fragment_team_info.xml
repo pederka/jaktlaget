@@ -86,8 +86,8 @@
                  android:layout_width="150dp"
                  android:text="@string/leave_team"
                  android:layout_gravity="center"
-                 android:layout_height="wrap_content"
-                 android:background="@drawable/buttonshape_secondary"/>
+                 android:layout_height="48dp"
+                 android:background="@drawable/button_secondary_selector"/>
 
             </LinearLayout>
 

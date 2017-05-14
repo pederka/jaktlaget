@@ -27,7 +27,7 @@
 
     <string name="run_stop">Posisjonsdeling startet</string>
     <string name="run_start">Posisjonsdeling stoppet</string>
-    <string name="cant_start">Sett laginstillinger for å starte posisjonsdeling</string>
+    <string name="cant_start">Velg lag før du kan starte posisjonsdeling</string>
 
     <string name="lm_dialog_title">Nytt kartmerke</string>
     <string name="lm_delete_title">Slett kartmerke?</string>
