@@ -140,7 +140,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 }
                 // Make polyline trace
                 if (traceLine != null) {
-                    traceLine.remove();
+                    hideMyTraceLine();
                 }
                 if (line_toggled) {
                     showMyTraceLine();
@@ -400,12 +400,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         userMarkerList.get(i).remove();
                         userNameMarkerList.get(i).remove();
                     }
+                    // Clear any team trace lines
+                    hideTeamTraceLine();
                     team_toggled = false;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             false).apply();
                     teamButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
                     updateTeamPositions(map);
+                    // Show trace lines if toggled
+                    if (line_toggled) {
+                        showTeamTraceLine();
+                    }
                     team_toggled = true;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             true).apply();
