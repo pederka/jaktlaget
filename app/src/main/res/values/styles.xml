@@ -23,4 +23,13 @@
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
+    <style name="AppTheme.TextStyle" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+     <style name="AppTheme.TextStyle.Important" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">35sp</item>
+         <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

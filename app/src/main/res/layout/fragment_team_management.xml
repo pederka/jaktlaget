@@ -18,7 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/teamname_guide"
-                android:textSize="18dp" />
+                android:textAppearance="@style/AppTheme.TextStyle" />
 
             <Space
                 android:layout_width="match_parent"

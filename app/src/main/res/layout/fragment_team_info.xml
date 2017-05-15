@@ -18,7 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/teamname_guide"
-                android:textSize="18dp" />
+                android:textAppearance="@style/AppTheme.TextStyle" />
 
             <Space
                 android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/hunter_name"
-                android:textSize="20sp"
+                android:textAppearance="@style/AppTheme.TextStyle"
                 />
             <TextView
                 android:id="@+id/info_user"
@@ -37,8 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="Peder"
                 android:gravity="center"
-                android:textSize="35sp"
-                android:textStyle="bold"/>
+                android:textAppearance="@style/AppTheme.TextStyle.Important"/>
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
@@ -48,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/team_name"
-                android:textSize="20sp"
+                android:textAppearance="@style/AppTheme.TextStyle"
                 />
             <TextView
                 android:id="@+id/info_team"
@@ -56,8 +55,7 @@
                 android:layout_height="wrap_content"
                 android:text="Hanshusbekken2"
                 android:gravity="center"
-                android:textSize="35sp"
-                android:textStyle="bold"/>
+                android:textAppearance="@style/AppTheme.TextStyle.Important"/>
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
@@ -66,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/code"
-                android:textSize="20sp"
+                android:textAppearance="@style/AppTheme.TextStyle"
                 />
             <TextView
                 android:id="@+id/info_code"
@@ -74,8 +72,7 @@
                 android:layout_height="wrap_content"
                 android:text="XY68H3"
                 android:gravity="center"
-                android:textSize="35sp"
-                android:textStyle="bold"/>
+                android:textAppearance="@style/AppTheme.TextStyle.Important"/>
 
              <Space
                 android:layout_width="match_parent"
