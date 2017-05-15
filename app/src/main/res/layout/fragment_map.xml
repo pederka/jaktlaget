@@ -21,8 +21,8 @@
             android:layout_height="50dp"
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/buttonshape"
-            android:src="@drawable/ic_show_chart_black_24dp" />
+            android:src="@drawable/ic_show_chart_black_24dp"
+            android:theme="@style/AppTheme.Button"/>
 
         <ImageButton
             android:id="@+id/button_team"
@@ -30,8 +30,8 @@
             android:layout_height="50dp"
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/buttonshape"
-            android:src="@drawable/ic_people_black_24dp" />
+            android:src="@drawable/ic_people_black_24dp"
+            android:theme="@style/AppTheme.Button"/>
 
         <ImageButton
             android:id="@+id/button_landmarks"
@@ -39,8 +39,8 @@
             android:layout_height="50dp"
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/buttonshape"
-            android:src="@drawable/ic_place_24dp" />
+            android:src="@drawable/ic_place_black_24dp"
+            android:theme="@style/AppTheme.Button"/>
 
         <ImageButton
             android:id="@+id/button_weather"
@@ -48,8 +48,9 @@
             android:layout_height="50dp"
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/buttonshape"
-            android:src="@drawable/ic_wb_sunny_black_24dp" />
+            android:src="@drawable/ic_wb_sunny_black_24dp"
+            android:theme="@style/AppTheme.Button"/>
+
     </LinearLayout>
 
     <ImageButton
@@ -58,6 +59,6 @@
         android:layout_height="50dp"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/buttonshape"
-        android:src="@drawable/ic_my_location_black_24dp" />
+        android:src="@drawable/ic_my_location_black_24dp"
+        android:theme="@style/AppTheme.Button"/>
 </FrameLayout>
