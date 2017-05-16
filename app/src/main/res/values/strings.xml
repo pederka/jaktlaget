@@ -41,6 +41,8 @@
     <string name="trace_remove">Slett</string>
     <string name="trace_remove_abort">Avbryt</string>
     <string name="traces_deleted">Alle spor slettet</string>
+    <string name="reset_team_dialog">Nullstill lag</string>
+    <string name="reset_team_text">Er du sikker på at du vil forlate %s? Du vil miste adgangskoden.</string>
 
     <string name="description_hint">Beskrivelse</string>
     <string name="landmark_added">Kartmerke lagt til</string>
