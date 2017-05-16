@@ -281,10 +281,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         lineButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
         if (sharedPreferences.getBoolean(Constants.SHARED_PREF_LINE_TOGGLE, true)) {
             line_toggled = true;
-            lineButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            lineButton.setBackgroundResource(R.drawable.buttonshape);
         } else {
             line_toggled = false;
-            lineButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+            lineButton.setBackgroundResource(R.drawable.buttonshape_secondary);
         }
         lineButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -299,7 +299,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     hideTeamTraceLine();
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             false).apply();
-                    lineButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                    lineButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
                     line_toggled = true;
                     if (traceLine != null) {
@@ -308,7 +308,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     showTeamTraceLine();
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             true).apply();
-                    lineButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    lineButton.setBackgroundResource(R.drawable.buttonshape);
                 }
             }
         });
@@ -349,10 +349,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         landmarkButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
         if (sharedPreferences.getBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE, true)) {
             landmarks_toggled = true;
-            landmarkButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            landmarkButton.setBackgroundResource(R.drawable.buttonshape);
         } else {
             landmarks_toggled = false;
-            landmarkButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+            landmarkButton.setBackgroundResource(R.drawable.buttonshape_secondary);
         }
         landmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -369,14 +369,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
                                             false).apply();
-                    landmarkButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                    landmarkButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
                     landmarks_toggled = true;
                     addLandMarks(map);
                     addTeamLandmarks(map);
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
                                             true).apply();
-                    landmarkButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    landmarkButton.setBackgroundResource(R.drawable.buttonshape);
                 }
             }
         });
@@ -384,10 +384,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         teamButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
         if (sharedPreferences.getBoolean(Constants.SHARED_PREF_TEAM_TOGGLE, true)) {
             team_toggled = true;
-            teamButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            teamButton.setBackgroundResource(R.drawable.buttonshape);
         } else {
             team_toggled = false;
-            teamButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+            teamButton.setBackgroundResource(R.drawable.buttonshape_secondary);
         }
         teamButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -405,7 +405,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     team_toggled = false;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             false).apply();
-                    teamButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                    teamButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
                     updateTeamPositions(map);
                     // Show trace lines if toggled
@@ -415,7 +415,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     team_toggled = true;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             true).apply();
-                    teamButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    teamButton.setBackgroundResource(R.drawable.buttonshape);
                 }
             }
         });
@@ -423,10 +423,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         weatherButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
         if (sharedPreferences.getBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE, true)) {
             weather_toggled = true;
-            weatherButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            weatherButton.setBackgroundResource(R.drawable.buttonshape);
         } else {
             weather_toggled = false;
-            weatherButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+            weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
         }
         weatherButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -437,12 +437,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     weather_toggled = false;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE,
                                             false).apply();
-                    weatherButton.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+                    weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
                     weather_toggled = true;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE,
                                             true).apply();
-                    weatherButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    weatherButton.setBackgroundResource(R.drawable.buttonshape);
                 }
             }
         });
