@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
+import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.adapters.TeamPagerAdapter;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
@@ -243,6 +244,12 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((MainActivity)getActivity()).setActionBarTitle("Laget");
     }
 
     @Override
