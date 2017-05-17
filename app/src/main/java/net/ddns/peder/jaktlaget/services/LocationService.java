@@ -3,6 +3,7 @@ package net.ddns.peder.jaktlaget.services;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -187,15 +189,33 @@ public class LocationService extends Service {
                 Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
 
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        Notification notification = new Notification.Builder(this)
+        Intent stopIntent = new Intent();
+        stopIntent.setAction(MainActivity.ACTION_SERVICE);
+        stopIntent.putExtra("ACTION", "STOP");
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, notificationIntent, 0);
+        PendingIntent pendingStopIntent = PendingIntent.getBroadcast(this, 2,
+                                        stopIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        NotificationCompat.Action stopAction = new NotificationCompat.Action.Builder(
+                R.drawable.ic_stop_black_24dp, getResources().getString(R.string.action_stop),
+                        pendingStopIntent).build();
+
+        NotificationCompat.Action mapAction = new NotificationCompat.Action.Builder(
+                R.drawable.ic_map_black_24dp, getResources().getString(R.string.action_map),
+                        pendingIntent).build();
+
+        Notification notification = new NotificationCompat.Builder(this)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentTitle(getText(R.string.notification_title))
                 .setContentText(getText(R.string.notification_message))
                 .setSmallIcon(R.mipmap.status_bar)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setContentIntent(pendingIntent)
                 .setTicker(getText(R.string.ticker_text))
+                .addAction(mapAction)
+                .addAction(stopAction)
                 .build();
 
         startForeground(Constants.NOTIFICATION_ID, notification);

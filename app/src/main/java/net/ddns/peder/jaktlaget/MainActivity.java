@@ -2,13 +2,16 @@ package net.ddns.peder.jaktlaget;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,12 +21,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
@@ -72,11 +77,28 @@ public class MainActivity extends AppCompatActivity implements
     private Context mContext;
     private TextView activeText;
     private TextView action_bar_title;
-    private final String tag = "MainActivity";
+    private static final String tag = "MainActivity";
     private SwitchCompat runSwitch;
 
     private List<LatLng> myLocationHistory;
     private Map<String, List<LatLng>> teamLocationHistory = new HashMap<>();
+
+    private BroadcastReceiver br;
+    public static final String ACTION_SERVICE = "net.ddns.peder.jaktlaget.ACTION_SERVICE";
+
+    private class ServiceBroadcastReceiver extends BroadcastReceiver {
+        private final String brtag = "BroadcastReceiver";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String extra = intent.getStringExtra("ACTION");
+            if (extra.equals("STOP")) {
+                Log.d(brtag, "Action stop received");
+                stopService(new Intent(getApplicationContext(), LocationService.class));
+                goInactive();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +106,12 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        br = new ServiceBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_SERVICE);
+        this.registerReceiver(br, intentFilter);
+
 
         mContext = this;
 
@@ -344,6 +372,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(br);
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         mHandler.removeCallbacks(syncData);
@@ -480,5 +514,6 @@ public class MainActivity extends AppCompatActivity implements
     public void setActionBarTitle(String title){
             action_bar_title.setText(title);
     }
+
 
 }

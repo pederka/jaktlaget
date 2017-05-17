@@ -13,14 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service android:name="net.ddns.peder.jaktlaget.services.LocationService" />
-
         <activity
             android:name="net.ddns.peder.jaktlaget.SplashActivity"
             android:theme="@style/SplashTheme"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="net.ddns.peder.jaktlaget.MainActivity.ACTION_SERVICE" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -28,6 +27,9 @@
         <activity android:name="net.ddns.peder.jaktlaget.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="net.ddns.peder.jaktlaget.MainActivity.ACTION_SERVICE" />
+            </intent-filter>
         </activity>
 
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCr_XDVrLYE9uvSX-xTS9oyuql6yEmvQzU"/>
