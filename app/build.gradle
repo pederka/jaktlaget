@@ -1,13 +1,11 @@
 apply plugin: 'com.android.application'
 
+
+
+
 android {
     signingConfigs {
-        config {
-            keyAlias 'peder.ddns.net'
-            keyPassword 'pkaakp3989341'
-            storeFile file('/home/peder/Documents/android-keystore/peder.ddns.net-key.jks')
-            storePassword 'pkaakp3989341'
-        }
+        release
     }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -32,9 +30,21 @@ android {
             minifyEnabled true
             useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
         }
     }
+}
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.canRead()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    android.signingConfigs.release.keyAlias = keystoreProperties['keyAlias']
+    android.signingConfigs.release.keyPassword = keystoreProperties['keyPassword']
+    android.signingConfigs.release.storeFile = file(keystoreProperties['storeFile'])
+    android.signingConfigs.release.storePassword = keystoreProperties['storePassword']}
+else {
+    android.buildTypes.release.signingConfig = null
 }
 
 dependencies {
