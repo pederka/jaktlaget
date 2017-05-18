@@ -29,7 +29,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/hunter_name"
+                android:textColor="@color/white"
                 android:textAppearance="@style/AppTheme.TextStyle"
+                android:background="@color/colorPrimary"
+                android:padding="5dp"
                 />
             <TextView
                 android:id="@+id/info_user"
@@ -37,17 +40,21 @@
                 android:layout_height="wrap_content"
                 android:text="Peder"
                 android:gravity="center"
-                android:textAppearance="@style/AppTheme.TextStyle.Important"/>
+                android:textAppearance="@style/AppTheme.TextStyle.Important"
+                android:padding="5dp"
+                android:background="@color/colorPrimaryLight"/>
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
-
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/team_name"
                 android:textAppearance="@style/AppTheme.TextStyle"
+                android:textColor="@color/white"
+                android:background="@color/colorPrimary"
+                android:padding="5dp"
                 />
             <TextView
                 android:id="@+id/info_team"
@@ -55,7 +62,9 @@
                 android:layout_height="wrap_content"
                 android:text="Hanshusbekken2"
                 android:gravity="center"
-                android:textAppearance="@style/AppTheme.TextStyle.Important"/>
+                android:textAppearance="@style/AppTheme.TextStyle.Important"
+                android:padding="5dp"
+                android:background="@color/colorPrimaryLight"/>
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
@@ -64,7 +73,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/code"
+                android:textColor="@color/white"
                 android:textAppearance="@style/AppTheme.TextStyle"
+                android:background="@color/colorPrimary"
+                android:padding="5dp"
                 />
             <TextView
                 android:id="@+id/info_code"
@@ -72,11 +84,13 @@
                 android:layout_height="wrap_content"
                 android:text="XY68H3"
                 android:gravity="center"
-                android:textAppearance="@style/AppTheme.TextStyle.Important"/>
+                android:textAppearance="@style/AppTheme.TextStyle.Important"
+                android:background="@color/colorPrimaryLight"
+                android:padding="5dp"/>
 
              <Space
                 android:layout_width="match_parent"
-                android:layout_height="30dp" />
+                android:layout_height="15dp" />
 
              <Button
                  android:id="@+id/reset_team_button"
@@ -84,11 +98,11 @@
                  android:text="@string/leave_team"
                  android:layout_gravity="center"
                  android:layout_height="60dp"
-                 android:theme="@style/AppTheme.Button.Secondary"
+                 android:theme="@style/AppTheme.Button"
                  />
              <Space
                 android:layout_width="match_parent"
-                android:layout_height="30dp" />
+                android:layout_height="5dp" />
 
             </LinearLayout>
 
