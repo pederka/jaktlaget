@@ -1,14 +1,15 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context="net.ddns.peder.jaktlaget.fragments.TeamFragment">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="wrap_content"
+        android:paddingBottom="60dp"
+        android:layout_alignParentTop="true"
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -17,12 +18,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="16dp"
                 android:text="@string/teamname_guide"
                 android:textAppearance="@style/AppTheme.TextStyle" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="15dp" />
 
             
             <TextView
@@ -92,19 +91,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
 
-             <Button
-                 android:id="@+id/reset_team_button"
-                 android:layout_width="150dp"
-                 android:text="@string/leave_team"
-                 android:layout_gravity="center"
-                 android:layout_height="60dp"
-                 android:theme="@style/AppTheme.Button"
-                 />
-             <Space
-                android:layout_width="match_parent"
-                android:layout_height="5dp" />
-
             </LinearLayout>
 
     </ScrollView>
-</FrameLayout>
+
+    <Button
+         android:id="@+id/reset_team_button"
+         android:layout_width="match_parent"
+         android:text="@string/leave_team"
+         android:layout_gravity="center"
+         android:layout_height="60dp"
+         android:theme="@style/AppTheme.Button"
+         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+    />
+
+</RelativeLayout>
