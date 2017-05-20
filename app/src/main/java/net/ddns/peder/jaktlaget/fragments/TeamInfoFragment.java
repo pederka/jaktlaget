@@ -2,6 +2,7 @@ package net.ddns.peder.jaktlaget.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -49,7 +50,7 @@ public class TeamInfoFragment extends Fragment {
         String userId = prefs.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
         // Read teamid from preferences
         final String teamId = prefs.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
-        String code = prefs.getString(Constants.SHARED_PREF_TEAM_CODE, "");
+        final String code = prefs.getString(Constants.SHARED_PREF_TEAM_CODE, "");
 
         // Set text information
         TextView nameText = (TextView) view.findViewById(R.id.info_user);
@@ -105,6 +106,21 @@ public class TeamInfoFragment extends Fragment {
                 dialog.show();
             }
         });
+
+        Button shareTeamButton = (Button) view.findViewById(R.id.share_team_button);
+        shareTeamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "For å bli med i jaktlaget "+teamId+" bruk" +
+                        " følgende kode: "+code);
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent,
+                                            getResources().getText(R.string.send_to)));
+            }
+        });
+
         return view;
     }
 

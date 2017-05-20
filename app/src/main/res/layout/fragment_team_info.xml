@@ -95,15 +95,28 @@
 
     </ScrollView>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
     <Button
          android:id="@+id/reset_team_button"
-         android:layout_width="match_parent"
+         android:layout_width="0dp"
+         android:layout_weight="0.5"
          android:text="@string/leave_team"
          android:layout_gravity="center"
          android:layout_height="60dp"
-         android:theme="@style/AppTheme.Button"
-         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+         android:theme="@style/AppTheme.Button.Secondary"
     />
-
+    <Button
+         android:id="@+id/share_team_button"
+         android:layout_width="0dp"
+         android:layout_weight="0.5"
+         android:text="@string/share_team_button"
+         android:layout_gravity="center"
+         android:layout_height="60dp"
+         android:theme="@style/AppTheme.Button"
+    />
+    </LinearLayout>
 </RelativeLayout>

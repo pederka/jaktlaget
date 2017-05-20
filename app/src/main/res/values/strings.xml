@@ -67,12 +67,14 @@
     <string name="empty_landmarks">Ingen kartmerker</string>
 
     <string name="save_name_button">Lagre</string>
+    <string name="share_team_button">Del info</string>
     <string name="update_team_button">Velg jaktlag</string>
     <string name="reset_team_button">Nullstill</string>
     <string name="teamname_hint">Lagnavn</string>
     <string name="teamcode_hint">Adgangskode for laget</string>
     <string name="username_hint">Jegernavn</string>
     <string name="wrong_code">Ugyldig adganskode</string>
+    <string name="send_to">Velg hvordan du vil dele lagekoden</string>
 
     <string name="notification_title">Jaktlaget</string>
     <string name="notification_message">Deler din posisjon med laget</string>
