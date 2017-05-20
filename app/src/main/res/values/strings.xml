@@ -97,8 +97,8 @@
     <string name="pref_syncInterval_dialog">Velg intervall for oppdatering av lagets posisjoner</string>
     <string name="pref_syncInterval_default">5</string>
 
-    <string name="pref_hideoldteam">Slett utdaterte posisjoner</string>
-    <string name="pref_hideoldteam_summary">Slett markører for lagmedlemmer med utdatert posisjon</string>
+    <string name="pref_hideoldteam">Skjul utdaterte lagposisjoner</string>
+    <string name="pref_hideoldteam_summary">Skjul markører for lagmedlemmer med utdatert posisjon</string>
 
     <string name="pref_hideteamlimit">Utløpstid for posisjoner</string>
     <string name="pref_hideteamlimit_dialog">Velg ny utløpstid for posisjoner</string>
