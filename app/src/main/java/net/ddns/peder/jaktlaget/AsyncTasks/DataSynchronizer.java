@@ -197,32 +197,32 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             sharedPrefs.edit().putString(Constants.SHARED_PREF_TEAM_CODE, codeString).apply();
 
             // Remove any teammates with outdated positions
-            if (removeOutdated) {
-                final String[] PROJECTION = {
-                        PositionsDbHelper.COLUMN_NAME_ID,
-                        PositionsDbHelper.COLUMN_NAME_TIME,
-                };
-                Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
-                         PROJECTION,
-                         null,
-                         null,
-                         null,
-                         null,
-                         null);
-                long currenttime = System.currentTimeMillis();
-                long exptime = expirationTime*60000;
-                String whereClause = PositionsDbHelper.COLUMN_NAME_ID + "= ?";
-                while (cursor.moveToNext()) {
-                    long time = Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(
-                            PositionsDbHelper.COLUMN_NAME_TIME)));
-                    if (currenttime-time > exptime) {
-                        posdb.delete(PositionsDbHelper.TABLE_NAME, whereClause,
-                                        new String[] {cursor.getString(cursor.getColumnIndexOrThrow(
-                                                    PositionsDbHelper.COLUMN_NAME_ID))});
-                    }
-                }
-                cursor.close();
-            }
+            //if (removeOutdated) {
+            //    final String[] PROJECTION = {
+            //            PositionsDbHelper.COLUMN_NAME_ID,
+            //            PositionsDbHelper.COLUMN_NAME_TIME,
+            //    };
+            //    Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
+            //             PROJECTION,
+            //             null,
+            //             null,
+            //             null,
+            //             null,
+            //             null);
+            //    long currenttime = System.currentTimeMillis();
+            //    long exptime = expirationTime*60000;
+            //    String whereClause = PositionsDbHelper.COLUMN_NAME_ID + "= ?";
+            //    while (cursor.moveToNext()) {
+            //        long time = Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(
+            //                PositionsDbHelper.COLUMN_NAME_TIME)));
+            //        if (currenttime-time > exptime) {
+            //            posdb.delete(PositionsDbHelper.TABLE_NAME, whereClause,
+            //                            new String[] {cursor.getString(cursor.getColumnIndexOrThrow(
+            //                                        PositionsDbHelper.COLUMN_NAME_ID))});
+            //        }
+            //    }
+            //    cursor.close();
+            //}
 
             socket.close();
         } catch (Exception e) {

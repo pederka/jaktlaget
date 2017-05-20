@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/pos_row_layout"
     android:layout_width="fill_parent"
-    android:layout_height="50dp">
+    android:layout_height="wrap_content"
+    android:minHeight="60dp">
 
     <TextView
         android:id="@+id/pos_list_user"
