@@ -465,12 +465,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mapView.onCreate(savedInstanceState);
                 mapView.onResume();
             }
-            //else {
-            //    if (((MainActivity)getActivity()).cameraPosition != null) {
-            //        map.moveCamera(CameraUpdateFactory.newCameraPosition((
-            //                                        (MainActivity)getActivity()).cameraPosition));
-            //    }
-            //}
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -646,7 +640,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (getActivity() != null && ((MainActivity)getActivity()).cameraPosition != null) {
             map.moveCamera(CameraUpdateFactory.newCameraPosition((
                                         (MainActivity)getActivity()).cameraPosition));
-        } else {
+        } else if (latitude != 0 && longitude != 0) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 9));
+        }
+        else {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
         }
         if (landmarks_toggled) {
@@ -665,8 +662,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void zoomToPosition(GoogleMap map) {
         double latitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LAT, 0);
         double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON, 0);
-        Log.d(tag, "Zooming to position "+latitude+" "+longitude);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 9));
+        if (latitude != 0 && longitude != 0) {
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 9));
+        }
     }
 
     private void addLandMarks(GoogleMap map) {
@@ -800,14 +798,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        //if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
-        //    map.moveCamera(CameraUpdateFactory.newCameraPosition(
-        //            ((MainActivity)getActivity()).cameraPosition));
-        //} else if (map != null) {
-        if (map != null) {
+        if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(
+                    ((MainActivity)getActivity()).cameraPosition));
+        } else if (map != null) {
             zoomToPosition(map);
         }
-        //}
     }
 
 

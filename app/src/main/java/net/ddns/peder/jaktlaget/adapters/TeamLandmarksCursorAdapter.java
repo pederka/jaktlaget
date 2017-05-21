@@ -36,21 +36,11 @@ public class TeamLandmarksCursorAdapter extends SimpleCursorAdapter {
                                             TeamLandmarksDbHelper.COLUMN_NAME_DESCRIPTION));
         final String userId = cursor.getString(cursor.getColumnIndex(
                                             TeamLandmarksDbHelper.COLUMN_NAME_USER));
-        final String lat = cursor.getString(cursor.getColumnIndexOrThrow(
-                                                TeamLandmarksDbHelper.COLUMN_NAME_LATITUDE));
-        final String lon = cursor.getString(cursor.getColumnIndexOrThrow(
-                                                TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE));
-
         TextView descriptionView = (TextView) view.findViewById(R.id.team_lm_list_desc);
         descriptionView.setText(description);
 
         TextView userView = (TextView) view.findViewById(R.id.team_lm_list_user);
-        userView.setText(context.getString(R.string.lm_list_user, userId));
+        userView.setText(userId);
 
-        TextView latView = (TextView) view.findViewById(R.id.team_lm_list_lat);
-        latView.setText(context.getString(R.string.lm_list_lat, lat));
-
-        TextView longView = (TextView) view.findViewById(R.id.team_lm_list_lon);
-        longView.setText(context.getString(R.string.lm_list_long, lon));
     }
 }

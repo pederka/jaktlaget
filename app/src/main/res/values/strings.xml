@@ -24,7 +24,7 @@
     <string name="column_show">Vis?</string>
     <string name="column_share">Del?</string>
     <string name="column_last_update">Sist oppdatert</string>
-    <string name="lm_list_user">Jeger: %s</string>
+    <string name="lm_list_user">Jeger</string>
     <string name="lm_list_lat">Breddegrad: %s</string>
     <string name="lm_list_long">Lengdegrad: %s</string>
 

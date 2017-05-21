@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"
                 android:text="@string/column_user"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp" />
 
             <TextView
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
                 android:text="@string/column_last_update"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textSize="18sp" />
 
             <LinearLayout
