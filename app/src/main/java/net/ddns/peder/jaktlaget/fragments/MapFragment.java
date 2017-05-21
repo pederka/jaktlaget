@@ -132,21 +132,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON, 0);
                 // Creating a LatLng object for the current location
                 LatLng latLng = new LatLng(latitude, longitude);
+
+                if (getActivity() != null && ((MainActivity)getActivity()).isActive()) {
+                    ((MainActivity) getActivity()).addToMyLocationHistory(latLng);
+                    // Make polyline trace
+                    if (traceLine != null) {
+                        hideMyTraceLine();
+                    }
+                    if (line_toggled) {
+                        showMyTraceLine();
+                    }
+                }
                 // Clear old position
                 if (myLocationMarker != null) {
                     myLocationMarker.remove();
                 }
-                if (getActivity() != null) {
-                    ((MainActivity) getActivity()).addToMyLocationHistory(latLng);
-                }
-                // Make polyline trace
-                if (traceLine != null) {
-                    hideMyTraceLine();
-                }
-                if (line_toggled) {
-                    showMyTraceLine();
-                }
-
                 // Set new position
                 myLocationMarker = map.addMarker(new MarkerOptions()
                         .anchor(0.5f, 0.5f)

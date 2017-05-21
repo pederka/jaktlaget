@@ -44,7 +44,8 @@
     <string name="trace_remove_abort">Avbryt</string>
     <string name="traces_deleted">Alle spor slettet</string>
     <string name="reset_team_dialog">Nullstill lag</string>
-    <string name="reset_team_text">Er du sikker på at du vil forlate %s? Du vil miste adgangskoden.</string>
+    <string name="reset_team_text">Er du sikker på at du vil forlate %s? Du vil miste adgangskoden hvis du ikke skriver den
+        ned.</string>
 
     <string name="description_hint">Beskrivelse</string>
     <string name="landmark_added">Kartmerke lagt til</string>
@@ -67,7 +68,7 @@
     <string name="empty_landmarks">Ingen kartmerker</string>
 
     <string name="save_name_button">Lagre</string>
-    <string name="share_team_button">Del info</string>
+    <string name="share_team_button">Del kode</string>
     <string name="update_team_button">Velg jaktlag</string>
     <string name="reset_team_button">Nullstill</string>
     <string name="teamname_hint">Lagnavn</string>
