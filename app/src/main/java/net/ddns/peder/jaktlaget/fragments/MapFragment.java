@@ -27,6 +27,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,6 +190,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     MY_PERMISSIONS_REQUEST);
         }
 
+        if (map != null) {
+            zoomToPosition(map);
+        }
 
         landmarksDbHelper = new LandmarksDbHelper(getContext());
         db = landmarksDbHelper.getReadableDatabase();
@@ -461,12 +465,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mapView.onCreate(savedInstanceState);
                 mapView.onResume();
             }
-            else {
-                if (((MainActivity)getActivity()).cameraPosition != null) {
-                    map.moveCamera(CameraUpdateFactory.newCameraPosition((
-                                                    (MainActivity)getActivity()).cameraPosition));
-                }
-            }
+            //else {
+            //    if (((MainActivity)getActivity()).cameraPosition != null) {
+            //        map.moveCamera(CameraUpdateFactory.newCameraPosition((
+            //                                        (MainActivity)getActivity()).cameraPosition));
+            //    }
+            //}
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -510,6 +514,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         // Do stuff with the map here!
         map = googleMap;
+
+        zoomToPosition(map);
 
         //Disable Map Toolbar:
         map.getUiSettings().setMapToolbarEnabled(false);
@@ -635,6 +641,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         if (map != null) {
             setUpMap();
         }
+        double latitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LAT, 0);
+        double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON, 0);
         if (getActivity() != null && ((MainActivity)getActivity()).cameraPosition != null) {
             map.moveCamera(CameraUpdateFactory.newCameraPosition((
                                         (MainActivity)getActivity()).cameraPosition));
@@ -657,13 +665,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void zoomToPosition(GoogleMap map) {
         double latitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LAT, 0);
         double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON, 0);
-        long lastPositionTime = sharedPreferences.getLong(Constants.SHARED_PREF_TIME, 0);
-        long currentTime = System.currentTimeMillis();
-        if ((currentTime-lastPositionTime)/1000 < 600) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 7));
-        } else {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
-        }
+        Log.d(tag, "Zooming to position "+latitude+" "+longitude);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 9));
     }
 
     private void addLandMarks(GoogleMap map) {
@@ -792,19 +795,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onStart() {
         super.onStart();
-        if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
-            map.moveCamera(CameraUpdateFactory.newCameraPosition((
-                                                    (MainActivity)getActivity()).cameraPosition));
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(
-                    ((MainActivity)getActivity()).cameraPosition));
+        //if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
+        //    map.moveCamera(CameraUpdateFactory.newCameraPosition(
+        //            ((MainActivity)getActivity()).cameraPosition));
+        //} else if (map != null) {
+        if (map != null) {
+            zoomToPosition(map);
         }
+        //}
     }
 
 
@@ -843,9 +846,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onStop() {
         super.onStop();
-        if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
-            ((MainActivity) getActivity()).cameraPosition = map.getCameraPosition();
-        }
     }
 
     @Override
