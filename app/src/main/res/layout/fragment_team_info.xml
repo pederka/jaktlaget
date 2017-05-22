@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,157 +8,225 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="60dp"
-        android:layout_alignParentTop="true"
-        >
+        android:layout_alignParentTop="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="8dp">
 
-            <TextView
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/teamname_guide"
-                android:textAppearance="@style/AppTheme.TextStyle" />
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                app:cardBackgroundColor="@color/colorPrimaryLight">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hunter_name"
+                            android:textAppearance="@style/AppTheme.TextStyle" />
+
+                        <ImageButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:background="@null"
+                            android:padding="5dp"
+                            android:src="@drawable/ic_help_outline_black_24dp" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="2dip"
+                        android:background="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/info_user"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Peder"
+                        android:textAppearance="@style/AppTheme.TextStyle.Important" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                app:cardBackgroundColor="@color/colorPrimaryLight">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/team_name"
+                                android:textAppearance="@style/AppTheme.TextStyle" />
+
+                            <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:background="@null"
+                                android:padding="5dp"
+                                android:src="@drawable/ic_help_outline_black_24dp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="2dip"
+                            android:background="@color/colorPrimary" />
+
+                        <TextView
+                            android:id="@+id/info_team"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:text="Hanshusbekken2"
+                            android:textAppearance="@style/AppTheme.TextStyle.Important" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <Button
+                                android:id="@+id/reset_team_button"
+                                style="?android:attr/borderlessButtonStyle"
+                                android:layout_width="150dp"
+                                android:layout_height="48dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_gravity="center"
+                                android:text="@string/leave_team" />
+                        </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:cardBackgroundColor="@color/colorPrimaryLight">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:text="@string/code"
+                                android:textAppearance="@style/AppTheme.TextStyle" />
+
+                            <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:background="@null"
+                                android:padding="5dp"
+                                android:src="@drawable/ic_help_outline_black_24dp" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="2dip"
+                            android:background="@color/colorPrimary" />
+
+                        <TextView
+                            android:id="@+id/info_code"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:text="XY68H3"
+                            android:textAppearance="@style/AppTheme.TextStyle.Important" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <Button
+                                android:id="@+id/share_team_button"
+                                style="?android:attr/borderlessButtonStyle"
+                                android:layout_width="150dp"
+                                android:layout_height="48dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_gravity="center"
+                                android:text="@string/share_team_button" />
+                        </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/card"
-                android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/hunter_name"
-                android:textAppearance="@style/AppTheme.TextStyle"
-                android:paddingTop="5dp"
-                android:paddingLeft="5dp"
-                />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_margin="5dp"
-                android:layout_height="2dip"
-                android:background="@color/colorPrimary" />
-
-            <TextView
-                android:id="@+id/info_user"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Peder"
-                android:gravity="center"
-                android:textAppearance="@style/AppTheme.TextStyle.Important"
-                android:padding="5dp"
-                />
-            </LinearLayout>
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="5dp" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/card"
-                android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/team_name"
-                android:textAppearance="@style/AppTheme.TextStyle"
-                android:paddingTop="5dp"
-                android:paddingLeft="5dp"
-                />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_margin="5dp"
-                android:layout_height="2dip"
-                android:background="@color/colorPrimary" />
-            <TextView
-                android:id="@+id/info_team"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Hanshusbekken2"
-                android:gravity="center"
-                android:textAppearance="@style/AppTheme.TextStyle.Important"
-                android:padding="5dp"/>
-            </LinearLayout>
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="5dp" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/card"
-                android:orientation="vertical">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/code"
-                android:textAppearance="@style/AppTheme.TextStyle"
-                android:paddingTop="5dp"
-                android:paddingLeft="5dp"
-                />
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:src="@drawable/ic_help_outline_black_24dp"
-                android:layout_alignParentRight="true"/>
-
-            </RelativeLayout>
-                <View
-                android:layout_width="fill_parent"
-                android:layout_margin="5dp"
-                android:layout_height="2dip"
-                android:background="@color/colorPrimary" />
-            <TextView
-                android:id="@+id/info_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="XY68H3"
-                android:gravity="center"
-                android:textAppearance="@style/AppTheme.TextStyle.Important"
-                android:padding="5dp"/>
-            </LinearLayout>
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="15dp" />
-            </LinearLayout>
+        </LinearLayout>
 
     </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-
-    <Button
-         android:id="@+id/reset_team_button"
-         android:layout_width="0dp"
-         android:layout_weight="0.5"
-         android:text="@string/leave_team"
-         android:layout_gravity="center"
-         android:layout_height="60dp"
-         android:theme="@style/AppTheme.Button.Secondary"
-    />
-    <Button
-         android:id="@+id/share_team_button"
-         android:layout_width="0dp"
-         android:layout_weight="0.5"
-         android:text="@string/share_team_button"
-         android:layout_gravity="center"
-         android:layout_height="60dp"
-         android:theme="@style/AppTheme.Button"
-    />
-    </LinearLayout>
 </RelativeLayout>
