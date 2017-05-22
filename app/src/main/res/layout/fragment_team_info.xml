@@ -40,6 +40,7 @@
                             android:textAppearance="@style/AppTheme.TextStyle" />
 
                         <ImageButton
+                            android:id="@+id/help_name_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
@@ -98,6 +99,7 @@
                                 android:textAppearance="@style/AppTheme.TextStyle" />
 
                             <ImageButton
+                                android:id="@+id/help_team_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
@@ -177,6 +179,7 @@
                                 android:textAppearance="@style/AppTheme.TextStyle" />
 
                             <ImageButton
+                                android:id="@+id/help_code_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"

@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import net.ddns.peder.jaktlaget.Constants;
@@ -60,6 +61,66 @@ public class TeamInfoFragment extends Fragment {
         TextView codeText = (TextView) view.findViewById(R.id.info_code);
         codeText.setText(code);
 
+        ImageButton nameHelpButton = (ImageButton) view.findViewById(R.id.help_name_button);
+        nameHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setMessage(R.string.name_help)
+                        .setTitle(R.string.name_help_title);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Naathing
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+        ImageButton teamHelpButton = (ImageButton) view.findViewById(R.id.help_team_button);
+        teamHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setMessage(R.string.teamname_guide)
+                        .setTitle(R.string.team_help_title);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Naathing
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+        ImageButton codeHelpButton = (ImageButton) view.findViewById(R.id.help_code_button);
+        codeHelpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setMessage(R.string.code_help)
+                        .setTitle(R.string.code_help_title);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Naathing
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
         Button resetTeamButton = (Button) view.findViewById(R.id.reset_team_button);
         resetTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
