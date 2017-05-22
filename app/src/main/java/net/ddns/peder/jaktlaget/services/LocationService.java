@@ -189,12 +189,15 @@ public class LocationService extends Service {
                 Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
 
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notificationIntent.putExtra(Constants.EXTRA_MAP, true);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         Intent stopIntent = new Intent();
         stopIntent.setAction(MainActivity.ACTION_SERVICE);
         stopIntent.putExtra("ACTION", "STOP");
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, notificationIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, notificationIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent pendingStopIntent = PendingIntent.getBroadcast(this, 2,
                                         stopIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 

@@ -12,7 +12,7 @@
     <string name="actionbar_active">AKTIV</string>
     <string name="actionbar_inactive">INAKTIV</string>
     <string name="action_stop">Stopp</string>
-    <string name="action_map">Åpne app</string>
+    <string name="action_map">Til kart</string>
 
     <string name="pref_category_usage">Appbruk</string>
 

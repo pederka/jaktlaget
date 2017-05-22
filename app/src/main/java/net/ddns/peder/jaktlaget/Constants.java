@@ -21,6 +21,9 @@ public final class Constants {
     public static final String SHARED_PREF_TEAM_LOCATION_HISTORY = "team_location_history";
     public static final String SHARED_PREF_TEAM_CODE = "team_code";
 
+    // Intent extras
+    public static final String EXTRA_MAP = "net.ddns.peder.INTENT_MAP";
+
     // Default names
     public static final String DEFAULT_USER_ID = "noUser";
     public static final String DEFAULT_TEAM_ID = "noTeam";

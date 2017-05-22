@@ -112,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements
         intentFilter.addAction(ACTION_SERVICE);
         this.registerReceiver(br, intentFilter);
 
-
         mContext = this;
 
         mHandler = new Handler();
@@ -183,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID,
                                                                         Constants.DEFAULT_USER_ID);
+
         if (userId.equals(Constants.DEFAULT_USER_ID)) {
             displaySelectedScreen(R.id.nav_team_manage);
         } else {
@@ -369,6 +369,26 @@ public class MainActivity extends AppCompatActivity implements
                                                 Constants.ACTIVITY_GPS_DISTANCE, locationListener);
 
         }
+
+
+    }
+
+    @Override
+    public void onPostResume() {
+        super.onPostResume();
+        if (getIntent().getBooleanExtra(Constants.EXTRA_MAP, false)) {
+            getIntent().removeExtra(Constants.EXTRA_MAP);
+            Log.d(tag, "Map extra received");
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, new MapFragment());
+            ft.commit();
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent newIntent) {
+        super.onNewIntent(newIntent);
+        setIntent(newIntent);
     }
 
     @Override
