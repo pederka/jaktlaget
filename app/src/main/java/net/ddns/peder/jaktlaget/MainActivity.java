@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements
          else if (ContextCompat.checkSelfPermission((Activity) mContext,
                      Manifest.permission.ACCESS_FINE_LOCATION)
                      == PackageManager.PERMISSION_GRANTED) {
-
+             clearTeamLocationHistory();
              clearMyLocationHistory();
              activeText.setText(getString(R.string.actionbar_active));
              mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
@@ -323,7 +323,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void clearTeamLocationHistory() {
-        teamLocationHistory.clear();
+        if (teamLocationHistory != null) {
+            teamLocationHistory.clear();
+        }
     }
 
     public List<LatLng> getMyLocationHistory() {

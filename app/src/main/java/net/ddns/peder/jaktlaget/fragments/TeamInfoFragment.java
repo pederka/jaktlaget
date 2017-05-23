@@ -147,6 +147,8 @@ public class TeamInfoFragment extends Fragment {
                         teamLandmarksDbHelper.clearTable(lmdb);
                         posdb.close();
                         lmdb.close();
+                        // Clear any team traces
+                        ((MainActivity)getActivity()).clearTeamLocationHistory();
                         // Cancel any position services
                         if (((MainActivity)getActivity()).isActive()) {
                             ((MainActivity)getActivity()).goInactive();
