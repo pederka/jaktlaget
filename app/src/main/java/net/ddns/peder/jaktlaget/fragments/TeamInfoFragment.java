@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -121,6 +122,15 @@ public class TeamInfoFragment extends Fragment {
                 dialog.show();
             }
         });
+        Button showTeamButton = (Button) view.findViewById(R.id.show_team_button);
+        showTeamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewPager viewPager = (ViewPager)getActivity().findViewById(R.id.team_pager);
+                viewPager.setCurrentItem(1, true);
+            }
+        });
+
         Button resetTeamButton = (Button) view.findViewById(R.id.reset_team_button);
         resetTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override

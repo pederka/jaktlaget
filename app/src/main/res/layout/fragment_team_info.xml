@@ -136,7 +136,15 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
-
+                            <Button
+                                android:id="@+id/show_team_button"
+                                style="?android:attr/borderlessButtonStyle"
+                                android:layout_width="150dp"
+                                android:layout_height="48dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_gravity="center"
+                                android:textColor="@color/white"
+                                android:text="@string/show_team" />
                             <Button
                                 android:id="@+id/reset_team_button"
                                 style="?android:attr/borderlessButtonStyle"
