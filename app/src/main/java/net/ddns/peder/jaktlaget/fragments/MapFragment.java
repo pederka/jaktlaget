@@ -42,6 +42,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -67,7 +68,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener {
     private OnFragmentInteractionListener mListener;
     private MapView mapView;
     private GoogleMap map;
@@ -103,9 +104,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Bitmap otherBitmap;
     private Bitmap myLandmarkBitmap;
     private Bitmap otherLandmarkBitmap;
+    private Bitmap windBitmap;
     private int colorMe;
     private int colorOther;
     private int MY_PERMISSIONS_REQUEST;
+    private List<Marker> windMarkerList;
+    private List<Marker> windSpeedMarkerList;
 
     public MapFragment() {
         // Required empty public constructor
@@ -207,6 +211,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mHandler = new Handler();
         markerList = new ArrayList<>();
         teamMarkerList = new ArrayList<>();
+        windMarkerList = new ArrayList<>();
+        windSpeedMarkerList = new ArrayList<>();
 
         // Create icons for map
         colorMe = getResources().getColor(R.color.mapMe);
@@ -258,6 +264,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         canvas = new Canvas(otherLandmarkBitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.setColorFilter(colorOther, PorterDuff.Mode.SRC_ATOP);
+        drawable.draw(canvas);
+
+        drawable = AppCompatDrawableManager.get().getDrawable(getContext(),
+                            R.drawable.ic_arrow_upward_black_24dp);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+        windBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(windBitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
 
         myPositionButton = (ImageButton) view.findViewById(R.id.button_my_location);
@@ -425,13 +442,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
         weatherButton = (ImageButton) view.findViewById(R.id.button_weather);
         weatherButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
-        if (sharedPreferences.getBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE, true)) {
-            weather_toggled = true;
-            weatherButton.setBackgroundResource(R.drawable.buttonshape);
-        } else {
-            weather_toggled = false;
-            weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
-        }
+        //if (sharedPreferences.getBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE, true)) {
+        //    weather_toggled = true;
+        //    weatherButton.setBackgroundResource(R.drawable.buttonshape);
+        //} else {
+        weather_toggled = false;
+        weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
+        //}
         weatherButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -439,13 +456,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                                                                 getContext());
                 if (weather_toggled) {
                     weather_toggled = false;
-                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE,
-                                            false).apply();
+                    hideWeatherIcons();
                     weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
                     weather_toggled = true;
-                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE,
-                                            true).apply();
+                    showWeatherIcons();
                     weatherButton.setBackgroundResource(R.drawable.buttonshape);
                 }
             }
@@ -508,6 +523,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         // Do stuff with the map here!
         map = googleMap;
+
+        map.setOnCameraMoveStartedListener(this);
 
         zoomToPosition(map);
 
@@ -783,7 +800,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             MarkerOptions nameMarkerOptions = new MarkerOptions();
             nameMarkerOptions.position(pos);
             markerOptions.anchor(0.5f, 1.0f);
-            nameMarkerOptions.icon(createPureTextIcon(user));
+            nameMarkerOptions.icon(createPureTextIcon(user, colorOther));
             userNameMarkerList.add(map.addMarker(nameMarkerOptions));
         }
         showTeamTraceLine();
@@ -857,6 +874,67 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         void onFragmentInteraction(Uri uri);
     }
 
+    @Override
+    public void onCameraMoveStarted(int reason) {
+        if (weather_toggled) {
+            hideWeatherIcons();
+            weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
+            weather_toggled = false;
+        }
+    }
+
+    private void showWeatherIcons() {
+        if (map == null) {
+            return;
+        }
+        int mapHeight = mapView.getHeight();
+        int mapWidth = mapView.getWidth();
+        Projection projection = map.getProjection();
+        List<Point> arrowPoints = new ArrayList<>();
+        arrowPoints.add(new Point(mapWidth/4, mapHeight/4));
+        arrowPoints.add(new Point(mapWidth*3/4, mapHeight/4));
+        arrowPoints.add(new Point(mapWidth*3/4, mapHeight*3/4));
+        arrowPoints.add(new Point(mapWidth/4, mapHeight*3/4));
+        for (Point point : arrowPoints) {
+            LatLng arrowLatLng = projection.fromScreenLocation(point);
+            // Get wind at location
+            WindResult result = getWindAtPosition(arrowLatLng);
+            float bearing = result.getBearing();
+            float speed = result.getSpeed();
+            MarkerOptions windArrowOptions = new MarkerOptions()
+                    .position(arrowLatLng)
+                    .icon(BitmapDescriptorFactory.fromBitmap(windBitmap))
+                    .anchor(0.5f, 0.5f)
+                    .rotation(bearing)
+                    .flat(true);
+            windMarkerList.add(map.addMarker(windArrowOptions));
+            // Add wind speed
+            MarkerOptions speedMarkerOptions = new MarkerOptions();
+            speedMarkerOptions.position(arrowLatLng);
+            speedMarkerOptions.anchor(0.5f, 1.0f);
+            speedMarkerOptions.icon(createPureTextIcon(Float.toString(speed)+" m/s", Color.BLACK));
+            windSpeedMarkerList.add(map.addMarker(speedMarkerOptions));
+        }
+    }
+
+    private void hideWeatherIcons() {
+        if (windMarkerList != null) {
+            for (Marker marker : windMarkerList) {
+                marker.remove();
+            }
+            for (Marker speedMarker : windSpeedMarkerList) {
+                speedMarker.remove();
+            }
+            windMarkerList.clear();
+            windSpeedMarkerList.clear();
+        }
+    }
+
+    private WindResult getWindAtPosition(LatLng position) {
+        // Dummy for now
+        return new WindResult(32f, 12.3f);
+    }
+
     private void showMyTraceLine() {
         if (map != null && getActivity() != null) {
             traceLine = map.addPolyline(new PolylineOptions()
@@ -906,12 +984,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public BitmapDescriptor createPureTextIcon(String text) {
+    public BitmapDescriptor createPureTextIcon(String text, int color) {
 
         Paint textPaint = new Paint(); // Adapt to your needs
 
         textPaint.setTextSize(45);
-        textPaint.setColor(colorOther);
+        textPaint.setColor(color);
 
         float textWidth = textPaint.measureText(text);
         float textHeight = textPaint.getTextSize();
@@ -932,5 +1010,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         canvas.drawText(text, 0, 0, textPaint);
         return BitmapDescriptorFactory.fromBitmap(image);
+    }
+
+    final class WindResult {
+        private final float bearing;
+        private final float speed;
+
+        public WindResult(float bearing, float speed) {
+            this.bearing = bearing;
+            this.speed = speed;
+        }
+
+        public float getBearing() {
+            return bearing;
+        }
+
+        public float getSpeed() {
+            return speed;
+        }
     }
 }
