@@ -37,6 +37,7 @@ public final class Constants {
     public static final long MAP_LOCATION_UPDATE_INTERVAL = 5000;
     public static final long SYNC_DELAY_ACTIVITY = 60000;
     public static final int CODE_LENGTH = 4;
+    public static final int WEATHER_SYNC_COOLDOWN = 60000;
 
     // File names
     public static final String TMP_FILE_NAME = "syncCache";

@@ -63,6 +63,7 @@
     <string name="toast_no_team_or_user">Vennligst oppgi brukernavn og lagnavn</string>
     <string name="toast_wrong_code">Feil lagkode</string>
     <string name="toast_sync_failed">Synkronisering mislyktes</string>
+    <string name="toast_weather_cooldown">Du kan ikke hente værdata mer enn én gang i minuttet</string>
 
     <string name="empty_team_list">Ingen lagmedlemmer</string>
     <string name="empty_landmarks">Ingen kartmerker</string>

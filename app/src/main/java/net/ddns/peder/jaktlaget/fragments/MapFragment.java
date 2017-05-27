@@ -52,13 +52,17 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 
+import net.ddns.peder.jaktlaget.AsyncTasks.WeatherSynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.database.LandmarksDbHelper;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
+import net.ddns.peder.jaktlaget.interfaces.WeatherSyncCompleteListener;
 import net.ddns.peder.jaktlaget.providers.TileProviderFactory;
+import net.ddns.peder.jaktlaget.weather.OpenWeatherHttpClient;
+import net.ddns.peder.jaktlaget.weather.WindResult;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -68,7 +72,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener,
+                                                                        WeatherSyncCompleteListener {
     private OnFragmentInteractionListener mListener;
     private MapView mapView;
     private GoogleMap map;
@@ -110,6 +115,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private int MY_PERMISSIONS_REQUEST;
     private List<Marker> windMarkerList;
     private List<Marker> windSpeedMarkerList;
+    private long time_last_weather_sync;
 
     public MapFragment() {
         // Required empty public constructor
@@ -213,6 +219,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         teamMarkerList = new ArrayList<>();
         windMarkerList = new ArrayList<>();
         windSpeedMarkerList = new ArrayList<>();
+
+        time_last_weather_sync = 0;
 
         // Create icons for map
         colorMe = getResources().getColor(R.color.mapMe);
@@ -459,9 +467,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     hideWeatherIcons();
                     weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
                 } else {
-                    weather_toggled = true;
-                    showWeatherIcons();
-                    weatherButton.setBackgroundResource(R.drawable.buttonshape);
+                    if (System.currentTimeMillis() - time_last_weather_sync >
+                                                                Constants.WEATHER_SYNC_COOLDOWN) {
+                        time_last_weather_sync = System.currentTimeMillis();
+                        weather_toggled = true;
+                        showWeatherIcons();
+                        weatherButton.setBackgroundResource(R.drawable.buttonshape);
+                    }
+                    else {
+                        Toast.makeText(getContext(), getString(R.string.toast_weather_cooldown),
+                                                                    Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -895,25 +911,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         arrowPoints.add(new Point(mapWidth*3/4, mapHeight/4));
         arrowPoints.add(new Point(mapWidth*3/4, mapHeight*3/4));
         arrowPoints.add(new Point(mapWidth/4, mapHeight*3/4));
+
+        List<LatLng> positions = new ArrayList<>();
         for (Point point : arrowPoints) {
-            LatLng arrowLatLng = projection.fromScreenLocation(point);
+            positions.add(projection.fromScreenLocation(point));
+        }
+
+        WeatherSynchronizer weatherSynchronizer = new WeatherSynchronizer(getContext(), this,
+                                                    positions);
+        weatherSynchronizer.execute();
+    }
+
+    @Override
+    public void onWeatherSyncComplete(List<LatLng> positions, List<WindResult> results) {
+        Projection projection = map.getProjection();
+        for (int i=0; i<positions.size(); i++) {
             // Get wind at location
-            WindResult result = getWindAtPosition(arrowLatLng);
-            float bearing = result.getBearing();
-            float speed = result.getSpeed();
-            MarkerOptions windArrowOptions = new MarkerOptions()
-                    .position(arrowLatLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(windBitmap))
-                    .anchor(0.5f, 0.5f)
-                    .rotation(bearing)
-                    .flat(true);
-            windMarkerList.add(map.addMarker(windArrowOptions));
-            // Add wind speed
-            MarkerOptions speedMarkerOptions = new MarkerOptions();
-            speedMarkerOptions.position(arrowLatLng);
-            speedMarkerOptions.anchor(0.5f, 1.0f);
-            speedMarkerOptions.icon(createPureTextIcon(Float.toString(speed)+" m/s", Color.BLACK));
-            windSpeedMarkerList.add(map.addMarker(speedMarkerOptions));
+            WindResult result = results.get(i);
+            if (result != null) {
+                float bearing = result.getBearing();
+                float speed = result.getSpeed();
+                MarkerOptions windArrowOptions = new MarkerOptions()
+                        .position(positions.get(i))
+                        .icon(BitmapDescriptorFactory.fromBitmap(windBitmap))
+                        .anchor(0.5f, 0.5f)
+                        .rotation(bearing)
+                        .flat(true);
+                windMarkerList.add(map.addMarker(windArrowOptions));
+                // Add wind speed
+                MarkerOptions speedMarkerOptions = new MarkerOptions();
+                speedMarkerOptions.position(positions.get(i));
+                speedMarkerOptions.anchor(0.5f, 1.0f);
+                speedMarkerOptions.icon(createPureTextIcon(Float.toString(speed) + " m/s", Color.BLACK));
+                windSpeedMarkerList.add(map.addMarker(speedMarkerOptions));
+            }
         }
     }
 
@@ -932,7 +963,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private WindResult getWindAtPosition(LatLng position) {
         // Dummy for now
-        return new WindResult(32f, 12.3f);
+        return OpenWeatherHttpClient.getWindData(position);
     }
 
     private void showMyTraceLine() {
@@ -1012,21 +1043,4 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         return BitmapDescriptorFactory.fromBitmap(image);
     }
 
-    final class WindResult {
-        private final float bearing;
-        private final float speed;
-
-        public WindResult(float bearing, float speed) {
-            this.bearing = bearing;
-            this.speed = speed;
-        }
-
-        public float getBearing() {
-            return bearing;
-        }
-
-        public float getSpeed() {
-            return speed;
-        }
-    }
 }
