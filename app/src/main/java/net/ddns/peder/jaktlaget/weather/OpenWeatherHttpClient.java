@@ -14,16 +14,15 @@ import java.net.URL;
  * Created by peder on 5/26/17.
  */
 
-public class OpenWeatherHttpClient {
+public class OpenWeatherHttpClient extends WeatherHttpClient {
 
     private static final String BASE_URL =
                           "http://api.openweathermap.org/data/2.5/weather?lat=%1$s&lon=%2$s&appid=";
-
-    private final static String tag = "WeatherHttpClient";
-
+    private final static String tag = "OpenWeatherHttpClient";
     private static final String API_KEY = "c15b30390af4e93d81ba16a7dc110b01";
 
-    public static final WindResult getWindData(LatLng position) {
+    @Override
+    public WindResult getWindData(LatLng position) {
         HttpURLConnection con = null ;
         InputStream is = null;
         String FULL_URL = String.format(BASE_URL, position.latitude,

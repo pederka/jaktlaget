@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import net.ddns.peder.jaktlaget.interfaces.WeatherSyncCompleteListener;
 import net.ddns.peder.jaktlaget.weather.OpenWeatherHttpClient;
+import net.ddns.peder.jaktlaget.weather.WeatherHttpClient;
 import net.ddns.peder.jaktlaget.weather.WindResult;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class WeatherSynchronizer extends AsyncTask<Void, Void, List<WindResult>>
     private ProgressDialog dialog;
     private SharedPreferences sharedPrefs;
     private WeatherSyncCompleteListener weatherSyncCompleteListener;
+    private WeatherHttpClient weatherHttpClient;
     private List<LatLng> positions;
 
 
@@ -29,6 +31,8 @@ public class WeatherSynchronizer extends AsyncTask<Void, Void, List<WindResult>>
 
         this.weatherSyncCompleteListener = weatherSyncCompleteListener;
         this.positions = positions;
+
+        weatherHttpClient = new OpenWeatherHttpClient();
 
         dialog = new ProgressDialog(context);
     }
@@ -43,7 +47,7 @@ public class WeatherSynchronizer extends AsyncTask<Void, Void, List<WindResult>>
     protected List<WindResult> doInBackground(Void... params) {
         List<WindResult> results = new ArrayList<>();
         for (int i=0; i<positions.size(); i++) {
-            results.add(OpenWeatherHttpClient.getWindData(positions.get(i)));
+            results.add(weatherHttpClient.getWindData(positions.get(i)));
         }
         return results;
     }

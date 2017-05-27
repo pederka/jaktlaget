@@ -961,11 +961,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
-    private WindResult getWindAtPosition(LatLng position) {
-        // Dummy for now
-        return OpenWeatherHttpClient.getWindData(position);
-    }
-
     private void showMyTraceLine() {
         if (map != null && getActivity() != null) {
             traceLine = map.addPolyline(new PolylineOptions()
