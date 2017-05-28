@@ -1,5 +1,7 @@
 package net.ddns.peder.jaktlaget.weather;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
@@ -20,6 +22,10 @@ public class OpenWeatherHttpClient extends WeatherHttpClient {
                           "http://api.openweathermap.org/data/2.5/weather?lat=%1$s&lon=%2$s&appid=";
     private final static String tag = "OpenWeatherHttpClient";
     private static final String API_KEY = "c15b30390af4e93d81ba16a7dc110b01";
+
+    public OpenWeatherHttpClient(Context context) {
+        super(context);
+    }
 
     @Override
     public WindResult getWindData(LatLng position) {

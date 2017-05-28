@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.interfaces.WeatherSyncCompleteListener;
 import net.ddns.peder.jaktlaget.weather.OpenWeatherHttpClient;
 import net.ddns.peder.jaktlaget.weather.WeatherHttpClient;
@@ -32,14 +33,14 @@ public class WeatherSynchronizer extends AsyncTask<Void, Void, List<WindResult>>
         this.weatherSyncCompleteListener = weatherSyncCompleteListener;
         this.positions = positions;
 
-        weatherHttpClient = new OpenWeatherHttpClient();
+        weatherHttpClient = new OpenWeatherHttpClient(context);
 
         dialog = new ProgressDialog(context);
     }
 
     @Override
     protected void onPreExecute() {
-        this.dialog.setMessage("Henter vær..");
+        this.dialog.setMessage(mContext.getString(R.string.weather_sync_dialog));
         this.dialog.show();
     }
 
