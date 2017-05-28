@@ -637,21 +637,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                         input.setMaxLines(1);
                         input.setInputType(InputType.TYPE_CLASS_TEXT);
                         builder.setView(input);
-                        final Marker mker = marker;
                         builder.setPositiveButton(R.string.lm_update, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 ContentValues contentValues = new ContentValues();
                                 String desc_new = input.getText().toString();
                                 contentValues.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc_new);
                                 db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection, selectionArgs);
-                                mker.setTitle(desc_new);
+                                marker.setTitle(desc_new);
                             }
                         });
                         builder.setNegativeButton(R.string.lm_delete, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User cancelled the dialog
                                 db.delete(LandmarksDbHelper.TABLE_NAME, selection, selectionArgs);
-                                mker.remove();
+                                marker.remove();
                                 markerList.remove(marker);
                             }
                         });
