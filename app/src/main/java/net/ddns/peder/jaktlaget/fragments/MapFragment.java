@@ -935,7 +935,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                         .position(positions.get(i))
                         .icon(BitmapDescriptorFactory.fromBitmap(windBitmap))
                         .anchor(0.5f, 0.5f)
-                        .rotation(bearing)
+                        .rotation(bearing-180.0f)
                         .flat(true);
                 windMarkerList.add(map.addMarker(windArrowOptions));
                 // Add wind speed
