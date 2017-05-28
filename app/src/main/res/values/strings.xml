@@ -132,5 +132,6 @@
                                  Vi lagrer ingen informasjon om deg til andre formål enn for å gi dine lagkamerater din siste posisjon. Ingen posisjonshistorikk lagres på tjenersiden.</string>
 
     <string name="about_credits_header">Annet:</string>
-    <string name="about_credits">Alle terrengkart som brukes i denne applikasjonen kommer fra Kartverkets frie WMS-tjeneste og er ©Kartverket. </string>
+    <string name="about_credits">Alle terrengkart som brukes i denne applikasjonen kommer fra Kartverkets frie WMS-tjeneste og er ©Kartverket.
+                                 Værdata er hentet fra Open Weather Map (openweathermap.org/api). </string>
 </resources>
