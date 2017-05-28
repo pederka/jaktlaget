@@ -892,11 +892,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onCameraMoveStarted(int reason) {
-        if (weather_toggled) {
-            hideWeatherIcons();
-            weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
-            weather_toggled = false;
-        }
+        //if (weather_toggled) {
+        //    hideWeatherIcons();
+        //    weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
+        //    weather_toggled = false;
+        //}
     }
 
     private void showWeatherIcons() {
