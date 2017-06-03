@@ -121,6 +121,7 @@
     <string name="code_help_title">Adgangskode</string>
     <string name="team_help_title">Jaktlag</string>
     <string name="teamname_guide">Alle jegere med samme jaktlag deler sin posisjon og sine kartmerker med hverandre når appen er aktiv.</string>
+    <string name="teamname_guide_2">Hvis jaktlaget allerede eksisterer vil du bli bedt om å oppgi adgangskode.</string>
     <string name="code_help">Adgangskoden trengs for å bli med i jaktlaget. Del denne koden med de som skal ha den.</string>
     <string name="name_help">Jegernavnet er navnet som vises på din posisjon på dine lagkameraters kart.</string>
 
