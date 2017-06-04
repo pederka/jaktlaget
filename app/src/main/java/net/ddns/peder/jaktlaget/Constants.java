@@ -38,15 +38,7 @@ public final class Constants {
     public static final int CODE_LENGTH = 4;
     public static final int WEATHER_SYNC_COOLDOWN = 60000;
 
-    // File names
-    public static final String TMP_FILE_NAME = "syncCache";
-
-    // For Amazon S3
-    public static final String MY_BUCKET = "jaktlaget";
-    public static final String OBJECT_KEY_BASE = "jaktlag/";
-
     // For SSL socket
-    //public static final String SOCKET_ADDR = "34.197.222.14";
     public static final String SOCKET_ADDR = "peder.ddns.net";
     public static final int SOCKET_PORT = 10024;
 }
