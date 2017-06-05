@@ -189,8 +189,8 @@ public class MainActivity extends AppCompatActivity implements
             displaySelectedScreen(R.id.nav_map);
         }
 
-
-        //PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
+        // Set default settings on first time app start
+        PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
     }
 
     private void startPositionUpdates() {
@@ -203,6 +203,12 @@ public class MainActivity extends AppCompatActivity implements
                     LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
                                                 Constants.ACTIVITY_GPS_DISTANCE, locationListener);
 
+        }
+    }
+
+    private void stopPositionUpdates() {
+        if (locationManager != null) {
+            locationManager.removeUpdates(locationListener);
         }
     }
 
@@ -363,16 +369,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mHandler != null && runningService) {
             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
         }
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED && locationManager != null) {
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
-                                                Constants.ACTIVITY_GPS_DISTANCE, locationListener);
-
-        }
-
-
+        startPositionUpdates();
     }
 
     @Override
@@ -405,9 +402,7 @@ public class MainActivity extends AppCompatActivity implements
         mHandler.removeCallbacks(syncData);
         LocationHistoryUtil.saveLocationHistoryToPreferences(this, myLocationHistory);
         LocationHistoryUtil.saveTeamLocationHistoryToPreferences(this, teamLocationHistory);
-        if (locationManager != null) {
-            locationManager.removeUpdates(locationListener);
-        }
+        stopPositionUpdates();
         if (runningService) {
             startService(new Intent(getApplicationContext(), LocationService.class));
         }

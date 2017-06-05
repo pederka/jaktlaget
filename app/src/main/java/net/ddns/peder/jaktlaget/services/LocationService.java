@@ -3,7 +3,6 @@ package net.ddns.peder.jaktlaget.services;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -42,8 +41,6 @@ public class LocationService extends Service {
     private int LOCATION_INTERVAL;
     private static final float LOCATION_DISTANCE = 10f;
     private static final String tag = "LocationService";
-    private String userId;
-    private String teamId;
     private List<LatLng> myLocationHistory;
     private Map<String, List<LatLng>> teamLocationHistory = new HashMap<>();
 
@@ -110,8 +107,7 @@ public class LocationService extends Service {
 
         public LocationListener(String provider)
         {
-
-            Log.e(tag, "LocationListener " + provider);
+            Log.i(tag, "LocationListener " + provider);
             mLastLocation = new Location(provider);
 
         }
@@ -119,7 +115,7 @@ public class LocationService extends Service {
         @Override
         public void onLocationChanged(Location location)
         {
-            Log.e(tag, "onLocationChanged: " + location);
+            Log.d(tag, "onLocationChanged: " + location);
             mLastLocation.set(location);
             // Save location to shared preferences
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
@@ -130,6 +126,7 @@ public class LocationService extends Service {
                                                             (float)location.getLongitude()).apply();
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
+
             DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(),
                                                                             this,
                                                                             false);
@@ -155,7 +152,7 @@ public class LocationService extends Service {
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras)
         {
-            Log.e(tag, "onStatusChanged: " + provider);
+            Log.i(tag, "onStatusChanged: " + provider);
         }
     }
 
@@ -170,7 +167,7 @@ public class LocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Log.e(tag, "onStartCommand");
+        Log.i(tag, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
 
         myLocationHistory = LocationHistoryUtil.loadLocationHistoryFromPreferences(
@@ -180,13 +177,6 @@ public class LocationService extends Service {
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
         }
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                                                                        this);
-        userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
-        teamId = sharedPreferences.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
-        LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString("pref_syncInterval",
-                Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
 
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         notificationIntent.putExtra(Constants.EXTRA_MAP, true);
@@ -229,24 +219,29 @@ public class LocationService extends Service {
     @Override
     public void onCreate()
     {
-        Log.e(tag, "onCreate");
+        Log.i(tag, "onCreate");
         initializeLocationManager();
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                                                                        this);
+        LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString("pref_syncInterval",
+                Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListener);
+            Log.i(tag, "Started location service with time interval: "+LOCATION_INTERVAL);
         } catch (java.lang.SecurityException ex) {
-            Log.i(tag, "fail to request location update, ignore", ex);
+            Log.e(tag, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
-            Log.d(tag, "gps provider does not exist " + ex.getMessage());
+            Log.e(tag, "gps provider does not exist " + ex.getMessage());
         }
     }
 
     @Override
     public void onDestroy()
     {
-        Log.e(tag, "onDestroy");
+        Log.i(tag, "onDestroy");
         super.onDestroy();
         if (mLocationManager != null) {
             try {
@@ -258,7 +253,7 @@ public class LocationService extends Service {
     }
 
     private void initializeLocationManager() {
-        Log.e(tag, "initializeLocationManager");
+        Log.i(tag, "initializeLocationManager");
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }

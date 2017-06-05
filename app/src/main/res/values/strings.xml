@@ -97,6 +97,7 @@
     <string name="pref_autoshowlm_summary">Automatisk vis importerte kartmerker på kart</string>
 
     <string name="pref_syncInterval">Synkroniseringsintervall</string>
+    <string name="pref_syncInterval_summary">Hvor ofte appen synkroniserer i bakgrunnen</string>
     <string name="pref_syncInterval_dialog">Velg intervall for oppdatering av lagets posisjoner</string>
     <string name="pref_syncInterval_default">5</string>
 
@@ -104,10 +105,12 @@
     <string name="pref_hideoldteam_summary">Skjul markører for lagmedlemmer med utdatert posisjon</string>
 
     <string name="pref_hideteamlimit">Utløpstid for posisjoner</string>
+    <string name="pref_hideteamlimit_summary">Hvor lenge gamle posisjoner vises på kartet</string>
     <string name="pref_hideteamlimit_dialog">Velg ny utløpstid for posisjoner</string>
     <string name="pref_hideteamlimit_default">30</string>
 
     <string name="pref_map_type">Kartformat</string>
+    <string name="pref_map_summary">Oppløsning for kartblad</string>
     <string name="pref_map_type_dialog">Velg kartformat</string>
     <string name="pref_map_type_default">png</string>
 
@@ -121,6 +124,7 @@
     <string name="code_help_title">Adgangskode</string>
     <string name="team_help_title">Jaktlag</string>
     <string name="teamname_guide">Alle jegere med samme jaktlag deler sin posisjon og sine kartmerker med hverandre når appen er aktiv.</string>
+    <string name="teamname_guide_2">Hvis jaktlaget allerede eksisterer vil du bli bedt om å oppgi adgangskode.</string>
     <string name="code_help">Adgangskoden trengs for å bli med i jaktlaget. Del denne koden med de som skal ha den.</string>
     <string name="name_help">Jegernavnet er navnet som vises på din posisjon på dine lagkameraters kart.</string>
 

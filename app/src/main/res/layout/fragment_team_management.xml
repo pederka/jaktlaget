@@ -19,7 +19,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/teamname_guide"
                 android:textAppearance="@style/AppTheme.TextStyle" />
-
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/teamname_guide_2"
+                android:textAppearance="@style/AppTheme.TextStyle" />
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
@@ -67,27 +74,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Button
-                    android:id="@+id/reset_team_button"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1.0"
-                    android:text="@string/reset_team_button"
-                    android:theme="@style/AppTheme.Button.Secondary"/>
 
                 <Button
                     android:id="@+id/save_teamname_button"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:layout_margin="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_weight="1.0"
                     android:text="@string/update_team_button"
                     android:theme="@style/AppTheme.Button"/>
 
             </LinearLayout>
+             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <Button
+                    android:id="@+id/reset_team_button"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1.0"
+                    android:text="@string/reset_team_button"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
-
+             </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
