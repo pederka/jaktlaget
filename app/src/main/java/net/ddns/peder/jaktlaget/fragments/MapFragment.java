@@ -42,7 +42,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -61,11 +60,11 @@ import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
 import net.ddns.peder.jaktlaget.interfaces.WeatherSyncCompleteListener;
 import net.ddns.peder.jaktlaget.providers.TileProviderFactory;
-import net.ddns.peder.jaktlaget.weather.OpenWeatherHttpClient;
 import net.ddns.peder.jaktlaget.weather.WindResult;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -205,7 +204,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
 
         landmarksDbHelper = new LandmarksDbHelper(getContext());
-        db = landmarksDbHelper.getReadableDatabase();
+        db = landmarksDbHelper.getWritableDatabase();
         teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
         tldb = teamLandmarksDbHelper.getReadableDatabase();
         positionsDbHelper = new PositionsDbHelper(getContext());
@@ -532,7 +531,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         values.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc);
         values.put(LandmarksDbHelper.COLUMN_NAME_LATITUDE, latLng.latitude);
         values.put(LandmarksDbHelper.COLUMN_NAME_LONGITUDE, latLng.longitude);
+        db.beginTransaction();
         db.insert(LandmarksDbHelper.TABLE_NAME, null, values);
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
     @Override
@@ -609,12 +611,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
             }
         });
 
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-
             @Override
             public void onMapLongClick(LatLng latLng) {
                 Projection projection = map.getProjection();
@@ -626,12 +626,48 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                                            marker.getPosition().longitude));
                     if(Math.abs(point.x - markerPoint.x) < 0.05*mapHeight &&
                             Math.abs(point.y - markerPoint.y) < 0.05*mapHeight) {
-                        final String selection = LandmarksDbHelper.COLUMN_NAME_ID + " = ?";
-                        final String[] selectionArgs = {""+marker.getTag()};
-
+                        final String selection = LandmarksDbHelper.COLUMN_NAME_DESCRIPTION + " = ?";
+                        final String[] selectionArgs = {""+marker.getTitle()};
+                        final String[] PROJECTION = {
+                            LandmarksDbHelper.COLUMN_NAME_ID,
+                            LandmarksDbHelper.COLUMN_NAME_SHARED,
+                            LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+                            };
+                        // Query database to get shared status
+                        final Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
+                            PROJECTION,
+                            selection,
+                            selectionArgs,
+                            null,
+                            null,
+                            null);
+                        cursor.moveToFirst();
+                        shared = cursor.getInt(cursor.getColumnIndexOrThrow(
+                                            LandmarksDbHelper.COLUMN_NAME_SHARED)) > 0;
+                        cursor.close();
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         String desc = marker.getTitle();
                         builder.setTitle(getString(R.string.lm_title));
+                        boolean [] checked_list = new boolean[1];
+                        if (shared) {
+                            Arrays.fill(checked_list, true);
+                        } else {
+                            Arrays.fill(checked_list, false);
+                        }
+                        builder.setMultiChoiceItems(R.array.lm_choices, checked_list,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which,
+                                                boolean isChecked) {
+                                if (isChecked) {
+                                    // If the user checked the item, add it to the selected items
+                                    shared = true;
+                                } else {
+                                    // Else, if the item is already in the array, remove it
+                                    shared = false;
+                                }
+                            }
+                        });
                         final EditText input = new EditText(getContext());
                         input.setText(desc);
                         input.setMaxLines(1);
@@ -642,6 +678,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                                 ContentValues contentValues = new ContentValues();
                                 String desc_new = input.getText().toString();
                                 contentValues.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc_new);
+                                contentValues.put(LandmarksDbHelper.COLUMN_NAME_SHARED, shared);
                                 db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection, selectionArgs);
                                 marker.setTitle(desc_new);
                             }
