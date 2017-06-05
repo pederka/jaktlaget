@@ -97,6 +97,7 @@
     <string name="pref_autoshowlm_summary">Automatisk vis importerte kartmerker på kart</string>
 
     <string name="pref_syncInterval">Synkroniseringsintervall</string>
+    <string name="pref_syncInterval_summary">Når appen kjører i bakgrunnen</string>
     <string name="pref_syncInterval_dialog">Velg intervall for oppdatering av lagets posisjoner</string>
     <string name="pref_syncInterval_default">5</string>
 
@@ -104,10 +105,12 @@
     <string name="pref_hideoldteam_summary">Skjul markører for lagmedlemmer med utdatert posisjon</string>
 
     <string name="pref_hideteamlimit">Utløpstid for posisjoner</string>
+    <string name="pref_hideteamlimit_summary">Hvor lenge gamle posisjoner vises på kartet</string>
     <string name="pref_hideteamlimit_dialog">Velg ny utløpstid for posisjoner</string>
     <string name="pref_hideteamlimit_default">30</string>
 
     <string name="pref_map_type">Kartformat</string>
+    <string name="pref_map_summary">Oppløsning for kartblad</string>
     <string name="pref_map_type_dialog">Velg kartformat</string>
     <string name="pref_map_type_default">png</string>
 
