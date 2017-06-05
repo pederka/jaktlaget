@@ -13,8 +13,8 @@ android {
         applicationId "net.ddns.peder.jaktlaget"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 7
-        versionName "1.06"
+        versionCode 9
+        versionName "1.07"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
