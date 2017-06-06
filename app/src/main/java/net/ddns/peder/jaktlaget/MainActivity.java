@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +20,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -124,6 +122,9 @@ public class MainActivity extends AppCompatActivity implements
             myLocationHistory = new ArrayList<>();
         }
 
+        locationListener = new MyLocationListener(mContext);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         action_bar_title = (TextView) findViewById(R.id.action_bar_title);
 
         // Any running service should be stopped when the app is opened
@@ -175,9 +176,9 @@ public class MainActivity extends AppCompatActivity implements
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST);
+        } else {
+            startPositionUpdates();
         }
-
-        startPositionUpdates();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID,
@@ -197,8 +198,6 @@ public class MainActivity extends AppCompatActivity implements
          if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
-            locationListener = new MyLocationListener(mContext);
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, Constants.ACTIVITY_GPS_UPDATE_TIME,
                                                 Constants.ACTIVITY_GPS_DISTANCE, locationListener);
@@ -208,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void stopPositionUpdates() {
         if (locationManager != null) {
+            Log.i(tag, "Stopping position updates");
             locationManager.removeUpdates(locationListener);
         }
     }
