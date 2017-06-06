@@ -225,8 +225,8 @@ public class LocationService extends Service {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                                                                         this);
-        //LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString("pref_syncInterval",
-        //        Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
+        LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString("pref_syncInterval",
+                Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
         LOCATION_INTERVAL = 0;
         try {
             mLocationManager.requestLocationUpdates(
