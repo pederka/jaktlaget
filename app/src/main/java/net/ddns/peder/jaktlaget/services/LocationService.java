@@ -38,7 +38,6 @@ import java.util.Map;
 
 public class LocationService extends Service {
     private LocationManager mLocationManager = null;
-    private LocationListener mLocationListener = null;
     private int LOCATION_INTERVAL;
     private static final float LOCATION_DISTANCE = 10f;
     private static final String tag = "LocationService";
@@ -157,6 +156,8 @@ public class LocationService extends Service {
         }
     }
 
+    LocationListener mLocationListener = new LocationListener(LocationManager.GPS_PROVIDER);
+
     @Override
     public IBinder onBind(Intent arg0)
     {
@@ -220,13 +221,13 @@ public class LocationService extends Service {
     {
         Log.i(tag, "onCreate");
 
-        mLocationListener = new LocationListener(LocationManager.GPS_PROVIDER);
         initializeLocationManager();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                                                                         this);
-        LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString("pref_syncInterval",
-                Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
+        //LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString("pref_syncInterval",
+        //        Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
+        LOCATION_INTERVAL = 0;
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,

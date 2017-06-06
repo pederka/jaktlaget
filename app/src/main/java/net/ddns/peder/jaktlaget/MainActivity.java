@@ -402,10 +402,10 @@ public class MainActivity extends AppCompatActivity implements
         mHandler.removeCallbacks(syncData);
         LocationHistoryUtil.saveLocationHistoryToPreferences(this, myLocationHistory);
         LocationHistoryUtil.saveTeamLocationHistoryToPreferences(this, teamLocationHistory);
-        stopPositionUpdates();
         if (runningService) {
             startService(new Intent(getApplicationContext(), LocationService.class));
         }
+        stopPositionUpdates();
     }
 
     @Override
