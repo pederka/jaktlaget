@@ -26,6 +26,7 @@
 
         <activity android:name="net.ddns.peder.jaktlaget.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:showOnLockScreen="true"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="net.ddns.peder.jaktlaget.MainActivity.ACTION_SERVICE" />

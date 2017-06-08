@@ -1,6 +1,7 @@
 package net.ddns.peder.jaktlaget.services;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -201,6 +202,8 @@ public class LocationService extends Service {
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setOngoing(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentTitle(getText(R.string.notification_title))
                 .setContentText(getText(R.string.notification_message))
                 .setSmallIcon(R.mipmap.status_bar)
