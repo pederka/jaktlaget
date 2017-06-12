@@ -43,4 +43,15 @@
             android:entryValues="@array/pref_hideteamlimit_values"
             android:defaultValue="@string/pref_hideteamlimit_default" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_category_weather">
+         <ListPreference
+            android:key="pref_windprovider"
+            android:title="@string/pref_windprovider"
+            android:summary="@string/pref_windprovider_summary"
+            android:dialogTitle="@string/pref_windprovider_dialog"
+            android:entries="@array/pref_windprovider_entries"
+            android:entryValues="@array/pref_windprovider_values"
+            android:defaultValue="@string/pref_windprovider_default" />
+    </PreferenceCategory>
 </PreferenceScreen>

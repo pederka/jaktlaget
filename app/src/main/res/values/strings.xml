@@ -89,6 +89,7 @@
 
     <string name="pref_category_sync">Synkronisering</string>
     <string name="pref_category_map">Kart</string>
+    <string name="pref_category_weather">Vind</string>
 
     <string name="pref_autoshowteam">Vis lagmedlemmer</string>
     <string name="pref_autoshowteam_summary">Automatisk vis nye lagmedlemmer på kart</string>
@@ -108,6 +109,11 @@
     <string name="pref_hideteamlimit_summary">Hvor lenge gamle posisjoner vises på kartet</string>
     <string name="pref_hideteamlimit_dialog">Velg ny utløpstid for posisjoner</string>
     <string name="pref_hideteamlimit_default">30</string>
+
+    <string name="pref_windprovider">Værtjenese</string>
+    <string name="pref_windprovider_summary">Værtjeneste for henting av vinddata</string>
+    <string name="pref_windprovider_dialog">Velg værtjeneste</string>
+    <string name="pref_windprovider_default">owm</string>
 
     <string name="pref_map_type">Kartformat</string>
     <string name="pref_map_summary">Oppløsning for kartblad</string>
