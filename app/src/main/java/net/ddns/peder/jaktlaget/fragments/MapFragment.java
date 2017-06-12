@@ -449,18 +449,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         });
         weatherButton = (ImageButton) view.findViewById(R.id.button_weather);
         weatherButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
-        //if (sharedPreferences.getBoolean(Constants.SHARED_PREF_WEATHER_TOGGLE, true)) {
-        //    weather_toggled = true;
-        //    weatherButton.setBackgroundResource(R.drawable.buttonshape);
-        //} else {
         weather_toggled = false;
         weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
         //}
         weatherButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
-                                                                                getContext());
                 if (weather_toggled) {
                     weather_toggled = false;
                     hideWeatherIcons();

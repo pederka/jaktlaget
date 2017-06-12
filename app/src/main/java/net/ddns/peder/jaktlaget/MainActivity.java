@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -281,8 +283,18 @@ public class MainActivity extends AppCompatActivity implements
          else if (ContextCompat.checkSelfPermission((Activity) mContext,
                      Manifest.permission.ACCESS_FINE_LOCATION)
                      == PackageManager.PERMISSION_GRANTED) {
-             clearTeamLocationHistory();
-             clearMyLocationHistory();
+             AlertDialog.Builder builder = new AlertDialog.Builder(this);
+             builder.setMessage(R.string.alert_reset_message)
+                     .setTitle(R.string.alert_reset_title);
+             builder.setPositiveButton(R.string.alert_reset_positive, new DialogInterface.OnClickListener() {
+                 @Override
+                 public void onClick(DialogInterface dialog, int which) {
+                     clearTeamLocationHistory();
+                     clearMyLocationHistory();
+                 }
+             });
+             builder.setNegativeButton(R.string.alert_reset_negative, null);
+             builder.create().show();
              activeText.setText(getString(R.string.actionbar_active));
              mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
              runningService = true;
