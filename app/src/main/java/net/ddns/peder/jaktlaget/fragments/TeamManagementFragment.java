@@ -75,8 +75,13 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
         else if (result == DataSynchronizer.FAILED_CODE) {
             //Toast.makeText(getContext(), R.string.toast_wrong_code, Toast.LENGTH_SHORT).show();
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
-            codeText = addCodeText("", getView());
-            codeText.setError(getString(R.string.wrong_code));
+            // Only set error if code field actually existed
+            if (codeText == null) {
+                codeText = addCodeText("", getView());
+            } else {
+                codeText.setText("");
+                codeText.setError(getString(R.string.wrong_code));
+            }
             codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
             codeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override

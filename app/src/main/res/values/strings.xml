@@ -43,7 +43,7 @@
     <string name="trace_remove">Slett</string>
     <string name="trace_remove_abort">Avbryt</string>
     <string name="traces_deleted">Alle spor slettet</string>
-    <string name="reset_team_dialog">Nullstill lag</string>
+    <string name="reset_team_dialog">Forlat lag</string>
     <string name="reset_team_text">Er du sikker på at du vil forlate %s? Du vil miste adgangskoden hvis du ikke skriver den
         ned.</string>
 
@@ -72,7 +72,8 @@
     <string name="save_name_button">Lagre</string>
     <string name="share_team_button">Del kode</string>
     <string name="update_team_button">Velg jaktlag</string>
-    <string name="reset_team_button">Nullstill</string>
+    <string name="reset_team_button">Forlat</string>
+    <string name="reset_form_button">Nullstill</string>
     <string name="teamname_hint">Lagnavn</string>
     <string name="teamcode_hint">Adgangskode for laget</string>
     <string name="username_hint">Jegernavn</string>
@@ -123,7 +124,7 @@
     <string name="hunter_name">Jegernavn:</string>
     <string name="team_name">Jaktlag:</string>
     <string name="code">Adgangskode:</string>
-    <string name="leave_team">Nullstill lag</string>
+    <string name="leave_team">Forlat lag</string>
     <string name="show_team">Jegere</string>
 
     <string name="alert_reset_title">Nullstill spor</string>

@@ -157,18 +157,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (!isChecked) {
                     goInactive();
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setMessage(R.string.alert_reset_message)
-                     .setTitle(R.string.alert_reset_title);
-                    builder.setPositiveButton(R.string.alert_reset_positive, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        clearTeamLocationHistory();
-                        clearMyLocationHistory();
-                    }
-                    });
-                    builder.setNegativeButton(R.string.alert_reset_negative, null);
-                    builder.create().show();
+
                     goActive();
                 }
             }
@@ -295,7 +284,20 @@ public class MainActivity extends AppCompatActivity implements
          else if (ContextCompat.checkSelfPermission((Activity) mContext,
                      Manifest.permission.ACCESS_FINE_LOCATION)
                      == PackageManager.PERMISSION_GRANTED) {
-
+             // Show dialog about keeping or discarding traces
+             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+             builder.setMessage(R.string.alert_reset_message)
+              .setTitle(R.string.alert_reset_title);
+             builder.setPositiveButton(R.string.alert_reset_positive, new DialogInterface.OnClickListener() {
+             @Override
+             public void onClick(DialogInterface dialog, int which) {
+                 clearTeamLocationHistory();
+                 clearMyLocationHistory();
+             }
+             });
+             builder.setNegativeButton(R.string.alert_reset_negative, null);
+             builder.create().show();
+             // Set everything active
              activeText.setText(getString(R.string.actionbar_active));
              mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
              runningService = true;
