@@ -19,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -79,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements
     private TextView action_bar_title;
     private static final String tag = "MainActivity";
     private SwitchCompat runSwitch;
+
+    public NavigationView navigationView;
 
     private List<LatLng> myLocationHistory;
     private Map<String, List<LatLng>> teamLocationHistory = new HashMap<>();
@@ -144,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         activeText = (TextView)findViewById(R.id.active_text);

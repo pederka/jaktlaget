@@ -471,6 +471,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
              e.printStackTrace();
          }
         ((MainActivity)getActivity()).setActionBarTitle("Kart");
+        ((MainActivity)getActivity()).navigationView.setCheckedItem(R.id.nav_map);
     }
 
     private void saveLandmarkToDatabase(String desc, boolean shared, LatLng latLng) {
