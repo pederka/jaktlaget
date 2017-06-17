@@ -34,6 +34,7 @@ public final class Constants {
     public static final long ACTIVITY_GPS_DISTANCE = 10;
     public static final long DEFAULT_UPDATE_INTERVAL = 5;
     public static final long MAP_LOCATION_UPDATE_INTERVAL = 5000;
+    public static final long MAP_TEAM_POSITION_UPDATE_INTERVAL = 60000;
     public static final long SYNC_DELAY_ACTIVITY = 60000;
     public static final int CODE_LENGTH = 4;
     public static final int WEATHER_SYNC_COOLDOWN = 60000;

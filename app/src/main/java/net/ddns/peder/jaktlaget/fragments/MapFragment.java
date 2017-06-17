@@ -131,7 +131,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private Runnable updateMyPosition = new Runnable() {
         @Override
-       public void run() {
+        public void run() {
             long currentTime = System.currentTimeMillis();
             long lastPositionTime = sharedPreferences.getLong(Constants.SHARED_PREF_TIME, 0);
             // Avoid using old locations
@@ -173,6 +173,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 myPositionButton.setVisibility(View.INVISIBLE);
             }
             mHandler.postDelayed(this, Constants.MAP_LOCATION_UPDATE_INTERVAL);
+        }
+    };
+
+    private Runnable updateTeamPositions = new Runnable() {
+        @Override
+        public void run() {
+            if (map != null && getActivity() != null) {
+                updateTeamPositions(map);
+            }
+            mHandler.postDelayed(this, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
         }
     };
 
@@ -424,10 +434,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                                                                                 getContext());
                 if (team_toggled) {
                     // Clear users
-                    for (int i=0; i<userMarkerList.size(); i++) {
-                        userMarkerList.get(i).remove();
-                        userNameMarkerList.get(i).remove();
-                    }
+                    hideTeamPositions();
                     // Clear any team trace lines
                     hideTeamTraceLine();
                     team_toggled = false;
@@ -717,8 +724,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             updateTeamPositions(map);
         }
 
-        // Start update of own loaction
+        // Start update of own and team locations
         mHandler.postDelayed(updateMyPosition, Constants.MAP_LOCATION_UPDATE_INTERVAL);
+        mHandler.postDelayed(updateTeamPositions, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
 
     }
 
@@ -806,6 +814,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         cursor.close();
     }
 
+    private void hideTeamPositions() {
+        for (int i=0; i<userMarkerList.size(); i++) {
+            userMarkerList.get(i).remove();
+            userNameMarkerList.get(i).remove();
+        }
+    }
+
+
     private void updateTeamPositions(GoogleMap map) {
         final String[] PROJECTION = {
             PositionsDbHelper.COLUMN_NAME_ID,
@@ -825,6 +841,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                          null,
                          null,
                          null);
+        hideTeamPositions();
         userMarkerList.clear();
         userNameMarkerList.clear();
         while (cursor.moveToNext()) {
@@ -900,6 +917,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
             ((MainActivity) getActivity()).cameraPosition = map.getCameraPosition();
         }
+        mHandler.removeCallbacks(updateMyPosition);
+        mHandler.removeCallbacks(updateTeamPositions);
     }
 
     @Override
@@ -1013,6 +1032,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             if (teamTraceLines == null) {
                 teamTraceLines = new ArrayList<>();
             }
+            hideTeamTraceLine();
             teamTraceLines.clear();
             Map<String, List<LatLng>> teamLocationHistory =
                                         ((MainActivity) getActivity()).getTeamLocationHistory();
