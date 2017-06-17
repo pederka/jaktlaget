@@ -6,10 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -116,6 +118,28 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
         LinearLayout emptyText = (LinearLayout) view.findViewById(android.R.id.empty);
         listView.setEmptyView(emptyText);
         listView.setAdapter(mAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = mAdapter.getCursor();
+                cursor.moveToPosition(position);
+                String lat = cursor.getString(cursor.getColumnIndexOrThrow(
+                                                        TeamLandmarksDbHelper.COLUMN_NAME_LATITUDE));
+                String lon = cursor.getString(cursor.getColumnIndexOrThrow(
+                                                        TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE));
+                Bundle bundle = new Bundle();
+                bundle.putDouble("latitude", Double.parseDouble(lat));
+                bundle.putDouble("longitude", Double.parseDouble(lon));
+                Fragment fragment = new MapFragment();
+                fragment.setArguments(bundle);
+                FragmentManager FM = getActivity().getSupportFragmentManager();
+                FM
+                        .beginTransaction()
+                        .replace(R.id.content_frame, fragment)
+                        .commit();
+                }
+        });
 
         return view;
     }

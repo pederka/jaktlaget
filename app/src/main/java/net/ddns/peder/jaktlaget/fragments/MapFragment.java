@@ -115,6 +115,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private List<Marker> windMarkerList;
     private List<Marker> windSpeedMarkerList;
     private long time_last_weather_sync;
+    private LatLng navigateTo;
 
     public MapFragment() {
         // Required empty public constructor
@@ -209,8 +210,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     MY_PERMISSIONS_REQUEST);
         }
 
+        // Get any location to navigate to
+        double lat = 0.0;
+        double lon = 0.0;
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            Log.d(tag, "Got bundle");
+            lat = getArguments().getDouble("latitude");
+            lon = getArguments().getDouble("longitude");
+        }
+        if (lat != 0.0 && lon != 0.0) {
+            navigateTo = new LatLng(lat, lon);
+        }
+
         if (map != null) {
-            zoomToPosition(map);
+            if (navigateTo != null) {
+                zoomToLatLng(map, navigateTo);
+            }
+            else {
+                zoomToPosition(map);
+            }
         }
 
         landmarksDbHelper = new LandmarksDbHelper(getContext());
@@ -545,7 +564,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         map.setOnCameraMoveStartedListener(this);
 
-        zoomToPosition(map);
+        if (navigateTo != null) {
+            zoomToLatLng(map, navigateTo);
+        }
+        else {
+            zoomToPosition(map);
+        }
 
         //Disable Map Toolbar:
         map.getUiSettings().setMapToolbarEnabled(false);
@@ -707,7 +731,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
         double latitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LAT, 0);
         double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON, 0);
-        if (getActivity() != null && ((MainActivity)getActivity()).cameraPosition != null) {
+
+        // Prioritized list of where to zoom in. As last resort show all of Norway
+        if (navigateTo != null) {
+            zoomToLatLng(map, navigateTo);
+        }
+        else if (getActivity() != null && ((MainActivity)getActivity()).cameraPosition != null) {
             map.moveCamera(CameraUpdateFactory.newCameraPosition((
                                         (MainActivity)getActivity()).cameraPosition));
         } else if (latitude != 0 && longitude != 0) {
@@ -716,6 +745,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         else {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
         }
+
         if (landmarks_toggled) {
             addLandMarks(map);
             addTeamLandmarks(map);
@@ -738,6 +768,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
+    private void zoomToLatLng(GoogleMap map, LatLng position) {
+        Log.d(tag, "Zooming to position "+position.latitude+" "+position.longitude);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 12));
+    }
     private void addLandMarks(GoogleMap map) {
         final String[] PROJECTION = {
             LandmarksDbHelper.COLUMN_NAME_ID,
