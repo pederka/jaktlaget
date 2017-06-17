@@ -45,8 +45,6 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     private OnSyncComplete onSyncComplete;
     private String teamId;
     private String code;
-    private boolean removeOutdated;
-    private int expirationTime;
     private boolean verbose;
     private final static String tag = "DataSyncronizer";
     private ProgressDialog dialog;
@@ -67,18 +65,11 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         teamId = sharedPrefs.getString(Constants.SHARED_PREF_TEAM_ID, Constants.DEFAULT_TEAM_ID);
         code = sharedPrefs.getString(Constants.SHARED_PREF_TEAM_CODE, "");
 
-        // Get preferences relating to outdated positions
-        removeOutdated = sharedPrefs.getBoolean("pref_hideoldteam", true);
-        expirationTime = Integer.parseInt(sharedPrefs.getString("pref_hideteamlimit", "30"));
-
         // Initialize databases
         PositionsDbHelper positionsDbHelper = new PositionsDbHelper(mContext);
         posdb = positionsDbHelper.getWritableDatabase();
         TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(mContext);
         lmdb = teamLandmarksDbHelper.getWritableDatabase();
-
-        // Clear team database
-        // positionsDbHelper.clearTable(posdb);
 
         // Clear team landmarks database
         teamLandmarksDbHelper.clearTable(lmdb);
@@ -101,7 +92,6 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             keyStore.load(null, null);
             keyStore.setCertificateEntry("ca", ca);
 
-
             // Create a TrustManager that trusts the CAs in our KeyStore
             String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
@@ -115,7 +105,6 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -195,34 +184,6 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             String codeString = new String(codeBytes, "UTF-8");
             Log.d(tag, "Received code "+codeString);
             sharedPrefs.edit().putString(Constants.SHARED_PREF_TEAM_CODE, codeString).apply();
-
-            // Remove any teammates with outdated positions
-            //if (removeOutdated) {
-            //    final String[] PROJECTION = {
-            //            PositionsDbHelper.COLUMN_NAME_ID,
-            //            PositionsDbHelper.COLUMN_NAME_TIME,
-            //    };
-            //    Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
-            //             PROJECTION,
-            //             null,
-            //             null,
-            //             null,
-            //             null,
-            //             null);
-            //    long currenttime = System.currentTimeMillis();
-            //    long exptime = expirationTime*60000;
-            //    String whereClause = PositionsDbHelper.COLUMN_NAME_ID + "= ?";
-            //    while (cursor.moveToNext()) {
-            //        long time = Long.parseLong(cursor.getString(cursor.getColumnIndexOrThrow(
-            //                PositionsDbHelper.COLUMN_NAME_TIME)));
-            //        if (currenttime-time > exptime) {
-            //            posdb.delete(PositionsDbHelper.TABLE_NAME, whereClause,
-            //                            new String[] {cursor.getString(cursor.getColumnIndexOrThrow(
-            //                                        PositionsDbHelper.COLUMN_NAME_ID))});
-            //        }
-            //    }
-            //    cursor.close();
-            //}
 
             socket.close();
         } catch (Exception e) {
