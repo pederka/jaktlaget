@@ -10,22 +10,15 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +33,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -71,17 +63,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraMoveStartedListener,
-                                                                        WeatherSyncCompleteListener {
+import static net.ddns.peder.jaktlaget.utils.BitmapUtil.createPureTextIcon;
+import static net.ddns.peder.jaktlaget.utils.BitmapUtil.getBitmapFromVectorDrawable;
+
+public class MapFragment extends Fragment implements OnMapReadyCallback,
+        WeatherSyncCompleteListener {
     private OnFragmentInteractionListener mListener;
     private MapView mapView;
     private GoogleMap map;
     private final LatLngBounds NORWAY = new LatLngBounds(
             new LatLng(58.57, 3.71), new LatLng(71.51, 31.82));
     private String tag = "Map";
-    private LandmarksDbHelper landmarksDbHelper;
-    private TeamLandmarksDbHelper teamLandmarksDbHelper;
-    private PositionsDbHelper positionsDbHelper;
     private SQLiteDatabase db;
     private SQLiteDatabase tldb;
     private SQLiteDatabase posdb;
@@ -187,14 +179,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     };
 
-    private void setUpMap() {
-        TileProvider wmsTileProvider = TileProviderFactory.getWmsTileProvider(getContext());
-        map.addTileOverlay(new TileOverlayOptions().tileProvider(wmsTileProvider));
-
-        // Make sure the google map is not visible in the background
-        map.setMapType(GoogleMap.MAP_TYPE_NONE);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -231,17 +215,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 zoomToPosition(map);
             }
         }
-
-        landmarksDbHelper = new LandmarksDbHelper(getContext());
+        LandmarksDbHelper landmarksDbHelper = new LandmarksDbHelper(getContext());
         db = landmarksDbHelper.getWritableDatabase();
-        teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
+        TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
         tldb = teamLandmarksDbHelper.getReadableDatabase();
-        positionsDbHelper = new PositionsDbHelper(getContext());
+        PositionsDbHelper positionsDbHelper = new PositionsDbHelper(getContext());
         posdb = positionsDbHelper.getReadableDatabase();
-        userMarkerList = new ArrayList<>();
-        userNameMarkerList = new ArrayList<>();
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        userMarkerList = new ArrayList<>();
+        userNameMarkerList = new ArrayList<>();
         mHandler = new Handler();
         markerList = new ArrayList<>();
         teamMarkerList = new ArrayList<>();
@@ -253,66 +237,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         // Create icons for map
         colorMe = getResources().getColor(R.color.mapMe);
         colorOther = getResources().getColor(R.color.mapOther);
-        @SuppressWarnings("RestrictedApi")
-        Drawable drawable = AppCompatDrawableManager.get().getDrawable(getContext(),
-                            R.drawable.ic_my_location_black_24dp);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = (DrawableCompat.wrap(drawable)).mutate();
-        }
-        myselfBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(myselfBitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.setColorFilter(colorMe, PorterDuff.Mode.SRC_ATOP);
-        drawable.draw(canvas);
 
-        drawable = AppCompatDrawableManager.get().getDrawable(getContext(),
-                            R.drawable.ic_person_black_24dp);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = (DrawableCompat.wrap(drawable)).mutate();
-        }
-        otherBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(otherBitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.setColorFilter(colorOther, PorterDuff.Mode.SRC_ATOP);
-        drawable.draw(canvas);
+        myselfBitmap = getBitmapFromVectorDrawable(R.drawable.ic_my_location_black_24dp, colorMe,
+                getContext());
+        otherBitmap = getBitmapFromVectorDrawable(R.drawable.ic_person_black_24dp, colorOther,
+                getContext());
+        myLandmarkBitmap = getBitmapFromVectorDrawable(R.drawable.ic_star_black_24dp, colorMe,
+                getContext());
+        otherLandmarkBitmap = getBitmapFromVectorDrawable(R.drawable.ic_star_black_24dp, colorOther,
+                getContext());
+        windBitmap = getBitmapFromVectorDrawable(R.drawable.ic_arrow_upward_black_24dp,
+                R.color.black, getContext());
 
-        drawable = AppCompatDrawableManager.get().getDrawable(getContext(),
-                            R.drawable.ic_star_black_24dp);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = (DrawableCompat.wrap(drawable)).mutate();
-        }
-        myLandmarkBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(myLandmarkBitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.setColorFilter(colorMe, PorterDuff.Mode.SRC_ATOP);
-        drawable.draw(canvas);
-
-        drawable = AppCompatDrawableManager.get().getDrawable(getContext(),
-                            R.drawable.ic_star_black_24dp);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = (DrawableCompat.wrap(drawable)).mutate();
-        }
-        otherLandmarkBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(otherLandmarkBitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.setColorFilter(colorOther, PorterDuff.Mode.SRC_ATOP);
-        drawable.draw(canvas);
-
-        drawable = AppCompatDrawableManager.get().getDrawable(getContext(),
-                            R.drawable.ic_arrow_upward_black_24dp);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = (DrawableCompat.wrap(drawable)).mutate();
-        }
-        windBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(windBitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
+        // Configure buttons
         myPositionButton = (ImageButton) view.findViewById(R.id.button_my_location);
         myPositionButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
         myPositionButton.setOnClickListener(new View.OnClickListener() {
@@ -557,26 +494,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         db.endTransaction();
     }
 
+    private void setUpMap() {
+        TileProvider wmsTileProvider = TileProviderFactory.getWmsTileProvider(getContext());
+        map.addTileOverlay(new TileOverlayOptions().tileProvider(wmsTileProvider));
+
+        // Make sure the google map is not visible in the background
+        map.setMapType(GoogleMap.MAP_TYPE_NONE);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Do stuff with the map here!
         map = googleMap;
-
-        map.setOnCameraMoveStartedListener(this);
-
-        if (navigateTo != null) {
-            zoomToLatLng(map, navigateTo);
-        }
-        else {
-            zoomToPosition(map);
-        }
 
         //Disable Map Toolbar:
         map.getUiSettings().setMapToolbarEnabled(false);
 
         // Setting a click event handler for the map
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
             @Override
             public void onMapClick(LatLng latLng) {
                 final LatLng coords = latLng;
@@ -702,9 +637,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                             public void onClick(DialogInterface dialog, int id) {
                                 ContentValues contentValues = new ContentValues();
                                 String desc_new = input.getText().toString();
-                                contentValues.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION, desc_new);
+                                contentValues.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+                                        desc_new);
                                 contentValues.put(LandmarksDbHelper.COLUMN_NAME_SHARED, shared);
-                                db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection, selectionArgs);
+                                db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection,
+                                        selectionArgs);
                                 marker.setTitle(desc_new);
                             }
                         });
@@ -772,6 +709,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         Log.d(tag, "Zooming to position "+position.latitude+" "+position.longitude);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 12));
     }
+
     private void addLandMarks(GoogleMap map) {
         final String[] PROJECTION = {
             LandmarksDbHelper.COLUMN_NAME_ID,
@@ -920,8 +858,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
-
-
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -969,17 +905,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    @Override
-    public void onCameraMoveStarted(int reason) {
-        //if (weather_toggled) {
-        //    hideWeatherIcons();
-        //    weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
-        //    weather_toggled = false;
-        //}
     }
 
     private void showWeatherIcons() {
@@ -1007,7 +933,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onWeatherSyncComplete(List<LatLng> positions, List<WindResult> results) {
-        Projection projection = map.getProjection();
         for (int i=0; i<positions.size(); i++) {
             // Get wind at location
             WindResult result = results.get(i);
@@ -1093,33 +1018,4 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         }
     }
-
-    public BitmapDescriptor createPureTextIcon(String text, int color) {
-
-        Paint textPaint = new Paint(); // Adapt to your needs
-
-        textPaint.setTextSize(45);
-        textPaint.setColor(color);
-
-        float textWidth = textPaint.measureText(text);
-        float textHeight = textPaint.getTextSize();
-        int width = (int) (textWidth);
-        int height = (int) (textHeight*1.4);
-
-        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(image);
-
-        canvas.translate(0, height*1.7f/3);
-        //canvas.translate(0, height);
-
-        // For development only:
-        // Set a background in order to see the
-        // full size and positioning of the bitmap.
-        // Remove that for a fully transparent icon.
-        //canvas.drawColor(Color.LTGRAY);
-
-        canvas.drawText(text, 0, 0, textPaint);
-        return BitmapDescriptorFactory.fromBitmap(image);
-    }
-
 }
