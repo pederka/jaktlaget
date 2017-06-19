@@ -24,3 +24,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 # Class names are needed in reflection
+#-dontwarn com.google.android.gms.**
+

@@ -36,6 +36,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView action_bar_title;
     private static final String tag = "MainActivity";
     private SwitchCompat runSwitch;
+    private AdView mAdView;
 
     public NavigationView navigationView;
 
@@ -118,6 +122,14 @@ public class MainActivity extends AppCompatActivity implements
         mContext = this;
 
         mHandler = new Handler();
+
+        // Initialize ad (with test device id)
+        MobileAds.initialize(this, Constants.ADMOB_ID);
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                 .addTestDevice("936F11665060AFF4D65E4EF39B4A0FE3")
+                 .build();
+        mAdView.loadAd(adRequest);
 
         if (teamLocationHistory == null) {
             teamLocationHistory = new HashMap<>();
