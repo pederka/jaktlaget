@@ -42,6 +42,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
     private TextInputLayout textInputLayoutTeam;
     private OnFragmentInteractionListener mListener;
     private int codeTextId;
+    private boolean newTeam;
 
     @Override
     public void onSyncComplete(int result) {
@@ -126,7 +127,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team_management, container, false);
-        Boolean newTeam = true;
+        newTeam = true;
         Bundle arguments = getArguments();
         if (arguments != null) {
             newTeam = getArguments().getBoolean("new");
@@ -205,8 +206,10 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                     codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                     codeText.setError(null);
                 }
-                removeCodeText(getView());
-                codeText = null;
+                if (newTeam) {
+                    removeCodeText(getView());
+                    codeText = null;
+                }
                 // Remove team and code from shared preferences
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
                             getContext());
