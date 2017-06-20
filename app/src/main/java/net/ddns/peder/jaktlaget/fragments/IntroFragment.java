@@ -72,6 +72,7 @@ public class IntroFragment extends Fragment {
                 FM
                         .beginTransaction()
                         .replace(R.id.content_frame, fragment)
+                        .addToBackStack(null)
                         .commit();
             }
         });
@@ -87,6 +88,7 @@ public class IntroFragment extends Fragment {
                 FM
                         .beginTransaction()
                         .replace(R.id.content_frame, fragment)
+                        .addToBackStack(null)
                         .commit();
             }
         });

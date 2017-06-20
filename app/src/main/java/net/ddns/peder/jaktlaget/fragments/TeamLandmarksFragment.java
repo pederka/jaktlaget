@@ -137,6 +137,7 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
                 FM
                         .beginTransaction()
                         .replace(R.id.content_frame, fragment)
+                        .addToBackStack(null)
                         .commit();
                 }
         });
