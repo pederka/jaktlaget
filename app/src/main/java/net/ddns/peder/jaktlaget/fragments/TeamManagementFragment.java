@@ -11,10 +11,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.text.InputFilter;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -123,6 +126,23 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_team_management, container, false);
+        Boolean newTeam = true;
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            newTeam = getArguments().getBoolean("new");
+        }
+        // Set bold words in explanation text
+        SpannableStringBuilder str = new SpannableStringBuilder(getString(R.string.name_guide));
+        str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, 11,
+                                                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        TextView nameGuide = (TextView) view.findViewById(R.id.guide_name);
+        nameGuide.setText(str);
+        str = new SpannableStringBuilder(getString(R.string.teamname_guide));
+        str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 22, 29,
+                                                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        TextView teamNameGuide = (TextView) view.findViewById(R.id.guide_teamname);
+        teamNameGuide.setText(str);
+
         // Read userid from preferences
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         String userId = prefs.getString(Constants.SHARED_PREF_USER_ID, Constants.DEFAULT_USER_ID);
@@ -136,6 +156,12 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             userText.setText(userId);
         }
         teamText = (EditText) view.findViewById(R.id.teamname_text);
+        if (!newTeam) {
+            codeText = addCodeText("", view);
+            // Remove not relevant text
+            TextView infoText = (TextView) view.findViewById(R.id.if_exists_text);
+            ((ViewManager)infoText.getParent()).removeView(infoText);
+        }
 
         teamText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

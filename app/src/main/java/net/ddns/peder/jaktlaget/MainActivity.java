@@ -46,6 +46,7 @@ import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.jaktlaget.fragments.AboutFragment;
 import net.ddns.peder.jaktlaget.fragments.AllLandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.AllTeamFragment;
+import net.ddns.peder.jaktlaget.fragments.IntroFragment;
 import net.ddns.peder.jaktlaget.fragments.LandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.MapFragment;
 import net.ddns.peder.jaktlaget.fragments.SettingsFragment;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements
         LandmarksFragment.OnFragmentInteractionListener, TeamLandmarksFragment.OnFragmentInteractionListener,
         TeamManagementFragment.OnFragmentInteractionListener, AllLandmarksFragment.OnFragmentInteractionListener,
         AllTeamFragment.OnFragmentInteractionListener, TeamInfoFragment.OnFragmentInteractionListener,
-        AboutFragment.OnFragmentInteractionListener {
+        AboutFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener {
 
     private final static int MY_PERMISSIONS_REQUEST = 1654;
     private final static int ACTIVATE_PERMISSION_REQUEST = 1655;
@@ -309,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements
                      Toast.LENGTH_SHORT).show();
               runSwitch.setChecked(false);
               // Switch to team management fragment
-              Fragment fragment = new TeamManagementFragment();
+              Fragment fragment = new IntroFragment();
               FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
               ft.replace(R.id.content_frame, fragment);
               ft.commit();
@@ -492,7 +493,7 @@ public class MainActivity extends AppCompatActivity implements
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                 String code = sharedPreferences.getString(Constants.SHARED_PREF_TEAM_CODE, "");
                 if (code.equals("")) {
-                    fragment = new TeamManagementFragment();
+                    fragment = new IntroFragment();
                 } else {
                     fragment = new AllTeamFragment();
                 }

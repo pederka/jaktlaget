@@ -164,7 +164,7 @@ public class TeamInfoFragment extends Fragment {
                             ((MainActivity)getActivity()).goInactive();
                         }
                         // Go to team management fragment
-                        Fragment fragment = new TeamManagementFragment();
+                        Fragment fragment = new IntroFragment();
                         FragmentTransaction ft = getFragmentManager().beginTransaction();
                         ft.replace(R.id.content_frame, fragment);
                         ft.commit();

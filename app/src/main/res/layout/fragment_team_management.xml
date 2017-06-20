@@ -15,6 +15,16 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/guide_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name_guide"
+                android:textAppearance="@style/AppTheme.TextStyle" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+            <TextView
+                android:id="@+id/guide_teamname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/teamname_guide"
@@ -23,6 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="15dp" />
             <TextView
+                android:id="@+id/if_exists_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/teamname_guide_2"
