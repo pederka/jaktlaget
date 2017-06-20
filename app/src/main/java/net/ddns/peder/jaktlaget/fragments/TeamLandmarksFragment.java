@@ -112,7 +112,6 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
         mAdapter = new TeamLandmarksCursorAdapter(getActivity(),
                             R.layout.team_lm_row,
                         cursor, fromColumns, toViews);
-        cursor.close();
 
         listView = (ListView) view.findViewById(R.id.team_lm_list);
         LinearLayout emptyText = (LinearLayout) view.findViewById(android.R.id.empty);
