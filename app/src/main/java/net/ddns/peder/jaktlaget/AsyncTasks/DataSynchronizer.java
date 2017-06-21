@@ -1,6 +1,7 @@
 package net.ddns.peder.jaktlaget.AsyncTasks;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -11,7 +12,6 @@ import android.util.Log;
 
 import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.R;
-
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
 import net.ddns.peder.jaktlaget.interfaces.OnSyncComplete;
@@ -70,6 +70,35 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         posdb = positionsDbHelper.getWritableDatabase();
         TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(mContext);
         lmdb = teamLandmarksDbHelper.getWritableDatabase();
+
+        // Add yourself to database
+        final String[] PROJECTION = {
+            PositionsDbHelper.COLUMN_NAME_ID,
+            PositionsDbHelper.COLUMN_NAME_USER,
+        };
+        ContentValues values = new ContentValues();
+        values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, 0);
+        values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, 0);
+        values.put(PositionsDbHelper.COLUMN_NAME_TIME, "-1");
+        // Query database to see if user exists
+        String selection = PositionsDbHelper.COLUMN_NAME_USER + " = ?";
+        String[] selectionArgs = {userId};
+        Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
+                         PROJECTION,
+                         selection,
+                         selectionArgs,
+                         null,
+                         null,
+                         null);
+        if (cursor.getCount() > 0) {
+            // If exists, update
+            posdb.update(PositionsDbHelper.TABLE_NAME, values, selection, selectionArgs);
+        } else {
+            // If new user, push new row to database
+            values.put(PositionsDbHelper.COLUMN_NAME_SHOWED, true);
+            values.put(PositionsDbHelper.COLUMN_NAME_USER, userId);
+            posdb.insert(PositionsDbHelper.TABLE_NAME, null, values);
+        }
 
         // Clear team landmarks database
         teamLandmarksDbHelper.clearTable(lmdb);

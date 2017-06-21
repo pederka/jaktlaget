@@ -41,17 +41,7 @@ public class PositionCursorAdapter extends SimpleCursorAdapter {
         TextView userTextView = (TextView) view.findViewById(R.id.pos_list_user);
         userTextView.setText(user);
         TextView timeTextView = (TextView) view.findViewById(R.id.pos_list_time);
-        long minutes = (System.currentTimeMillis() - Long.parseLong(time))/60000;
-        if (minutes == 0) {
-            timeTextView.setText(R.string.less_than_1_min);
-        }
-        else if (minutes > 60) {
-            timeTextView.setText(R.string.more_than_1_hour);
-        }
-        else {
-            timeTextView.setText(String.format(context.getString(R.string.minutes),
-                    String.valueOf(minutes)));
-        }
+
         AppCompatCheckBox show = (AppCompatCheckBox) view.findViewById(R.id.show_check_box);
         show.setOnClickListener(new View.OnClickListener() {
              @Override
@@ -75,5 +65,21 @@ public class PositionCursorAdapter extends SimpleCursorAdapter {
         final boolean isShowed = cursor.getInt(cursor.getColumnIndex(
                 PositionsDbHelper.COLUMN_NAME_SHOWED)) > 0;
         show.setChecked(isShowed);
+
+        // Special treatment if user is myself
+        if (time.equals("-1")) {
+            timeTextView.setText("");
+            show.setEnabled(false);
+        } else {
+            long minutes = (System.currentTimeMillis() - Long.parseLong(time)) / 60000;
+            if (minutes == 0) {
+                timeTextView.setText(R.string.less_than_1_min);
+            } else if (minutes > 60) {
+                timeTextView.setText(R.string.more_than_1_hour);
+            } else {
+                timeTextView.setText(String.format(context.getString(R.string.minutes),
+                        String.valueOf(minutes)));
+            }
+        }
     }
 }
