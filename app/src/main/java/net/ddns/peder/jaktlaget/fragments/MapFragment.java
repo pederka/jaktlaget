@@ -28,6 +28,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -83,14 +85,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private Marker myLocationMarker;
     private List<Marker> userMarkerList;
     private List<Marker> userNameMarkerList;
-    private ImageButton landmarkButton;
+    private FloatingActionButton landmarkButton;
     private boolean landmarks_toggled;
-    private ImageButton teamButton;
+    private FloatingActionButton teamButton;
     private boolean team_toggled;
-    private ImageButton weatherButton;
+    private FloatingActionButton weatherButton;
     private boolean weather_toggled;
-    private ImageButton lineButton;
+    private FloatingActionButton lineButton;
     private boolean line_toggled;
+    private FloatingActionButton deleteLineButton;
+    private FloatingActionMenu menu;
     private ImageButton myPositionButton;
     private List<Marker> markerList;
     private List<Marker> teamMarkerList;
@@ -271,14 +275,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             //((ViewManager)myPositionButton.getParent()).removeView(myPositionButton);
             myPositionButton.setVisibility(View.INVISIBLE);
         }
-        lineButton = (ImageButton) view.findViewById(R.id.button_trace);
-        lineButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
+
+        menu = (FloatingActionMenu) view.findViewById(R.id.menu);
+
+        lineButton = (FloatingActionButton) view.findViewById(R.id.menu_item_trace);
         if (sharedPreferences.getBoolean(Constants.SHARED_PREF_LINE_TOGGLE, true)) {
             line_toggled = true;
-            lineButton.setBackgroundResource(R.drawable.buttonshape);
+            lineButton.setLabelText(getString(R.string.hide_traces));
         } else {
             line_toggled = false;
-            lineButton.setBackgroundResource(R.drawable.buttonshape_secondary);
+            lineButton.setLabelText(getString(R.string.show_traces));
         }
         lineButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -293,7 +299,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     hideTeamTraceLine();
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             false).apply();
-                    lineButton.setBackgroundResource(R.drawable.buttonshape_secondary);
+                    lineButton.setLabelText(getString(R.string.show_traces));
                 } else {
                     line_toggled = true;
                     if (traceLine != null) {
@@ -302,13 +308,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     showTeamTraceLine();
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             true).apply();
-                    lineButton.setBackgroundResource(R.drawable.buttonshape);
+                    lineButton.setLabelText(getString(R.string.hide_traces));
                 }
             }
         });
-        lineButton.setOnLongClickListener(new View.OnLongClickListener() {
+        deleteLineButton = (FloatingActionButton) view.findViewById(R.id.menu_item_delete_trace);
+        deleteLineButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.trace_remove_dialog);
                 builder.setPositiveButton(R.string.trace_remove, new DialogInterface.OnClickListener() {
@@ -335,18 +342,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
-                return false;
             }
         });
-        landmarkButton = (ImageButton) view.findViewById(R.id.button_landmarks);
-        landmarkButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
+        landmarkButton = (FloatingActionButton) view.findViewById(R.id.menu_item_landmarks);
         if (sharedPreferences.getBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE, true)) {
             landmarks_toggled = true;
-            landmarkButton.setBackgroundResource(R.drawable.buttonshape);
+            landmarkButton.setLabelText(getString(R.string.hide_landmarks));
         } else {
             landmarks_toggled = false;
-            landmarkButton.setBackgroundResource(R.drawable.buttonshape_secondary);
+            landmarkButton.setLabelText(getString(R.string.show_landmarks));
         }
         landmarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -363,25 +367,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     }
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
                                             false).apply();
-                    landmarkButton.setBackgroundResource(R.drawable.buttonshape_secondary);
+                    landmarkButton.setLabelText(getString(R.string.show_landmarks));
                 } else {
                     landmarks_toggled = true;
                     addLandMarks(map);
                     addTeamLandmarks(map);
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
                                             true).apply();
-                    landmarkButton.setBackgroundResource(R.drawable.buttonshape);
+                    landmarkButton.setLabelText(getString(R.string.hide_landmarks));
                 }
             }
         });
-        teamButton = (ImageButton) view.findViewById(R.id.button_team);
-        teamButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
+        teamButton = (FloatingActionButton) view.findViewById(R.id.menu_item_team);
         if (sharedPreferences.getBoolean(Constants.SHARED_PREF_TEAM_TOGGLE, true)) {
             team_toggled = true;
-            teamButton.setBackgroundResource(R.drawable.buttonshape);
+            teamButton.setLabelText(getString(R.string.hide_team_members));
         } else {
+            teamButton.setLabelText(getString(R.string.show_team_members));
             team_toggled = false;
-            teamButton.setBackgroundResource(R.drawable.buttonshape_secondary);
         }
         teamButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -396,7 +399,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     team_toggled = false;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             false).apply();
-                    teamButton.setBackgroundResource(R.drawable.buttonshape_secondary);
+                    teamButton.setLabelText(getString(R.string.show_team_members));
                 } else {
                     updateTeamPositions(map);
                     // Show trace lines if toggled
@@ -406,34 +409,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     team_toggled = true;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             true).apply();
-                    teamButton.setBackgroundResource(R.drawable.buttonshape);
+                    teamButton.setLabelText(getString(R.string.hide_team_members));
                 }
             }
         });
-        weatherButton = (ImageButton) view.findViewById(R.id.button_weather);
-        weatherButton.setColorFilter(Color.argb(255, 255, 255, 255)); // White Tint
-        weather_toggled = false;
-        weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
-        //}
+        weatherButton = (FloatingActionButton) view.findViewById(R.id.menu_item_wind);
         weatherButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (weather_toggled) {
-                    weather_toggled = false;
-                    hideWeatherIcons();
-                    weatherButton.setBackgroundResource(R.drawable.buttonshape_secondary);
-                } else {
-                    if (System.currentTimeMillis() - time_last_weather_sync >
-                                                                Constants.WEATHER_SYNC_COOLDOWN) {
-                        time_last_weather_sync = System.currentTimeMillis();
-                        weather_toggled = true;
-                        showWeatherIcons();
-                        weatherButton.setBackgroundResource(R.drawable.buttonshape);
-                    }
-                    else {
-                        Toast.makeText(getContext(), getString(R.string.toast_weather_cooldown),
-                                                                    Toast.LENGTH_SHORT).show();
-                    }
+                if (System.currentTimeMillis() - time_last_weather_sync >
+                                                            Constants.WEATHER_SYNC_COOLDOWN) {
+                    time_last_weather_sync = System.currentTimeMillis();
+                    showWeatherIcons();
+                    menu.close(false);
+                }
+                else {
+                    Toast.makeText(getContext(), getString(R.string.toast_weather_cooldown),
+                                                                Toast.LENGTH_SHORT).show();
                 }
             }
         });

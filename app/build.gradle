@@ -62,4 +62,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:11.0.1'
     compile 'com.google.android.gms:play-services-ads:11.0.1'
     testCompile 'junit:junit:4.12'
+    compile 'com.github.clans:fab:1.6.4'
 }

@@ -139,6 +139,15 @@
     <string name="alert_reset_positive">Nullstill</string>
     <string name="alert_reset_negative">Behold</string>
 
+    <string name="hide_traces">Skjul spor</string>
+    <string name="show_traces">Vis spor</string>
+    <string name="hide_landmarks">Skjul kartmerker</string>
+    <string name="show_landmarks">Vis kartmerker</string>
+    <string name="hide_team_members">Skjul laget</string>
+    <string name="show_team_members">Vis laget</string>
+    <string name="get_weather">Hent vindretning</string>
+    <string name="delete_traces">Slett alle spor</string>
+
     <string name="name_help_title">Jegernavn</string>
     <string name="code_help_title">Adgangskode</string>
     <string name="team_help_title">Jaktlag</string>
