@@ -284,6 +284,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             lineButton.setLabelText(getString(R.string.hide_traces));
         } else {
             line_toggled = false;
+            lineButton.setColorNormal(getResources().getColor(R.color.colorInactive));
             lineButton.setLabelText(getString(R.string.show_traces));
         }
         lineButton.setOnClickListener(new View.OnClickListener() {
@@ -299,6 +300,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     hideTeamTraceLine();
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             false).apply();
+                    lineButton.setColorNormal(getResources().getColor(R.color.colorInactive));
                     lineButton.setLabelText(getString(R.string.show_traces));
                 } else {
                     line_toggled = true;
@@ -308,6 +310,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     showTeamTraceLine();
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LINE_TOGGLE,
                                             true).apply();
+                    lineButton.setColorNormal(getResources().getColor(R.color.colorAccent));
                     lineButton.setLabelText(getString(R.string.hide_traces));
                 }
             }
@@ -350,6 +353,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             landmarkButton.setLabelText(getString(R.string.hide_landmarks));
         } else {
             landmarks_toggled = false;
+            landmarkButton.setColorNormal(getResources().getColor(R.color.colorInactive));
             landmarkButton.setLabelText(getString(R.string.show_landmarks));
         }
         landmarkButton.setOnClickListener(new View.OnClickListener() {
@@ -367,6 +371,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     }
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
                                             false).apply();
+                    landmarkButton.setColorNormal(getResources().getColor(R.color.colorInactive));
                     landmarkButton.setLabelText(getString(R.string.show_landmarks));
                 } else {
                     landmarks_toggled = true;
@@ -374,6 +379,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     addTeamLandmarks(map);
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
                                             true).apply();
+                    landmarkButton.setColorNormal(getResources().getColor(R.color.colorAccent));
                     landmarkButton.setLabelText(getString(R.string.hide_landmarks));
                 }
             }
@@ -383,6 +389,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             team_toggled = true;
             teamButton.setLabelText(getString(R.string.hide_team_members));
         } else {
+            teamButton.setColorNormal(getResources().getColor(R.color.colorInactive));
             teamButton.setLabelText(getString(R.string.show_team_members));
             team_toggled = false;
         }
@@ -399,6 +406,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     team_toggled = false;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             false).apply();
+                    teamButton.setColorNormal(getResources().getColor(R.color.colorInactive));
                     teamButton.setLabelText(getString(R.string.show_team_members));
                 } else {
                     updateTeamPositions(map);
@@ -409,23 +417,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     team_toggled = true;
                     sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_TEAM_TOGGLE,
                                             true).apply();
+                    teamButton.setColorNormal(getResources().getColor(R.color.colorAccent));
                     teamButton.setLabelText(getString(R.string.hide_team_members));
                 }
             }
         });
         weatherButton = (FloatingActionButton) view.findViewById(R.id.menu_item_wind);
+        weather_toggled = false;
+        weatherButton.setColorNormal(getResources().getColor(R.color.colorInactive));
         weatherButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (System.currentTimeMillis() - time_last_weather_sync >
-                                                            Constants.WEATHER_SYNC_COOLDOWN) {
-                    time_last_weather_sync = System.currentTimeMillis();
-                    showWeatherIcons();
-                    menu.close(false);
-                }
-                else {
-                    Toast.makeText(getContext(), getString(R.string.toast_weather_cooldown),
-                                                                Toast.LENGTH_SHORT).show();
+                if (weather_toggled) {
+                    weather_toggled = false;
+                    hideWeatherIcons();
+                    weatherButton.setColorNormal(getResources().getColor(R.color.colorInactive));
+                    weatherButton.setLabelText(getString(R.string.get_weather));
+                } else {
+                    if (System.currentTimeMillis() - time_last_weather_sync >
+                            Constants.WEATHER_SYNC_COOLDOWN) {
+                        time_last_weather_sync = System.currentTimeMillis();
+                        showWeatherIcons();
+                        weather_toggled = true;
+                        menu.close(false);
+                        weatherButton.setColorNormal(getResources().getColor(R.color.colorAccent));
+                        weatherButton.setLabelText(getString(R.string.hide_weather));
+                    } else {
+                        Toast.makeText(getContext(), getString(R.string.toast_weather_cooldown),
+                                Toast.LENGTH_SHORT).show();
+                    }
+
                 }
             }
         });

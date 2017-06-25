@@ -145,7 +145,8 @@
     <string name="show_landmarks">Vis kartmerker</string>
     <string name="hide_team_members">Skjul laget</string>
     <string name="show_team_members">Vis laget</string>
-    <string name="get_weather">Hent vindretning</string>
+    <string name="get_weather">Vis vindretning</string>
+    <string name="hide_weather">Skjul vindretning</string>
     <string name="delete_traces">Slett alle spor</string>
 
     <string name="name_help_title">Jegernavn</string>
