@@ -524,6 +524,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         //Disable Map Toolbar:
         map.getUiSettings().setMapToolbarEnabled(false);
 
+        // Show team immediately if active and toggled
+        if (getActivity() != null && ((MainActivity)getActivity()).isActive()) {
+            if (team_toggled) {
+                updateTeamPositions(map);
+                if (line_toggled) {
+                    showTeamTraceLine();
+                }
+            }
+        }
+
         // Setting a click event handler for the map
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
