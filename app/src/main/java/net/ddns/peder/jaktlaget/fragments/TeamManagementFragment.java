@@ -52,6 +52,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
              FragmentTransaction ft = getFragmentManager().beginTransaction();
              ft.replace(R.id.content_frame, fragment);
              ft.commit();
+             ((MainActivity)getActivity()).showCaseGoActive();
         }
         else if (result == DataSynchronizer.FAILED_TRANSFER) {
             Toast.makeText(getContext(), R.string.toast_no_contact_server, Toast.LENGTH_SHORT).show();
@@ -172,6 +173,12 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                         DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
                                 TeamManagementFragment.this, true);
                         dataSynchronizer.execute();
+                        View view = getActivity().getCurrentFocus();
+                        if (view != null) {
+                            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+                                                                    Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        }
                     }
                 } else {
                     codeText.requestFocus();
@@ -191,6 +198,12 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                     DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
                             TeamManagementFragment.this, true);
                     dataSynchronizer.execute();
+                    View view = getActivity().getCurrentFocus();
+                    if (view != null) {
+                        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+                                                                    Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
                 }
             }
         });

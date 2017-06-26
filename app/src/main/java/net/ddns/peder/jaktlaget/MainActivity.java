@@ -32,10 +32,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -85,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String tag = "MainActivity";
     private SwitchCompat runSwitch;
     private AdView mAdView;
+    private Target t1;
 
     public NavigationView navigationView;
 
@@ -108,6 +114,16 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    public void showCaseGoActive() {
+        ShowcaseView showcaseView = new ShowcaseView.Builder(this)
+                .setTarget(t1)
+                .setStyle(R.style.CustomShowcaseTheme)
+                .setContentTitle(getString(R.string.showcase_title))
+                .setContentText(getString(R.string.showcase_text))
+                .build();
+        showcaseView.setButtonText(getString(R.string.showcase_button));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +135,8 @@ public class MainActivity extends AppCompatActivity implements
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_SERVICE);
         this.registerReceiver(br, intentFilter);
+
+        t1 = new ViewTarget(R.id.run_switch, this);
 
         mContext = this;
 
