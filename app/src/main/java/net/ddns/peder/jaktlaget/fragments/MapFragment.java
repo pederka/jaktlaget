@@ -334,18 +334,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 builder.setTitle(R.string.trace_remove_dialog);
                 builder.setPositiveButton(R.string.trace_remove, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (traceLine != null) {
-                            ((MainActivity)getActivity()).clearMyLocationHistory();
-                            ((MainActivity)getActivity()).clearTeamLocationHistory();
-                            // Delete from pshared preferences
-                            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
-                                    getContext()).edit();
-                            editor.remove(Constants.SHARED_PREF_LOCATION_HISTORY);
-                            editor.remove(Constants.SHARED_PREF_TEAM_LOCATION_HISTORY);
-                            editor.apply();
-                            hideMyTraceLine();
-                            hideTeamTraceLine();
-                        }
+                        ((MainActivity)getActivity()).clearMyLocationHistory();
+                        ((MainActivity)getActivity()).clearTeamLocationHistory();
+                        // Delete from pshared preferences
+                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
+                                getContext()).edit();
+                        editor.remove(Constants.SHARED_PREF_LOCATION_HISTORY);
+                        editor.remove(Constants.SHARED_PREF_TEAM_LOCATION_HISTORY);
+                        editor.apply();
+                        hideMyTraceLine();
+                        hideTeamTraceLine();
                         Toast.makeText(getContext(), R.string.traces_deleted, Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -1026,7 +1024,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void hideMyTraceLine() {
-        if (map != null) {
+        if (map != null && traceLine != null) {
             traceLine.remove();
         }
     }
