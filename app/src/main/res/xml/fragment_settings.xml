@@ -28,14 +28,13 @@
             android:title="@string/pref_autoshowteam"
             android:summary="@string/pref_autoshowteam_summary"
             android:defaultValue="true" />
-        <CheckBoxPreference
+        <!--<CheckBoxPreference
             android:key="pref_hideoldteam"
             android:title="@string/pref_hideoldteam"
             android:summary="@string/pref_hideoldteam_summary"
-            android:defaultValue="false" />
+            android:defaultValue="false" /> -->
          <ListPreference
             android:key="pref_hideteamlimit"
-            android:dependency="pref_hideoldteam"
             android:title="@string/pref_hideteamlimit"
             android:summary="@string/pref_hideteamlimit_summary"
             android:dialogTitle="@string/pref_hideteamlimit_dialog"

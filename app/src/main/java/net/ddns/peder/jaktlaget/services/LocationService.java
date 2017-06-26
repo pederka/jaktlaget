@@ -39,13 +39,12 @@ import java.util.Map;
 
 public class LocationService extends Service {
     private LocationManager mLocationManager = null;
-    private int LOCATION_INTERVAL;
-    private static final float LOCATION_DISTANCE = 10f;
     private static final String tag = "LocationService";
     private List<LatLng> myLocationHistory;
+    private MyLocationListener mLocationListener;
     private Map<String, List<LatLng>> teamLocationHistory = new HashMap<>();
 
-    private class LocationListener implements android.location.LocationListener, OnSyncComplete {
+    private class MyLocationListener implements android.location.LocationListener, OnSyncComplete {
         private Location mLastLocation;
 
         @Override
@@ -106,7 +105,7 @@ public class LocationService extends Service {
         }
 
 
-        public LocationListener(String provider)
+        public MyLocationListener(String provider)
         {
             Log.i(tag, "LocationListener " + provider);
             mLastLocation = new Location(provider);
@@ -157,7 +156,6 @@ public class LocationService extends Service {
         }
     }
 
-    LocationListener mLocationListener = new LocationListener(LocationManager.GPS_PROVIDER);
 
     @Override
     public IBinder onBind(Intent arg0)
@@ -178,6 +176,7 @@ public class LocationService extends Service {
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
         }
+
 
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         notificationIntent.putExtra(Constants.EXTRA_MAP, true);
@@ -228,12 +227,12 @@ public class LocationService extends Service {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                                                                         this);
-        LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString("pref_syncInterval",
+        int LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString("pref_syncInterval",
                 Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
-        LOCATION_INTERVAL = 0;
+        mLocationListener = new MyLocationListener(LocationManager.GPS_PROVIDER);
         try {
             mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, Constants.ACTIVITY_GPS_DISTANCE,
                     mLocationListener);
             Log.i(tag, "Started location service with time interval: "+LOCATION_INTERVAL);
         } catch (java.lang.SecurityException ex) {

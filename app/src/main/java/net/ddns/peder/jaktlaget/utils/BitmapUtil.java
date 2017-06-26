@@ -3,6 +3,7 @@ package net.ddns.peder.jaktlaget.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -24,12 +25,13 @@ public class BitmapUtil {
         float textWidth = textPaint.measureText(text);
         float textHeight = textPaint.getTextSize();
         int width = (int) (textWidth);
-        int height = (int) (textHeight*1.4);
+        int height = (int) (textHeight*1.2);
 
         Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(image);
+        canvas.drawColor(Color.LTGRAY);
 
-        canvas.translate(0, height*1.7f/3);
+        canvas.translate(0, height*0.8f);
         canvas.drawText(text, 0, 0, textPaint);
         return BitmapDescriptorFactory.fromBitmap(image);
     }

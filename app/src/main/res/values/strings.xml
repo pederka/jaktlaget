@@ -114,8 +114,8 @@
     <string name="pref_hideoldteam_summary">Skjul markører for lagmedlemmer med utdatert posisjon</string>
 
     <string name="pref_hideteamlimit">Utløpstid for posisjoner</string>
-    <string name="pref_hideteamlimit_summary">Hvor lenge gamle posisjoner vises på kartet</string>
-    <string name="pref_hideteamlimit_dialog">Velg ny utløpstid for posisjoner</string>
+    <string name="pref_hideteamlimit_summary">Tid uten oppdateringer før lagmedlemmer vises som grå på kartet</string>
+    <string name="pref_hideteamlimit_dialog">Velg ny utløpstid</string>
     <string name="pref_hideteamlimit_default">30</string>
 
     <string name="pref_windprovider">Værtjenese</string>

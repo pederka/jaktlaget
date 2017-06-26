@@ -102,16 +102,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private List<Polyline> teamTraceLines;
     private Bitmap myselfBitmap;
     private Bitmap otherBitmap;
+    private Bitmap otherInactiveBitmap;
     private Bitmap myLandmarkBitmap;
     private Bitmap otherLandmarkBitmap;
     private Bitmap windBitmap;
     private int colorMe;
     private int colorOther;
+    private int colorInactive;
     private int MY_PERMISSIONS_REQUEST;
     private List<Marker> windMarkerList;
     private List<Marker> windSpeedMarkerList;
     private long time_last_weather_sync;
     private LatLng navigateTo;
+    private long team_inactive_limit;
 
     public MapFragment() {
         // Required empty public constructor
@@ -178,6 +181,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         public void run() {
             if (map != null && getActivity() != null) {
                 updateTeamPositions(map);
+                if (line_toggled) {
+                    showTeamTraceLine();
+                }
             }
             mHandler.postDelayed(this, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
         }
@@ -228,6 +234,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
+        team_inactive_limit = 60000*Long.parseLong(sharedPreferences.getString("pref_hideteamlimit", "30"));
+
         userMarkerList = new ArrayList<>();
         userNameMarkerList = new ArrayList<>();
         mHandler = new Handler();
@@ -241,6 +249,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         // Create icons for map
         colorMe = getResources().getColor(R.color.mapMe);
         colorOther = getResources().getColor(R.color.mapOther);
+        colorInactive = getResources().getColor(R.color.mapInactive);
 
         myselfBitmap = getBitmapFromVectorDrawable(R.drawable.ic_my_location_black_24dp, colorMe,
                 getContext());
@@ -249,6 +258,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         myLandmarkBitmap = getBitmapFromVectorDrawable(R.drawable.ic_star_black_24dp, colorMe,
                 getContext());
         otherLandmarkBitmap = getBitmapFromVectorDrawable(R.drawable.ic_star_black_24dp, colorOther,
+                getContext());
+        otherInactiveBitmap = getBitmapFromVectorDrawable(R.drawable.ic_person_black_24dp, colorInactive,
                 getContext());
         windBitmap = getBitmapFromVectorDrawable(R.drawable.ic_arrow_upward_black_24dp,
                 R.color.black, getContext());
@@ -823,10 +834,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             PositionsDbHelper.COLUMN_NAME_ID,
             PositionsDbHelper.COLUMN_NAME_SHOWED,
             PositionsDbHelper.COLUMN_NAME_USER,
+            PositionsDbHelper.COLUMN_NAME_TIME,
             PositionsDbHelper.COLUMN_NAME_LATITUDE,
             PositionsDbHelper.COLUMN_NAME_LONGITUDE,
 
         };
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                getContext());
 
         String selection = PositionsDbHelper.COLUMN_NAME_SHOWED + " = ?";
         String[] selectionArgs = { "1" };
@@ -845,24 +860,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     PositionsDbHelper.COLUMN_NAME_LATITUDE));
             Float longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
                     PositionsDbHelper.COLUMN_NAME_LONGITUDE));
+            Long time = cursor.getLong(cursor.getColumnIndexOrThrow(
+                    PositionsDbHelper.COLUMN_NAME_TIME));
             LatLng pos = new LatLng(latitude, longitude);
             String user = cursor.getString(cursor.getColumnIndexOrThrow(
                     PositionsDbHelper.COLUMN_NAME_USER));
             ((MainActivity)getActivity()).addToTeamLocationHistory(user, pos);
             MarkerOptions markerOptions = new MarkerOptions();
+            MarkerOptions nameMarkerOptions = new MarkerOptions();
             markerOptions.position(pos);
             markerOptions.anchor(0.5f, 0.5f);
             //markerOptions.title(user);
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(otherBitmap));
+            if (System.currentTimeMillis()-time > team_inactive_limit) {
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(otherInactiveBitmap));
+                nameMarkerOptions.icon(createPureTextIcon(user, colorInactive));
+            } else {
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(otherBitmap));
+                nameMarkerOptions.icon(createPureTextIcon(user, colorOther));
+            }
             userMarkerList.add(map.addMarker(markerOptions));
             // Add name
-            MarkerOptions nameMarkerOptions = new MarkerOptions();
             nameMarkerOptions.position(pos);
-            markerOptions.anchor(0.5f, 1.0f);
-            nameMarkerOptions.icon(createPureTextIcon(user, colorOther));
+            nameMarkerOptions.anchor(0.5f, 1.5f);
             userNameMarkerList.add(map.addMarker(nameMarkerOptions));
         }
-        showTeamTraceLine();
         cursor.close();
     }
 

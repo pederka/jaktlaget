@@ -207,11 +207,9 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             byte[] codeSizeBytes = new byte[4];
             dataInputStream.read(codeSizeBytes, 0, 4);
             int codeSize = byteArrayToInt(codeSizeBytes);
-            Log.d(tag, "Receiving code of size "+codeSize);
             byte[] codeBytes = new byte[codeSize];
             dataInputStream.read(codeBytes, 0, codeSize);
             String codeString = new String(codeBytes, "UTF-8");
-            Log.d(tag, "Received code "+codeString);
             sharedPrefs.edit().putString(Constants.SHARED_PREF_TEAM_CODE, codeString).apply();
 
             socket.close();

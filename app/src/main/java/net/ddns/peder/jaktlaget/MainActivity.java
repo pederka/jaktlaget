@@ -167,6 +167,14 @@ public class MainActivity extends AppCompatActivity implements
 
         // Run switch
         runSwitch = (SwitchCompat) findViewById(R.id.run_switch);
+        if (runningService) {
+            activeText.setText(getString(R.string.actionbar_active));
+            runSwitch.setChecked(true);
+            mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+        } else {
+            activeText.setText(getString(R.string.actionbar_inactive));
+            runSwitch.setChecked(false);
+        }
         runSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -196,14 +204,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
-        if (runningService) {
-            activeText.setText(getString(R.string.actionbar_active));
-            runSwitch.setChecked(true);
-            mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
-        } else {
-            activeText.setText(getString(R.string.actionbar_inactive));
-            runSwitch.setChecked(false);
-        }
+
 
         // Request permissions
         if (ContextCompat.checkSelfPermission(this,
@@ -544,6 +545,7 @@ public class MainActivity extends AppCompatActivity implements
                                                             (float)location.getLongitude()).apply();
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
+            Log.d(tag, "Got new location from GPS");
             if (runningService) {
                 addToMyLocationHistory(new LatLng(location.getLatitude(), location.getLongitude()));
             }
