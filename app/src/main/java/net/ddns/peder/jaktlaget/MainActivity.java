@@ -203,7 +203,8 @@ public class MainActivity extends AppCompatActivity implements
                                                                         getApplicationContext());
                     String teamid = prefs.getString(Constants.SHARED_PREF_TEAM_ID,
                                                              Constants.DEFAULT_TEAM_ID);
-                    if (!teamid.equals(Constants.DEFAULT_TEAM_ID)) {
+                    if (!teamid.equals(Constants.DEFAULT_TEAM_ID) && (myLocationHistory.size() > 0
+                                       || teamLocationHistory.size() > 0)) {
                         // Show dialog about keeping or discarding traces
                         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                         builder.setMessage(R.string.alert_reset_message)
