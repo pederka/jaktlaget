@@ -992,7 +992,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 // Add wind speed
                 MarkerOptions speedMarkerOptions = new MarkerOptions();
                 speedMarkerOptions.position(positions.get(i));
-                speedMarkerOptions.anchor(0.5f, 1.0f);
+                speedMarkerOptions.anchor(0.5f, 2.0f);
                 speedMarkerOptions.icon(createPureTextIcon(Float.toString(speed) + " m/s", Color.BLACK));
                 windSpeedMarkerList.add(map.addMarker(speedMarkerOptions));
             }
