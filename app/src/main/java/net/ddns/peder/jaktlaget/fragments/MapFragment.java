@@ -1034,6 +1034,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             if (teamTraceLines == null) {
                 teamTraceLines = new ArrayList<>();
             }
+            // Find users that are not showed
+            final String selection = PositionsDbHelper.COLUMN_NAME_SHOWED + " = ?";
+            final String[] selectionArgs = {"0"};
+            final String[] PROJECTION = {
+                    PositionsDbHelper.COLUMN_NAME_ID,
+                    PositionsDbHelper.COLUMN_NAME_USER,
+                    LandmarksDbHelper.COLUMN_NAME_SHOWED,
+            };
+            // Query database to get shared status. Make blacklist
+            final Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
+                            PROJECTION,
+                            selection,
+                            selectionArgs,
+                            null,
+                            null,
+                            null);
+            List<String> blackList = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                blackList.add(cursor.getString(cursor.getColumnIndexOrThrow(
+                                                            PositionsDbHelper.COLUMN_NAME_USER)));
+            }
+            cursor.close();
             hideTeamTraceLine();
             teamTraceLines.clear();
             Map<String, List<LatLng>> teamLocationHistory =
@@ -1042,13 +1064,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 List<String> users = new ArrayList<>();
                 users.addAll(teamLocationHistory.keySet());
                 for (int i = 0; i < teamLocationHistory.size(); i++) {
-                    Polyline line = map.addPolyline(new PolylineOptions()
-                            .addAll(teamLocationHistory.get(users.get(i)))
-                            .width(8)
-                            .color(colorOther)
-                            .zIndex(999)
-                    );
-                    teamTraceLines.add(line);
+                    if (!blackList.contains(users.get(i))) {
+                        Polyline line = map.addPolyline(new PolylineOptions()
+                                .addAll(teamLocationHistory.get(users.get(i)))
+                                .width(8)
+                                .color(colorOther)
+                                .zIndex(999)
+                        );
+                        teamTraceLines.add(line);
+                    }
                 }
             }
         }
