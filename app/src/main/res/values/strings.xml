@@ -166,7 +166,7 @@
     <string name="about_intro">Jaktlaget er utviklet av Peder Aursand for å være et nyttig verktøy for å se hvor hverandre er i terrenget mens man går på jakt.</string>
 
     <string name="about_safety_header">Sikkerhet:</string>
-    <string name="about_safety">Husk at posisjonene som vises i denne appen er avhengig av både GPS- og telefondekning og kan i noen tilfeller være usikre og utdaterte. ALLTID har sikker bakgrunn før du skyter på vilt.</string>
+    <string name="about_safety">Husk at posisjonene som vises i denne appen er avhengig av både GPS- og telefondekning og kan i noen tilfeller være usikre og utdaterte. ALLTID ha sikker bakgrunn før du skyter på vilt.</string>
 
     <string name="about_privacy_header">Personvern:</string>
     <string name="about_privacy">Når appen Jaktlaget er aktiv vil ditt jegernavn, dine siste koordinater, og de kartmerker du har valgt å dele, sendes til vår tjener ved jevne mellomrom. All kommunikasjon mellom telefonen og vår tjener er kryptert.
