@@ -19,6 +19,7 @@ public final class Constants {
     public static final String SHARED_PREF_LOCATION_HISTORY = "location_history";
     public static final String SHARED_PREF_TEAM_LOCATION_HISTORY = "team_location_history";
     public static final String SHARED_PREF_TEAM_CODE = "team_code";
+    public static final String SHARED_PREF_FIRST_TIME_ACTIVE = "first_time_active";
 
     // Intent extras
     public static final String EXTRA_MAP = "net.ddns.peder.INTENT_MAP";

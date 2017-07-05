@@ -115,13 +115,20 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void showCaseGoActive() {
-        ShowcaseView showcaseView = new ShowcaseView.Builder(this)
-                .setTarget(t1)
-                .setStyle(R.style.CustomShowcaseTheme)
-                .setContentTitle(getString(R.string.showcase_title))
-                .setContentText(getString(R.string.showcase_text))
-                .build();
-        showcaseView.setButtonText(getString(R.string.showcase_button));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean first_time = sharedPreferences.getBoolean(Constants.SHARED_PREF_FIRST_TIME_ACTIVE,
+                true);
+        if (first_time) {
+            sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_FIRST_TIME_ACTIVE,
+                    false).apply();
+            ShowcaseView showcaseView = new ShowcaseView.Builder(this)
+                    .setTarget(t1)
+                    .setStyle(R.style.CustomShowcaseTheme)
+                    .setContentTitle(getString(R.string.showcase_title))
+                    .setContentText(getString(R.string.showcase_text))
+                    .build();
+            showcaseView.setButtonText(getString(R.string.showcase_button));
+        }
     }
 
     @Override
