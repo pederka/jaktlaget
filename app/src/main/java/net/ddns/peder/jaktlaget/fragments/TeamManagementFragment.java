@@ -252,10 +252,21 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             ((LinearLayout) view.findViewById(R.id.team_code_container)).addView(li.inflate(R.layout.team_code_edittext,
                     (ViewGroup) view.findViewById(R.id.team_code_inputlayout), false));
         }
-        EditText codeText = (EditText) view.findViewById(R.id.team_code_edittext_field);
+        final EditText codeText = (EditText) view.findViewById(R.id.team_code_edittext_field);
         codeText.setText(code);
         codeText.setFilters(new InputFilter[] {new InputFilter.AllCaps(),
                                                 new InputFilter.LengthFilter(Constants.CODE_LENGTH)});
+        codeText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (submitForm()) {
+                    DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
+                            TeamManagementFragment.this, true);
+                    dataSynchronizer.execute();
+                }
+                return false;
+            }
+        });
         return codeText;
     }
 
