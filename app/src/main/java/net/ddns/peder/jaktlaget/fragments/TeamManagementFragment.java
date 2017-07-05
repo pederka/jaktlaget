@@ -165,6 +165,9 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             ((ViewManager)infoText.getParent()).removeView(infoText);
         }
 
+        teamText.setFilters(new InputFilter[] {new InputFilter.AllCaps(),
+                                                new InputFilter.LengthFilter(Constants.TEAM_LENGTH)});
+
         teamText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
