@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -54,6 +55,7 @@ import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
 import net.ddns.peder.jaktlaget.interfaces.WeatherSyncCompleteListener;
 import net.ddns.peder.jaktlaget.providers.TileProviderFactory;
+import net.ddns.peder.jaktlaget.utils.ScaleBar;
 import net.ddns.peder.jaktlaget.weather.WindResult;
 
 import java.text.SimpleDateFormat;
@@ -542,6 +544,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 }
             }
         }
+
+        // Add scale bar
+        RelativeLayout container = (RelativeLayout) getView().findViewById(R.id.map_container);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(500, 500);
+
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
+        ScaleBar mScaleBar = new ScaleBar(getContext(), map);
+        mScaleBar.setLayoutParams(params);
+        container.addView(mScaleBar);
 
         // Setting a click event handler for the map
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
