@@ -19,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -547,13 +549,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
         // Add scale bar
         RelativeLayout container = (RelativeLayout) getView().findViewById(R.id.map_container);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(500, 500);
+        float density = getContext().getResources().getDisplayMetrics().xdpi/160f;
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                (int)(Constants.SCALE_WIDTH*density),
+                40*(int)density);
 
-        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 
         ScaleBar mScaleBar = new ScaleBar(getContext(), map);
+
         mScaleBar.setLayoutParams(params);
+        mScaleBar.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         container.addView(mScaleBar);
 
         // Setting a click event handler for the map
