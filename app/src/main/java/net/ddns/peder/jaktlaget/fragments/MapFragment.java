@@ -567,6 +567,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onMapLongClick(LatLng latLng) {
                 // First, check if an existing landmark was clicked
+                Log.d(tag, "Markerlist "+markerList.toString());
                 boolean found = false;
                 Projection projection = map.getProjection();
                 Point point = projection.toScreenLocation(latLng);
@@ -636,14 +637,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                                     contentValues.put(LandmarksDbHelper.COLUMN_NAME_SHARED, shared);
                                     db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection,
                                             selectionArgs);
-                                    marker.setTitle(desc_new);
+                                    addLandMarks(map);
                                 }
                             });
                             builder.setNegativeButton(R.string.lm_delete, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     // User cancelled the dialog
                                     db.delete(LandmarksDbHelper.TABLE_NAME, selection, selectionArgs);
+                                    marker.setVisible(false);
                                     marker.remove();
+                                    //markerList.remove(marker);
                                     addLandMarks(map);
                                 }
                             });
@@ -772,6 +775,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void addLandMarks(GoogleMap map) {
+        // Remove old markers
+        for (Marker m : markerList) {
+            m.remove();
+        }
         markerList.clear();
         final String[] PROJECTION = {
             LandmarksDbHelper.COLUMN_NAME_ID,

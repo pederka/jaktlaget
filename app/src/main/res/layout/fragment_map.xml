@@ -10,53 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!--
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:orientation="vertical">
-
-
-        <ImageButton
-            android:id="@+id/button_trace"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_show_chart_black_24dp"
-            android:background="@drawable/buttonshape"/>
-
-        <ImageButton
-            android:id="@+id/button_team"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_people_black_24dp"
-            android:background="@drawable/buttonshape"/>
-
-        <ImageButton
-            android:id="@+id/button_landmarks"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_place_black_24dp"
-            android:background="@drawable/buttonshape"/>
-
-        <ImageButton
-            android:id="@+id/button_weather"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_wb_sunny_black_24dp"
-            android:background="@drawable/buttonshape"/>
-
-    </LinearLayout>
-    -->
-
     <com.github.clans.fab.FloatingActionMenu
         xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:id="@+id/menu"
