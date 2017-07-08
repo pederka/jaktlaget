@@ -577,6 +577,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 final MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
                 markerOptions.icon(BitmapDescriptorFactory.fromBitmap(myLandmarkBitmap));
+                markerOptions.anchor(0.5f, 0.5f);
                 final Marker tempMarker = map.addMarker(markerOptions);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.lm_dialog_title)
