@@ -563,167 +563,163 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mScaleBar.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         container.addView(mScaleBar);
 
-        // Setting a click event handler for the map
-        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                final LatLng coords = latLng;
-                int mapHeight = mapView.getHeight();
-                Projection projection = map.getProjection();
-                Point point = projection.toScreenLocation(latLng);
-                point.set(point.x, point.y-mapHeight/3);
-                map.moveCamera(CameraUpdateFactory.newLatLng(projection.fromScreenLocation(point)));
-                shared = false;
-                final MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(myLandmarkBitmap));
-                markerOptions.anchor(0.5f, 0.5f);
-                final Marker tempMarker = map.addMarker(markerOptions);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(R.string.lm_dialog_title)
-                        .setMultiChoiceItems(R.array.lm_choices, null,
-                        new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which,
-                                                boolean isChecked) {
-                                if (isChecked) {
-                                    // If the user checked the item, add it to the selected items
-                                    shared = true;
-                                } else {
-                                    // Else, if the item is already in the array, remove it
-                                    shared = false;
-                                }
-                            }
-                        }
-                );
-                final EditText input = new EditText(getContext());
-                input.setMaxLines(1);
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setHint(getString(R.string.description_hint));
-                builder.setView(input);
-
-                builder.setPositiveButton(R.string.lm_ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        String description = input.getText().toString();
-                        markerOptions.title(description);
-                        Marker finalMarker = map.addMarker(markerOptions);
-                        markerList.add(finalMarker);
-                        saveLandmarkToDatabase(description, shared, coords);
-                        Toast.makeText(getContext(), R.string.landmark_added, Toast.LENGTH_SHORT).show();
-                        // Toogle landmarks if needed
-                        if (!landmarks_toggled) {
-                            landmarks_toggled = true;
-                            addLandMarks(map);
-                            addTeamLandmarks(map);
-                            sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
-                                    true).apply();
-                            landmarkButton.setColorNormal(getResources().getColor(R.color.colorAccent));
-                            landmarkButton.setLabelText(getString(R.string.hide_landmarks));
-                        }
-
-                    }
-                });
-                builder.setNegativeButton(R.string.lm_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
-                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        tempMarker.remove();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-        });
-
         map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                // First, check if an existing landmark was clicked
+                boolean found = false;
                 Projection projection = map.getProjection();
                 Point point = projection.toScreenLocation(latLng);
                 int mapHeight = mapView.getHeight();
-                for(final Marker marker : markerList) {
-                    Point markerPoint = projection.toScreenLocation(
-                                        new LatLng(marker.getPosition().latitude,
-                                           marker.getPosition().longitude));
-                    if(Math.abs(point.x - markerPoint.x) < 0.05*mapHeight &&
-                            Math.abs(point.y - markerPoint.y) < 0.05*mapHeight) {
-                        final String selection = LandmarksDbHelper.COLUMN_NAME_DESCRIPTION + " = ?";
-                        final String[] selectionArgs = {""+marker.getTitle()};
-                        final String[] PROJECTION = {
-                            LandmarksDbHelper.COLUMN_NAME_ID,
-                            LandmarksDbHelper.COLUMN_NAME_SHARED,
-                            LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+                // Don't bother searching for nearby markers if not toggled
+                if (landmarks_toggled) {
+                    for (final Marker marker : markerList) {
+                        Point markerPoint = projection.toScreenLocation(
+                                new LatLng(marker.getPosition().latitude,
+                                        marker.getPosition().longitude));
+                        if (Math.abs(point.x - markerPoint.x) < 0.05 * mapHeight &&
+                                Math.abs(point.y - markerPoint.y) < 0.05 * mapHeight) {
+                            found = true;
+                            final String selection = LandmarksDbHelper.COLUMN_NAME_DESCRIPTION + " = ?";
+                            final String[] selectionArgs = {"" + marker.getTitle()};
+                            final String[] PROJECTION = {
+                                    LandmarksDbHelper.COLUMN_NAME_ID,
+                                    LandmarksDbHelper.COLUMN_NAME_SHARED,
+                                    LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
                             };
-                        // Query database to get shared status
-                        final Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
-                            PROJECTION,
-                            selection,
-                            selectionArgs,
-                            null,
-                            null,
-                            null);
-                        cursor.moveToFirst();
-                        shared = cursor.getInt(cursor.getColumnIndexOrThrow(
-                                            LandmarksDbHelper.COLUMN_NAME_SHARED)) > 0;
-                        cursor.close();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        String desc = marker.getTitle();
-                        builder.setTitle(getString(R.string.lm_title));
-                        boolean [] checked_list = new boolean[1];
-                        if (shared) {
-                            Arrays.fill(checked_list, true);
-                        } else {
-                            Arrays.fill(checked_list, false);
-                        }
-                        builder.setMultiChoiceItems(R.array.lm_choices, checked_list,
-                        new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which,
-                                                boolean isChecked) {
-                                if (isChecked) {
-                                    // If the user checked the item, add it to the selected items
-                                    shared = true;
-                                } else {
-                                    // Else, if the item is already in the array, remove it
-                                    shared = false;
+                            // Query database to get shared status
+                            final Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
+                                    PROJECTION,
+                                    selection,
+                                    selectionArgs,
+                                    null,
+                                    null,
+                                    null);
+                            cursor.moveToFirst();
+                            shared = cursor.getInt(cursor.getColumnIndexOrThrow(
+                                    LandmarksDbHelper.COLUMN_NAME_SHARED)) > 0;
+                            cursor.close();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            String desc = marker.getTitle();
+                            builder.setTitle(getString(R.string.lm_title));
+                            boolean[] checked_list = new boolean[1];
+                            if (shared) {
+                                Arrays.fill(checked_list, true);
+                            } else {
+                                Arrays.fill(checked_list, false);
+                            }
+                            builder.setMultiChoiceItems(R.array.lm_choices, checked_list,
+                                    new DialogInterface.OnMultiChoiceClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which,
+                                                            boolean isChecked) {
+                                            if (isChecked) {
+                                                // If the user checked the item, add it to the selected items
+                                                shared = true;
+                                            } else {
+                                                // Else, if the item is already in the array, remove it
+                                                shared = false;
+                                            }
+                                        }
+                                    });
+                            final EditText input = new EditText(getContext());
+                            input.setText(desc);
+                            input.setMaxLines(1);
+                            input.setInputType(InputType.TYPE_CLASS_TEXT);
+                            builder.setView(input);
+                            builder.setPositiveButton(R.string.lm_update, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    ContentValues contentValues = new ContentValues();
+                                    String desc_new = input.getText().toString();
+                                    contentValues.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
+                                            desc_new);
+                                    contentValues.put(LandmarksDbHelper.COLUMN_NAME_SHARED, shared);
+                                    db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection,
+                                            selectionArgs);
+                                    marker.setTitle(desc_new);
                                 }
-                            }
-                        });
-                        final EditText input = new EditText(getContext());
-                        input.setText(desc);
-                        input.setMaxLines(1);
-                        input.setInputType(InputType.TYPE_CLASS_TEXT);
-                        builder.setView(input);
-                        builder.setPositiveButton(R.string.lm_update, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                ContentValues contentValues = new ContentValues();
-                                String desc_new = input.getText().toString();
-                                contentValues.put(LandmarksDbHelper.COLUMN_NAME_DESCRIPTION,
-                                        desc_new);
-                                contentValues.put(LandmarksDbHelper.COLUMN_NAME_SHARED, shared);
-                                db.update(LandmarksDbHelper.TABLE_NAME, contentValues, selection,
-                                        selectionArgs);
-                                marker.setTitle(desc_new);
-                            }
-                        });
-                        builder.setNegativeButton(R.string.lm_delete, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User cancelled the dialog
-                                db.delete(LandmarksDbHelper.TABLE_NAME, selection, selectionArgs);
-                                marker.remove();
-                                markerList.remove(marker);
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                        break;
+                            });
+                            builder.setNegativeButton(R.string.lm_delete, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User cancelled the dialog
+                                    db.delete(LandmarksDbHelper.TABLE_NAME, selection, selectionArgs);
+                                    marker.remove();
+                                    addLandMarks(map);
+                                }
+                            });
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                            break;
+                        }
                     }
                 }
+                // If existing marker not found, create new one
+                if (!found) {
+                    final LatLng coords = latLng;
+                    point.set(point.x, point.y-mapHeight/3);
+                    map.moveCamera(CameraUpdateFactory.newLatLng(projection.fromScreenLocation(point)));
+                    shared = false;
+                    final MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(myLandmarkBitmap));
+                    markerOptions.anchor(0.5f, 0.5f);
+                    final Marker tempMarker = map.addMarker(markerOptions);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(R.string.lm_dialog_title)
+                            .setMultiChoiceItems(R.array.lm_choices, null,
+                            new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which,
+                                                    boolean isChecked) {
+                                    if (isChecked) {
+                                        // If the user checked the item, add it to the selected items
+                                        shared = true;
+                                    } else {
+                                        // Else, if the item is already in the array, remove it
+                                        shared = false;
+                                    }
+                                }
+                            }
+                    );
+                    final EditText input = new EditText(getContext());
+                    input.setMaxLines(1);
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    input.setHint(getString(R.string.description_hint));
+                    builder.setView(input);
 
+                    builder.setPositiveButton(R.string.lm_ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            String description = input.getText().toString();
+                            saveLandmarkToDatabase(description, shared, coords);
+                            Toast.makeText(getContext(), R.string.landmark_added, Toast.LENGTH_SHORT).show();
+                            tempMarker.remove();
+                            addLandMarks(map);
+                            addTeamLandmarks(map);
+                            // Toogle landmarks if needed
+                            if (!landmarks_toggled) {
+                                landmarks_toggled = true;
+                                sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
+                                        true).apply();
+                                landmarkButton.setColorNormal(getResources().getColor(R.color.colorAccent));
+                                landmarkButton.setLabelText(getString(R.string.hide_landmarks));
+                            }
+
+                        }
+                    });
+                    builder.setNegativeButton(R.string.lm_cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            tempMarker.remove();
+                        }
+                    });
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            tempMarker.remove();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
 
@@ -776,6 +772,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void addLandMarks(GoogleMap map) {
+        markerList.clear();
         final String[] PROJECTION = {
             LandmarksDbHelper.COLUMN_NAME_ID,
             LandmarksDbHelper.COLUMN_NAME_SHOWED,
