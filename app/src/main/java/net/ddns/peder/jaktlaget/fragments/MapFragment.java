@@ -610,6 +610,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                         markerList.add(finalMarker);
                         saveLandmarkToDatabase(description, shared, coords);
                         Toast.makeText(getContext(), R.string.landmark_added, Toast.LENGTH_SHORT).show();
+                        // Toogle landmarks if needed
+                        if (!landmarks_toggled) {
+                            landmarks_toggled = true;
+                            addLandMarks(map);
+                            addTeamLandmarks(map);
+                            sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_LANDMARK_TOGGLE,
+                                    true).apply();
+                            landmarkButton.setColorNormal(getResources().getColor(R.color.colorAccent));
+                            landmarkButton.setLabelText(getString(R.string.hide_landmarks));
+                        }
+
                     }
                 });
                 builder.setNegativeButton(R.string.lm_cancel, new DialogInterface.OnClickListener() {
