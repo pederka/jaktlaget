@@ -18,7 +18,7 @@ public class TileProviderFactory {
         } else {
             map_type = "png";
         }
-        final String WMS = "http://wms.geonorge.no/skwms1/wms.topo2?request=GetMap&version=1.3.0&layers=topo2_WMS&bbox=%f,%f,%f,%f&width=256&height=256&crs=EPSG:3857&format=image/"+map_type;
+        final String WMS = "http://wms.geonorge.no/skwms1/wms.topo3?request=GetMap&version=1.3.0&layers=topo3_WMS&bbox=%f,%f,%f,%f&width=256&height=256&crs=EPSG:3857&format=image/"+map_type;
         WMSTileProvider tileProvider = new WMSTileProvider(256, 256) {
             @Override
             public synchronized URL getTileUrl(int x, int y, int zoom) {
