@@ -43,6 +43,10 @@ public final class Constants {
     public static final int WEATHER_SYNC_COOLDOWN = 60000;
     public static final float SCALE_WIDTH = 200;
 
+    // For tile cache
+    public static final String DISK_CACHE_SUBDIR = "tiles";
+    public static final long DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10MB
+
     // For SSL socket
     public static final String SOCKET_ADDR = "peder.ddns.net";
     public static final int SOCKET_PORT = 10024;

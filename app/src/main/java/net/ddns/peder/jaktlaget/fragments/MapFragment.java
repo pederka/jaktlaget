@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -56,8 +57,10 @@ import net.ddns.peder.jaktlaget.database.LandmarksDbHelper;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
 import net.ddns.peder.jaktlaget.interfaces.WeatherSyncCompleteListener;
+import net.ddns.peder.jaktlaget.providers.CachedTileProvider;
 import net.ddns.peder.jaktlaget.providers.TileProviderFactory;
 import net.ddns.peder.jaktlaget.utils.ScaleBar;
+import net.ddns.peder.jaktlaget.utils.TileCacheUtil;
 import net.ddns.peder.jaktlaget.weather.WindResult;
 
 import java.text.SimpleDateFormat;
@@ -522,8 +525,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void setUpMap() {
-        TileProvider wmsTileProvider = TileProviderFactory.getWmsTileProvider(getContext());
-        map.addTileOverlay(new TileOverlayOptions().tileProvider(wmsTileProvider));
+        //TileProvider wmsTileProvider = TileProviderFactory.getWmsTileProvider(getContext());
+        CachedTileProvider cachedTileProvider = new CachedTileProvider("wms",
+                            TileProviderFactory.getWmsTileProvider(getContext()),
+                ((MainActivity)getActivity()).getTileCache(), getContext());
+        map.addTileOverlay(new TileOverlayOptions().tileProvider(cachedTileProvider));
 
         // Make sure the google map is not visible in the background
         map.setMapType(GoogleMap.MAP_TYPE_NONE);

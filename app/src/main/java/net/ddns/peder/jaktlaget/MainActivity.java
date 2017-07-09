@@ -46,6 +46,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.jakewharton.disklrucache.DiskLruCache;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.jaktlaget.fragments.AboutFragment;
@@ -61,7 +62,9 @@ import net.ddns.peder.jaktlaget.fragments.TeamLandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamManagementFragment;
 import net.ddns.peder.jaktlaget.services.LocationService;
 import net.ddns.peder.jaktlaget.utils.LocationHistoryUtil;
+import net.ddns.peder.jaktlaget.utils.TileCacheUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements
     private SwitchCompat runSwitch;
     private AdView mAdView;
     private Target t1;
+    private DiskLruCache tileCache;
 
     public NavigationView navigationView;
 
@@ -137,6 +141,13 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Initialize cache
+        try {
+            tileCache = TileCacheUtil.initializeTileCache(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         br = new ServiceBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -389,6 +400,10 @@ public class MainActivity extends AppCompatActivity implements
             userHistory.add(latLng);
             teamLocationHistory.put(user, userHistory);
         }
+    }
+
+    public DiskLruCache getTileCache() {
+        return tileCache;
     }
 
     public void clearTeamLocationHistory() {
