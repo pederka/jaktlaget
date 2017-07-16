@@ -123,6 +123,10 @@
     <string name="pref_windprovider_dialog">Velg værtjeneste</string>
     <string name="pref_windprovider_default">owm</string>
 
+    <string name="landmarks_info">Legge til kartmerker</string>
+    <string name="landmarks_info_message">Trykk og hold på et sted på kartet for å legge til et nytt kartmerke</string>
+    <string name="landmarks_info_ok">Jeg forstår</string>
+
     <string name="pref_map_type">Kartformat</string>
     <string name="pref_map_summary">Oppløsning for kartblad</string>
     <string name="pref_map_type_dialog">Velg kartformat</string>
@@ -134,8 +138,8 @@
     <string name="leave_team">Forlat lag</string>
     <string name="show_team">Jegere</string>
 
-    <string name="alert_reset_title">Nullstill spor</string>
-    <string name="alert_reset_message">Ønsker du å nullstille gamle spor?</string>
+    <string name="alert_reset_title">Nullstill kart-spor?</string>
+    <string name="alert_reset_message">Du er nå aktiv. Ønsker du å nullstille gamle kart-spor?</string>
     <string name="alert_reset_positive">Nullstill</string>
     <string name="alert_reset_negative">Behold</string>
 

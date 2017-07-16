@@ -337,7 +337,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         deleteLineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.trace_remove_dialog);
                 builder.setPositiveButton(R.string.trace_remove, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -377,6 +377,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             public void onClick(View v) {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                                                                                 getContext());
+                // Explain how to add landmarks if first time
+                if (sharedPreferences.getBoolean(Constants.SHARED_PREF_FIRST_TIME_LANDMARK, true)) {
+                    sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_FIRST_TIME_LANDMARK,
+                            false).apply();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(R.string.landmarks_info);
+                    builder.setMessage(R.string.landmarks_info_message);
+                    builder.setPositiveButton(R.string.landmarks_info_ok, null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
                 if (landmarks_toggled) {
                     landmarks_toggled = false;
                     for (int i=0; i<markerList.size(); i++) {
