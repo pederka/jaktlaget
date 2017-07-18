@@ -4,6 +4,7 @@
     <string name="email">Peder.Aursand@gmail.com</string>
     <string name="menu_map">Kart</string>
     <string name="menu_team">Jegere</string>
+    <string name="menu_help">Hjelp</string>
     <string name="menu_team_manage">Jaktlaget</string>
     <string name="menu_landmarks">Kartmerker</string>
     <string name="menu_team_landmarks">Lagets kartmerker</string>
@@ -13,6 +14,15 @@
     <string name="actionbar_inactive">INAKTIV</string>
     <string name="action_stop">Stopp</string>
     <string name="action_map">Til kart</string>
+
+    <string name="help_header_1">1: Opprett et lag</string>
+    <string name="help_1">Du oppretter et lag ved å velge et lagnavn. Hvis laget ikke allerede
+        eksisterer vil det genereres en adgangskode du kan dele med andre.</string>
+    <string name="help_header_2">2: Få med andre</string>
+    <string name="help_2">Du finner all informasjon om laget du er med i under menyvalget JAKTLAGET. Her
+    kan du finne koden du kan dele med andre for at de skal bli med i jaktlaget ditt.</string>
+    <string name="help_header_3">3: Gå aktiv</string>
+    <string name="help_3">Når alle som skal være med har sluttet seg til laget er man klar til å ta appen i bruk. Når jakten starter skrur alle på knappen AKTIV øverst i høyre hjørne. Så lenge denne knappen er på, vil din posisjon deles med resten av laget.</string>
 
     <string name="pref_category_usage">Appbruk</string>
 

@@ -52,6 +52,7 @@ import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.jaktlaget.fragments.AboutFragment;
 import net.ddns.peder.jaktlaget.fragments.AllLandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.AllTeamFragment;
+import net.ddns.peder.jaktlaget.fragments.HelpFragment;
 import net.ddns.peder.jaktlaget.fragments.IntroFragment;
 import net.ddns.peder.jaktlaget.fragments.LandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.MapFragment;
@@ -78,7 +79,8 @@ public class MainActivity extends AppCompatActivity implements
         LandmarksFragment.OnFragmentInteractionListener, TeamLandmarksFragment.OnFragmentInteractionListener,
         TeamManagementFragment.OnFragmentInteractionListener, AllLandmarksFragment.OnFragmentInteractionListener,
         AllTeamFragment.OnFragmentInteractionListener, TeamInfoFragment.OnFragmentInteractionListener,
-        AboutFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener {
+        AboutFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener,
+        HelpFragment.OnFragmentInteractionListener {
 
     private final static int MY_PERMISSIONS_REQUEST = 1654;
     private final static int ACTIVATE_PERMISSION_REQUEST = 1655;
@@ -548,6 +550,9 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.nav_about:
                 fragment = new AboutFragment();
+                break;
+            case R.id.nav_help:
+                fragment = new HelpFragment();
                 break;
         }
 
