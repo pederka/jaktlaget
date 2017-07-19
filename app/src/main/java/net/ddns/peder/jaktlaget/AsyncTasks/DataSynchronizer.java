@@ -71,34 +71,7 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(mContext);
         lmdb = teamLandmarksDbHelper.getWritableDatabase();
 
-        // Add yourself to database
-        final String[] PROJECTION = {
-            PositionsDbHelper.COLUMN_NAME_ID,
-            PositionsDbHelper.COLUMN_NAME_USER,
-        };
-        ContentValues values = new ContentValues();
-        values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, 0);
-        values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, 0);
-        values.put(PositionsDbHelper.COLUMN_NAME_TIME, "-1");
-        // Query database to see if user exists
-        String selection = PositionsDbHelper.COLUMN_NAME_USER + " = ?";
-        String[] selectionArgs = {userId};
-        Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
-                         PROJECTION,
-                         selection,
-                         selectionArgs,
-                         null,
-                         null,
-                         null);
-        if (cursor.getCount() > 0) {
-            // If exists, update
-            posdb.update(PositionsDbHelper.TABLE_NAME, values, selection, selectionArgs);
-        } else {
-            // If new user, push new row to database
-            values.put(PositionsDbHelper.COLUMN_NAME_SHOWED, true);
-            values.put(PositionsDbHelper.COLUMN_NAME_USER, userId);
-            posdb.insert(PositionsDbHelper.TABLE_NAME, null, values);
-        }
+
 
         // Clear team landmarks database
         teamLandmarksDbHelper.clearTable(lmdb);
@@ -153,6 +126,36 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         if (teamId.equals(Constants.DEFAULT_TEAM_ID)) {
             return FAILED_TEAM;
         }
+
+        // Add yourself to database
+        final String[] PROJECTION = {
+            PositionsDbHelper.COLUMN_NAME_ID,
+            PositionsDbHelper.COLUMN_NAME_USER,
+        };
+        ContentValues values = new ContentValues();
+        values.put(PositionsDbHelper.COLUMN_NAME_LATITUDE, 0);
+        values.put(PositionsDbHelper.COLUMN_NAME_LONGITUDE, 0);
+        values.put(PositionsDbHelper.COLUMN_NAME_TIME, "-1");
+        // Query database to see if user exists
+        String selection = PositionsDbHelper.COLUMN_NAME_USER + " = ?";
+        String[] selectionArgs = {userId};
+        Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
+                         PROJECTION,
+                         selection,
+                         selectionArgs,
+                         null,
+                         null,
+                         null);
+        if (cursor.getCount() > 0) {
+            // If exists, update
+            posdb.update(PositionsDbHelper.TABLE_NAME, values, selection, selectionArgs);
+        } else {
+            // If new user, push new row to database
+            values.put(PositionsDbHelper.COLUMN_NAME_SHOWED, true);
+            values.put(PositionsDbHelper.COLUMN_NAME_USER, userId);
+            posdb.insert(PositionsDbHelper.TABLE_NAME, null, values);
+        }
+
         Log.i(tag, "Synchronizing");
         try {
             Socket socket = (SSLSocket) socketFactory.createSocket(Constants.SOCKET_ADDR,
@@ -211,7 +214,6 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             dataInputStream.read(codeBytes, 0, codeSize);
             String codeString = new String(codeBytes, "UTF-8");
             sharedPrefs.edit().putString(Constants.SHARED_PREF_TEAM_CODE, codeString).apply();
-
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();
