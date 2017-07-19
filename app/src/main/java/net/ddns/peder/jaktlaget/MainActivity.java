@@ -446,6 +446,9 @@ public class MainActivity extends AppCompatActivity implements
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
         }
+        DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(), null,
+                                                                                        false);
+        dataSynchronizer.execute();
         if (mHandler != null && runningService) {
             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
         }
