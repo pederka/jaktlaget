@@ -187,9 +187,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         @Override
         public void run() {
             if (map != null && getActivity() != null) {
-                updateTeamPositions(map);
-                if (line_toggled) {
-                    showTeamTraceLine();
+                if (team_toggled) {
+                    updateTeamPositions(map);
+                    if (line_toggled) {
+                        showTeamTraceLine();
+                    }
                 }
             }
             mHandler.postDelayed(this, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
