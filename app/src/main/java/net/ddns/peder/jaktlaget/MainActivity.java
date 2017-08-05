@@ -62,6 +62,7 @@ import net.ddns.peder.jaktlaget.fragments.TeamInfoFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamLandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamManagementFragment;
 import net.ddns.peder.jaktlaget.services.LocationService;
+import net.ddns.peder.jaktlaget.utils.CameraPositionUtil;
 import net.ddns.peder.jaktlaget.utils.LocationHistoryUtil;
 import net.ddns.peder.jaktlaget.utils.TileCacheUtil;
 
@@ -443,6 +444,7 @@ public class MainActivity extends AppCompatActivity implements
         mHandler.removeCallbacks(syncData);
         myLocationHistory = LocationHistoryUtil.loadLocationHistoryFromPreferences(this);
         teamLocationHistory = LocationHistoryUtil.loadTeamLocationHistoryFromPreferences(this);
+        cameraPosition = CameraPositionUtil.loadCameraPositionFromPreferences(this);
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
         }
@@ -485,6 +487,7 @@ public class MainActivity extends AppCompatActivity implements
         mHandler.removeCallbacks(syncData);
         LocationHistoryUtil.saveLocationHistoryToPreferences(this, myLocationHistory);
         LocationHistoryUtil.saveTeamLocationHistoryToPreferences(this, teamLocationHistory);
+        CameraPositionUtil.saveCameraPositionToPreferences(this, cameraPosition);
         if (runningService) {
             startService(new Intent(getApplicationContext(), LocationService.class));
         }

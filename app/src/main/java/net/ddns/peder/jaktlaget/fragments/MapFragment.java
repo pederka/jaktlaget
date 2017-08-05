@@ -227,13 +227,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
 
         if (map != null) {
-            if (navigateTo != null) {
-                zoomToLatLng(map, navigateTo);
-            }
-            else {
-                zoomToPosition(map);
-            }
+            updateMapPosition();
         }
+
         LandmarksDbHelper landmarksDbHelper = new LandmarksDbHelper(getContext());
         db = landmarksDbHelper.getWritableDatabase();
         TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
@@ -572,12 +568,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 (int)(Constants.SCALE_WIDTH*density),
                 40*(int)density);
-
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-
         ScaleBar mScaleBar = new ScaleBar(getContext(), map);
-
         mScaleBar.setLayoutParams(params);
         mScaleBar.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         container.addView(mScaleBar);
@@ -749,22 +742,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         if (map != null) {
             setUpMap();
         }
-        double latitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LAT, 0);
-        double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON, 0);
 
-        // Prioritized list of where to zoom in. As last resort show all of Norway
-        if (navigateTo != null) {
-            zoomToLatLng(map, navigateTo);
-        }
-        else if (getActivity() != null && ((MainActivity)getActivity()).cameraPosition != null) {
-            map.moveCamera(CameraUpdateFactory.newCameraPosition((
-                                        (MainActivity)getActivity()).cameraPosition));
-        } else if (latitude != 0 && longitude != 0) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 9));
-        }
-        else {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(NORWAY.getCenter(), 4));
-        }
+        updateMapPosition();
 
         if (landmarks_toggled) {
             addLandMarks(map);
@@ -948,12 +927,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onResume() {
         super.onResume();
-        if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(
-                    ((MainActivity)getActivity()).cameraPosition));
-        } else if (map != null) {
-            zoomToPosition(map);
-        }
+        updateMapPosition();
     }
 
     public void onButtonPressed(Uri uri) {
@@ -982,7 +956,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onPause() {
         super.onPause();
-        if (map != null && ((MainActivity)getActivity()).cameraPosition != null) {
+        if (map != null) {
             ((MainActivity) getActivity()).cameraPosition = map.getCameraPosition();
         }
         mHandler.removeCallbacks(updateMyPosition);
@@ -1004,6 +978,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void updateMapPosition() {
+        // Prioritized list of where to zoom in. As last resort show all of Norway
+        if (map == null) {
+            return;
+        }
+        if (navigateTo != null) {
+            // Some time the map fragment is given a specific position to zoom to
+            zoomToLatLng(map, navigateTo);
+            navigateTo = null;
+        }
+        else if (getActivity() != null && ((MainActivity)getActivity()).cameraPosition != null) {
+            // If a previous camera position is found, use that
+            map.moveCamera(CameraUpdateFactory.newCameraPosition((
+                                        (MainActivity)getActivity()).cameraPosition));
+        } else {
+            // Last resort is zoom to position
+            zoomToPosition(map);
+        }
     }
 
     private void showWeatherIcons() {
