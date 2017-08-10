@@ -502,6 +502,23 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             super.onBackPressed();
         }
+        // Some fragments must be refreshed on back button pressed
+        Fragment frameFragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        if (frameFragment instanceof MapFragment) {
+            MapFragment mapFragment = new MapFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, mapFragment).commit();
+            getSupportFragmentManager().executePendingTransactions();
+        }
+        else if (frameFragment instanceof AllLandmarksFragment) {
+            AllLandmarksFragment allLandmarksFragment = new AllLandmarksFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, allLandmarksFragment).commit();
+            getSupportFragmentManager().executePendingTransactions();
+        }
+        else if (frameFragment instanceof AllTeamFragment) {
+            AllTeamFragment allTeamFragment = new AllTeamFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, allTeamFragment).commit();
+            getSupportFragmentManager().executePendingTransactions();
+        }
     }
 
     @Override
@@ -573,6 +590,7 @@ public class MainActivity extends AppCompatActivity implements
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
     }
+
 
     @Override
     public void onFragmentInteraction(Uri uri){
