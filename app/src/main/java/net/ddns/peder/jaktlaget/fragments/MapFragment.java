@@ -894,6 +894,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     PositionsDbHelper.COLUMN_NAME_LONGITUDE));
             Long time = cursor.getLong(cursor.getColumnIndexOrThrow(
                     PositionsDbHelper.COLUMN_NAME_TIME));
+            // Skip any team member with invalid positions
+            if (latitude == 0.0 && longitude == 0.0) {
+                continue;
+            }
             LatLng pos = new LatLng(latitude, longitude);
             String user = cursor.getString(cursor.getColumnIndexOrThrow(
                     PositionsDbHelper.COLUMN_NAME_USER));

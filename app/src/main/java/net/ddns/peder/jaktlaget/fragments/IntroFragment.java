@@ -31,13 +31,7 @@ import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
 import net.ddns.peder.jaktlaget.interfaces.OnSyncComplete;
 
 public class IntroFragment extends Fragment {
-    private EditText userText;
-    private EditText teamText;
-    private EditText codeText;
-    private TextInputLayout textInputLayoutUser;
-    private TextInputLayout textInputLayoutTeam;
     private OnFragmentInteractionListener mListener;
-    private int codeTextId;
 
     public IntroFragment() {
         // Required empty public constructor
