@@ -19,7 +19,6 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -32,9 +31,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +63,6 @@ import net.ddns.peder.jaktlaget.utils.CameraPositionUtil;
 import net.ddns.peder.jaktlaget.utils.LocationHistoryUtil;
 import net.ddns.peder.jaktlaget.utils.TileCacheUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -224,7 +220,8 @@ public class MainActivity extends AppCompatActivity implements
                                                                         getApplicationContext());
                     String teamid = prefs.getString(Constants.SHARED_PREF_TEAM_ID,
                                                              Constants.DEFAULT_TEAM_ID);
-                    if (!teamid.equals(Constants.DEFAULT_TEAM_ID) && (myLocationHistory.size() > 0
+                    if (!teamid.equals(Constants.DEFAULT_TEAM_ID) && myLocationHistory != null &&
+                            teamLocationHistory != null && (myLocationHistory.size() > 0
                                        || teamLocationHistory.size() > 0)) {
                         // Show dialog about keeping or discarding traces
                         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
