@@ -128,8 +128,7 @@ public class LocationService extends Service {
                                                             System.currentTimeMillis()).apply();
 
             DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(),
-                                                                            this,
-                                                                            false);
+                                                                            this);
             myLocationHistory.add(new LatLng(location.getLatitude(), location.getLongitude()));
             Log.i(tag, "Syncing after location changed");
             LocationHistoryUtil.saveLocationHistoryToPreferences(getApplicationContext(),

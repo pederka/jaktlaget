@@ -427,8 +427,7 @@ public class MainActivity extends AppCompatActivity implements
     private Runnable syncData = new Runnable() {
         @Override
         public void run() {
-            DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(), null,
-                                                                                        false);
+            DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(), null);
             dataSynchronizer.execute();
             mHandler.postDelayed(this, SYNC_DELAY_ACTIVITY);
         }
@@ -445,8 +444,7 @@ public class MainActivity extends AppCompatActivity implements
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
         }
-        DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(), null,
-                                                                                        false);
+        DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(), null);
         dataSynchronizer.execute();
         if (mHandler != null && runningService) {
             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);

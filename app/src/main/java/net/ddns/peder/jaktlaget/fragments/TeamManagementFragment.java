@@ -93,7 +93,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (submitForm()) {
                         DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
-                                TeamManagementFragment.this, true);
+                                TeamManagementFragment.this);
                         dataSynchronizer.execute();
                     }
                     return false;
@@ -174,7 +174,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                 if (codeText == null) {
                     if (submitForm()) {
                         DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
-                                TeamManagementFragment.this, true);
+                                TeamManagementFragment.this);
                         dataSynchronizer.execute();
                         View view = getActivity().getCurrentFocus();
                         if (view != null) {
@@ -199,7 +199,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             public void onClick(View v) {
                 if (submitForm()) {
                     DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
-                            TeamManagementFragment.this, true);
+                            TeamManagementFragment.this);
                     dataSynchronizer.execute();
                     View view = getActivity().getCurrentFocus();
                     if (view != null) {
@@ -264,7 +264,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (submitForm()) {
                     DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
-                            TeamManagementFragment.this, true);
+                            TeamManagementFragment.this);
                     dataSynchronizer.execute();
                 }
                 return false;

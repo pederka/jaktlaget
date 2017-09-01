@@ -50,6 +50,9 @@ public class TeamFragment extends Fragment implements OnSyncComplete {
         if (result == DataSynchronizer.SUCCESS) {
             updateTeamList();
         }
+        else if (result == DataSynchronizer.FAILED_TIMEOUT) {
+            Toast.makeText(getContext(), R.string.toast_sync_timeout, Toast.LENGTH_SHORT).show();
+        }
         else {
             Toast.makeText(getContext(), R.string.toast_sync_failed, Toast.LENGTH_SHORT).show();
         }
@@ -74,7 +77,7 @@ public class TeamFragment extends Fragment implements OnSyncComplete {
                     @Override
                     public void onRefresh() {
                         DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
-                                                    TeamFragment.this, false);
+                                                    TeamFragment.this);
                         dataSynchronizer.execute();
                     }
                 }

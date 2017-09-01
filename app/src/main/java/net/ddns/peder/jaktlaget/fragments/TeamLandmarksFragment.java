@@ -63,6 +63,9 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
             mAdapter.changeCursor(cursor);
             mAdapter.notifyDataSetChanged();
         }
+        else if (result == DataSynchronizer.FAILED_TIMEOUT) {
+            Toast.makeText(getContext(), R.string.toast_sync_timeout, Toast.LENGTH_SHORT).show();
+        }
         else {
             Toast.makeText(getContext(), R.string.toast_sync_failed, Toast.LENGTH_SHORT).show();
         }
@@ -87,7 +90,7 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
                     @Override
                     public void onRefresh() {
                         DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
-                                                    TeamLandmarksFragment.this, false);
+                                                    TeamLandmarksFragment.this);
                         dataSynchronizer.execute();
                     }
                 }

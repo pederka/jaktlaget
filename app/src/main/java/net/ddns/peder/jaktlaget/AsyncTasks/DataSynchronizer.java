@@ -22,6 +22,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.security.KeyStore;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
@@ -37,6 +38,7 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     public static int FAILED_TEAM = 2;
     public static int FAILED_TRANSFER = 3;
     public static int FAILED_CODE = 4;
+    public static int FAILED_TIMEOUT = 5;
     private Context mContext;
     private SocketFactory socketFactory;
     private String userId;
@@ -51,10 +53,9 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
     private SharedPreferences sharedPrefs;
 
 
-    public DataSynchronizer(Context context, OnSyncComplete onSyncComplete, boolean verbose) {
+    public DataSynchronizer(Context context, OnSyncComplete onSyncComplete) {
         mContext = context;
 
-        this.verbose = verbose;
         this.onSyncComplete = onSyncComplete;
 
         dialog = new ProgressDialog(context);
@@ -159,7 +160,8 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
         Log.i(tag, "Synchronizing");
         try {
             Socket socket = (SSLSocket) socketFactory.createSocket(Constants.SOCKET_ADDR,
-                                    Constants.SOCKET_PORT);
+                    Constants.SOCKET_PORT);
+            socket.setSoTimeout(Constants.SOCKET_TIMEOUT);
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 
@@ -170,7 +172,7 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             dataOutputStream.write(nameBytes);
 
             // Send team name and code
-            byte[] teamBytes = (teamId+":"+code).getBytes();
+            byte[] teamBytes = (teamId + ":" + code).getBytes();
             int teamSize = teamBytes.length;
             dataOutputStream.writeInt(teamSize);
             dataOutputStream.write(teamBytes);
@@ -178,7 +180,7 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             // Send data
             byte[] outdata = JsonUtil.exportDataToJson(mContext).toString().getBytes();
             int size = outdata.length;
-            Log.d(tag, "Sending "+size+" bytes of data");
+            Log.d(tag, "Sending " + size + " bytes of data");
             dataOutputStream.writeInt(size);
             dataOutputStream.write(outdata);
             dataOutputStream.flush();
@@ -187,13 +189,12 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             byte[] inputSizeBytes = new byte[4];
             dataInputStream.read(inputSizeBytes, 0, 4);
             int incomingSize = byteArrayToInt(inputSizeBytes);
-            Log.d(tag, "Received "+incomingSize+" bytes of data");
+            Log.d(tag, "Received " + incomingSize + " bytes of data");
 
 
             if (incomingSize == -1) {
                 return FAILED_CODE;
-            }
-            else if (incomingSize > 0) {
+            } else if (incomingSize > 0) {
                 // Read incoming data
                 byte[] incomingData = new byte[incomingSize];
                 dataInputStream.read(incomingData, 0, incomingSize);
@@ -215,6 +216,8 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             String codeString = new String(codeBytes, "UTF-8");
             sharedPrefs.edit().putString(Constants.SHARED_PREF_TEAM_CODE, codeString).apply();
             socket.close();
+        } catch (SocketTimeoutException e) {
+            return FAILED_TIMEOUT;
         } catch (Exception e) {
             e.printStackTrace();
             return FAILED_TRANSFER;

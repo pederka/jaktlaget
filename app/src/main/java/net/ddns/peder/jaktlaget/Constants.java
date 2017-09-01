@@ -52,6 +52,7 @@ public final class Constants {
     // For SSL socket
     public static final String SOCKET_ADDR = "peder.ddns.net";
     public static final int SOCKET_PORT = 10024;
+    public static final int SOCKET_TIMEOUT = 5000;
 
     // For Google Ads
     //public static final String ADMOB_ID = "ca-app-pub-3940256099942544~3347511713";
