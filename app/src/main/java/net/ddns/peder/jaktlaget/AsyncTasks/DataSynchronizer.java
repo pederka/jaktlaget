@@ -21,6 +21,7 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.security.KeyStore;
@@ -159,9 +160,10 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
 
         Log.i(tag, "Synchronizing");
         try {
-            Socket socket = (SSLSocket) socketFactory.createSocket(Constants.SOCKET_ADDR,
-                    Constants.SOCKET_PORT);
+            Socket socket = (SSLSocket) socketFactory.createSocket();
             socket.setSoTimeout(Constants.SOCKET_TIMEOUT);
+            socket.connect(new InetSocketAddress(Constants.SOCKET_ADDR,
+                    Constants.SOCKET_PORT), Constants.SOCKET_TIMEOUT);
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 
