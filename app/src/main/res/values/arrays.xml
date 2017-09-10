@@ -52,7 +52,7 @@
     </string-array>
     <string-array name="pref_windprovider_values">
         <item>owm</item>
-        <item>yr</item>
+        <item>yr.no</item>
     </string-array>
 
 </resources>

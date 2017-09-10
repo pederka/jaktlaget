@@ -55,6 +55,5 @@ public final class Constants {
     public static final int SOCKET_TIMEOUT = 5000;
 
     // For Google Ads
-    //public static final String ADMOB_ID = "ca-app-pub-3940256099942544~3347511713";
     public static final String ADMOB_ID = "ca-app-pub-1180457891371684~5778981859";
 }

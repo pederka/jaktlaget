@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -12,6 +13,7 @@ import net.ddns.peder.jaktlaget.interfaces.WeatherSyncCompleteListener;
 import net.ddns.peder.jaktlaget.weather.OpenWeatherHttpClient;
 import net.ddns.peder.jaktlaget.weather.WeatherHttpClient;
 import net.ddns.peder.jaktlaget.weather.WindResult;
+import net.ddns.peder.jaktlaget.weather.YrWeatherHttpClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,13 @@ public class WeatherSynchronizer extends AsyncTask<Void, Void, List<WindResult>>
         this.weatherSyncCompleteListener = weatherSyncCompleteListener;
         this.positions = positions;
 
-        weatherHttpClient = new OpenWeatherHttpClient(context);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String weatherClient = sharedPreferences.getString("pref_windprovider", "yr.no");
+        if (weatherClient.equals("yr.no")) {
+            weatherHttpClient = new YrWeatherHttpClient(context);
+        } else {
+            weatherHttpClient = new OpenWeatherHttpClient(context);
+        }
 
         dialog = new ProgressDialog(context);
     }
