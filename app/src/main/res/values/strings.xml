@@ -189,5 +189,5 @@
 
     <string name="about_credits_header">Annet:</string>
     <string name="about_credits">Alle terrengkart som brukes i denne applikasjonen kommer fra Kartverkets frie WMS-tjeneste og er ©Kartverket.
-                                 Værdata er hentet fra Open Weather Map (openweathermap.org/api). </string>
+                                 Værdata er hentet fra Open Weather Map (openweathermap.org/api) og data fra Meterologisk institutt (met.no). </string>
 </resources>
