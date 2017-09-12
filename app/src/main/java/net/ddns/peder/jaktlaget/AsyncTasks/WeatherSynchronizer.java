@@ -36,7 +36,9 @@ public class WeatherSynchronizer extends AsyncTask<Void, Void, List<WindResult>>
         this.positions = positions;
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String weatherClient = sharedPreferences.getString("pref_windprovider", "yr.no");
+        String weatherClient = sharedPreferences.getString(
+                context.getResources().getString(R.string.pref_windprovider_key),
+                context.getResources().getString(R.string.pref_windprovider_default));
         if (weatherClient.equals("yr.no")) {
             weatherHttpClient = new YrWeatherHttpClient(context);
         } else {

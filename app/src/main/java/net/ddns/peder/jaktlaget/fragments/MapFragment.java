@@ -222,10 +222,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             navigateTo = new LatLng(lat, lon);
         }
 
-        if (map != null) {
-            updateMapPosition();
-        }
-
         LandmarksDbHelper landmarksDbHelper = new LandmarksDbHelper(getContext());
         db = landmarksDbHelper.getWritableDatabase();
         TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
@@ -235,7 +231,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        team_inactive_limit = 60000*Long.parseLong(sharedPreferences.getString("pref_hideteamlimit", "30"));
+        team_inactive_limit = 60000*Long.parseLong(sharedPreferences.getString(
+                getContext().getResources().getString(R.string.pref_hideteamlimit_key),
+                getContext().getResources().getString(R.string.pref_hideteamlimit_default)));
 
         userMarkerList = new ArrayList<>();
         userNameMarkerList = new ArrayList<>();
@@ -931,7 +929,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onResume() {
         super.onResume();
-        updateMapPosition();
+        //updateMapPosition();
     }
 
     public void onButtonPressed(Uri uri) {

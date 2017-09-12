@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import net.ddns.peder.jaktlaget.R;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
@@ -14,7 +16,9 @@ public class TileProviderFactory {
         String map_type;
         if (context != null) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-            map_type = sharedPreferences.getString("pref_map_type", "png");
+            map_type = sharedPreferences.getString(
+                    context.getResources().getString(R.string.pref_map_type_key),
+                    context.getResources().getString(R.string.pref_map_type_default));
         } else {
             map_type = "png";
         }

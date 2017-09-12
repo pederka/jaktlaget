@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import net.ddns.peder.jaktlaget.Constants;
+import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.database.LandmarksDbHelper;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
@@ -118,11 +119,14 @@ public class JsonUtil {
         try {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                                                                         context);
-            boolean autoshowteam = sharedPreferences.getBoolean("pref_autoshowteam", true);
+            boolean autoshowteam = sharedPreferences.getBoolean(
+                    context.getResources().getString(R.string.pref_autoshowteam_key),
+                    Boolean.valueOf(context.getResources().getString(
+                                                        R.string.pref_autoshowteam_default)));
             JSONObject json = new JSONObject(jsonString);
             // Get user position and update local database
             String userId = json.getString(JSON_USER);
-            Log.i(tag, "New position from user: "+userId);
+            Log.d(tag, "New position from user: "+userId);
             Float latitude = (float)json.getDouble(JSON_LAT);
             Float longitude = (float)json.getDouble(JSON_LON);
             long time = json.getLong(JSON_TIME);
@@ -173,7 +177,7 @@ public class JsonUtil {
                                               JSONArray landmarksArray, boolean show) {
         try {
 
-            Log.i(tag, "Importing "+landmarksArray.length()+" landmarks");
+            Log.d(tag, "Importing "+landmarksArray.length()+" landmarks");
             for (int i=0; i<landmarksArray.length(); i++) {
                 JSONObject landmark = landmarksArray.getJSONObject(i);
                 ContentValues values = new ContentValues();

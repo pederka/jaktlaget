@@ -226,7 +226,8 @@ public class LocationService extends Service {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                                                                         this);
-        int LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString("pref_syncInterval",
+        int LOCATION_INTERVAL = 60000*Integer.parseInt(sharedPreferences.getString(
+                getApplicationContext().getResources().getString(R.string.pref_syncInterval_key),
                 Long.toString(Constants.DEFAULT_UPDATE_INTERVAL)));
         mLocationListener = new MyLocationListener(LocationManager.GPS_PROVIDER);
         try {
