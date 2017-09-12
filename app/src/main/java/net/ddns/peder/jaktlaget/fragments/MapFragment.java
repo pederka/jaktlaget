@@ -19,7 +19,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatImageView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +28,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -47,7 +45,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.android.gms.maps.model.TileProvider;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.WeatherSynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
@@ -60,7 +57,6 @@ import net.ddns.peder.jaktlaget.interfaces.WeatherSyncCompleteListener;
 import net.ddns.peder.jaktlaget.providers.CachedTileProvider;
 import net.ddns.peder.jaktlaget.providers.TileProviderFactory;
 import net.ddns.peder.jaktlaget.utils.ScaleBar;
-import net.ddns.peder.jaktlaget.utils.TileCacheUtil;
 import net.ddns.peder.jaktlaget.weather.WindResult;
 
 import java.text.SimpleDateFormat;
@@ -764,6 +760,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         double longitude = (double) sharedPreferences.getFloat(Constants.SHARED_PREF_LON, 0);
         if (latitude != 0 && longitude != 0) {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 9));
+        }
+        else {
+            // If no position then just show Norway
+            map.moveCamera(CameraUpdateFactory.newLatLngBounds(NORWAY, 0));
         }
     }
 
