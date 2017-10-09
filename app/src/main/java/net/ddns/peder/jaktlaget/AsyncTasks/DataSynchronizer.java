@@ -158,73 +158,79 @@ public class DataSynchronizer extends AsyncTask<Void, Void, Integer>{
             posdb.insert(PositionsDbHelper.TABLE_NAME, null, values);
         }
 
-        Log.i(tag, "Synchronizing");
-        try {
-            Socket socket = (SSLSocket) socketFactory.createSocket();
-            socket.setSoTimeout(Constants.SOCKET_TIMEOUT);
-            socket.connect(new InetSocketAddress(Constants.SOCKET_ADDR,
-                    Constants.SOCKET_PORT), Constants.SOCKET_TIMEOUT);
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+        final int MAX_RETRY=3;
+        int retCode = SUCCESS;
+        for (int iLoop=0; iLoop<MAX_RETRY; iLoop++) {
+            Log.i(tag, "Synchronizing. Try number "+iLoop);
+            try {
+                Socket socket = (SSLSocket) socketFactory.createSocket();
+                socket.setSoTimeout(Constants.SOCKET_TIMEOUT);
+                socket.connect(new InetSocketAddress(Constants.SOCKET_ADDR,
+                        Constants.SOCKET_PORT), Constants.SOCKET_TIMEOUT);
+                DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
 
-            // Send user name
-            byte[] nameBytes = userId.getBytes();
-            int nameSize = nameBytes.length;
-            dataOutputStream.writeInt(nameSize);
-            dataOutputStream.write(nameBytes);
+                // Send user name
+                byte[] nameBytes = userId.getBytes();
+                int nameSize = nameBytes.length;
+                dataOutputStream.writeInt(nameSize);
+                dataOutputStream.write(nameBytes);
 
-            // Send team name and code
-            byte[] teamBytes = (teamId + ":" + code).getBytes();
-            int teamSize = teamBytes.length;
-            dataOutputStream.writeInt(teamSize);
-            dataOutputStream.write(teamBytes);
+                // Send team name and code
+                byte[] teamBytes = (teamId + ":" + code).getBytes();
+                int teamSize = teamBytes.length;
+                dataOutputStream.writeInt(teamSize);
+                dataOutputStream.write(teamBytes);
 
-            // Send data
-            byte[] outdata = JsonUtil.exportDataToJson(mContext).toString().getBytes();
-            int size = outdata.length;
-            Log.d(tag, "Sending " + size + " bytes of data");
-            dataOutputStream.writeInt(size);
-            dataOutputStream.write(outdata);
-            dataOutputStream.flush();
+                // Send data
+                byte[] outdata = JsonUtil.exportDataToJson(mContext).toString().getBytes();
+                int size = outdata.length;
+                Log.d(tag, "Sending " + size + " bytes of data");
+                dataOutputStream.writeInt(size);
+                dataOutputStream.write(outdata);
+                dataOutputStream.flush();
 
-            // Read incoming data size
-            byte[] inputSizeBytes = new byte[4];
-            dataInputStream.read(inputSizeBytes, 0, 4);
-            int incomingSize = byteArrayToInt(inputSizeBytes);
-            Log.d(tag, "Received " + incomingSize + " bytes of data");
+                // Read incoming data size
+                byte[] inputSizeBytes = new byte[4];
+                dataInputStream.read(inputSizeBytes, 0, 4);
+                int incomingSize = byteArrayToInt(inputSizeBytes);
+                Log.d(tag, "Received " + incomingSize + " bytes of data");
 
 
-            if (incomingSize == -1) {
-                return FAILED_CODE;
-            } else if (incomingSize > 0) {
-                // Read incoming data
-                byte[] incomingData = new byte[incomingSize];
-                dataInputStream.read(incomingData, 0, incomingSize);
-                String incomingString = new String(incomingData, "UTF-8");
-                Log.d(tag, "Received string " + incomingString);
+                if (incomingSize == -1) {
+                    return FAILED_CODE;
+                } else if (incomingSize > 0) {
+                    // Read incoming data
+                    byte[] incomingData = new byte[incomingSize];
+                    dataInputStream.read(incomingData, 0, incomingSize);
+                    String incomingString = new String(incomingData, "UTF-8");
+                    Log.d(tag, "Received string " + incomingString);
 
-                String[] userData = incomingString.split("%");
-                for (int i = 0; i < userData.length; i++) {
-                    JsonUtil.importUserInformationFromJsonString(mContext, posdb, lmdb, userData[i]);
+                    String[] userData = incomingString.split("%");
+                    for (int i = 0; i < userData.length; i++) {
+                        JsonUtil.importUserInformationFromJsonString(mContext, posdb, lmdb, userData[i]);
+                    }
                 }
-            }
 
-            // Read incoming code
-            byte[] codeSizeBytes = new byte[4];
-            dataInputStream.read(codeSizeBytes, 0, 4);
-            int codeSize = byteArrayToInt(codeSizeBytes);
-            byte[] codeBytes = new byte[codeSize];
-            dataInputStream.read(codeBytes, 0, codeSize);
-            String codeString = new String(codeBytes, "UTF-8");
-            sharedPrefs.edit().putString(Constants.SHARED_PREF_TEAM_CODE, codeString).apply();
-            socket.close();
-        } catch (SocketTimeoutException e) {
-            return FAILED_TIMEOUT;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return FAILED_TRANSFER;
+                // Read incoming code
+                byte[] codeSizeBytes = new byte[4];
+                dataInputStream.read(codeSizeBytes, 0, 4);
+                int codeSize = byteArrayToInt(codeSizeBytes);
+                byte[] codeBytes = new byte[codeSize];
+                dataInputStream.read(codeBytes, 0, codeSize);
+                String codeString = new String(codeBytes, "UTF-8");
+                sharedPrefs.edit().putString(Constants.SHARED_PREF_TEAM_CODE, codeString).apply();
+                socket.close();
+                retCode = SUCCESS;
+                break;
+            } catch (SocketTimeoutException e) {
+                retCode = FAILED_TIMEOUT;
+            } catch (Exception e) {
+                e.printStackTrace();
+                retCode = FAILED_TRANSFER;
+            }
         }
-        return SUCCESS;
+        return retCode;
     }
 
     @Override
