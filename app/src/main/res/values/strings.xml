@@ -194,7 +194,7 @@
 
     <string name="about_privacy_header">Personvern:</string>
     <string name="about_privacy">Når appen Jaktlaget er aktiv vil ditt jegernavn, dine siste koordinater, og de kartmerker du har valgt å dele, sendes til vår tjener ved jevne mellomrom. All kommunikasjon mellom telefonen og vår tjener er kryptert.
-                                 Vi lagrer ingen informasjon om deg til andre formål enn for å gi dine lagkamerater din siste posisjon. Ingen posisjonshistorikk lagres på tjenersiden.</string>
+                                 Vi lagrer ingen informasjon om deg til andre formål enn for å gi dine lagkamerater din siste posisjon. Ingen posisjonshistorikk lagres på tjenersiden. Alle data fra inaktive lag slettes etter én måned.</string>
 
     <string name="about_credits_header">Annet:</string>
     <string name="about_credits">Alle terrengkart som brukes i denne applikasjonen kommer fra Kartverkets frie WMS-tjeneste og er ©Kartverket.
