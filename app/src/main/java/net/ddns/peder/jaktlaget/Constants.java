@@ -13,6 +13,7 @@ public final class Constants {
     public static final String SHARED_PREF_RUNNING = "runningService";
     public static final String SHARED_PREF_USER_ID = "userId";
     public static final String SHARED_PREF_TEAM_ID = "teamId";
+    public static final String SHARED_PREF_NO_TEAM = "noTeam";
     public static final String SHARED_PREF_LANDMARK_TOGGLE = "landmark_toggle";
     public static final String SHARED_PREF_TEAM_TOGGLE = "team_toggle";
     public static final String SHARED_PREF_LINE_TOGGLE = "line_toggle";

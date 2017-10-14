@@ -54,7 +54,7 @@ public class IntroFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_intro, container, false);
 
 
-        Button newTeamButton = (Button) view.findViewById(R.id.new_team_button);
+        Button newTeamButton = view.findViewById(R.id.new_team_button);
         newTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,7 +70,7 @@ public class IntroFragment extends Fragment {
                         .commit();
             }
         });
-        Button existingTeamButton = (Button) view.findViewById(R.id.exisiting_team_button);
+        Button existingTeamButton = view.findViewById(R.id.exisiting_team_button);
         existingTeamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,6 +84,22 @@ public class IntroFragment extends Fragment {
                         .replace(R.id.content_frame, fragment)
                         .addToBackStack(null)
                         .commit();
+            }
+        });
+        Button noTeamButton = view.findViewById(R.id.no_team_button);
+        noTeamButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new MapFragment();
+                FragmentManager FM = getActivity().getSupportFragmentManager();
+                FM
+                        .beginTransaction()
+                        .replace(R.id.content_frame, fragment)
+                        .addToBackStack(null)
+                        .commit();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
+                    getContext());
+                preferences.edit().putBoolean(Constants.SHARED_PREF_NO_TEAM, true).apply();
             }
         });
         return view;

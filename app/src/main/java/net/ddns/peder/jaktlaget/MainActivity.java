@@ -258,8 +258,9 @@ public class MainActivity extends AppCompatActivity implements
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID,
                                                                         Constants.DEFAULT_USER_ID);
+        Boolean noTeam = sharedPreferences.getBoolean(Constants.SHARED_PREF_NO_TEAM, false);
 
-        if (userId.equals(Constants.DEFAULT_USER_ID)) {
+        if (userId.equals(Constants.DEFAULT_USER_ID) && !noTeam) {
             displaySelectedScreen(R.id.nav_team_manage);
         } else {
             displaySelectedScreen(R.id.nav_map);

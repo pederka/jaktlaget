@@ -41,7 +41,16 @@
                     android:layout_weight="1.0"
                     android:text="@string/intro_join_existing"
                     style="@style/AppTheme.Button"/>
-
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+            <Button
+                    android:id="@+id/no_team_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_weight="1.0"
+                    android:text="@string/intro_no_team"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
           </LinearLayout>
     </ScrollView>
 </FrameLayout>

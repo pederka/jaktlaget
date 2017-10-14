@@ -86,6 +86,7 @@
                         trenger du å få adgangskode fra et av medlemmene.</string>
     <string name="choose_new_team">Opprett nytt lag</string>
     <string name="intro_join_existing">Bli med i eksisterende lag</string>
+    <string name="intro_no_team">Bruk appen uten jaktlag</string>
 
     <string name="save_name_button">Lagre</string>
     <string name="share_team_button">Del kode</string>

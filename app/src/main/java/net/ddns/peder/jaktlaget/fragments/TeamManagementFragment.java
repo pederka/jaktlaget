@@ -47,6 +47,9 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
     @Override
     public void onSyncComplete(int result) {
         if (result == DataSynchronizer.SUCCESS) {
+             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                     getContext());
+             sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_NO_TEAM, false).apply();
              // Switch to team information
              Fragment fragment = new AllTeamFragment();
              FragmentTransaction ft = getFragmentManager().beginTransaction();
