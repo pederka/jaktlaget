@@ -860,6 +860,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
 
     private void updateTeamPositions(GoogleMap map) {
+        if (map == null) {
+            return;
+        }
+        Log.d(tag, "Updating team positions on map");
         final String[] PROJECTION = {
             PositionsDbHelper.COLUMN_NAME_ID,
             PositionsDbHelper.COLUMN_NAME_SHOWED,
@@ -929,7 +933,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onResume() {
         super.onResume();
-        //updateMapPosition();
+        // Show team immediately if active and toggled
+        if (getActivity() != null && ((MainActivity)getActivity()).isActive()) {
+            if (team_toggled) {
+                updateTeamPositions(map);
+                if (line_toggled) {
+                    showTeamTraceLine();
+                }
+            }
+        }
     }
 
     public void onButtonPressed(Uri uri) {
