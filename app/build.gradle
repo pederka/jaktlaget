@@ -5,7 +5,7 @@ android {
         release
     }
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "net.ddns.peder.jaktlaget"
         minSdkVersion 18
@@ -13,6 +13,7 @@ android {
         versionCode 23
         versionName "1.22"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     lintOptions {
         disable 'RestrictedApi'
@@ -55,15 +56,15 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.0.0'
-    compile 'com.android.support:design:26.0.0'
-    compile 'com.android.support:support-v4:26.0.0'
-    compile 'com.android.support:preference-v7:26.0.0'
-    compile 'com.android.support:preference-v14:26.0.0'
-    compile 'com.android.support:cardview-v7:26.0.0'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.google.android.gms:play-services-maps:11.0.4'
-    compile 'com.google.android.gms:play-services-ads:11.0.4'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:support-v4:26.1.0'
+    compile 'com.android.support:preference-v7:26.1.0'
+    compile 'com.android.support:preference-v14:26.1.0'
+    compile 'com.android.support:cardview-v7:26.1.0'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.google.android.gms:play-services-maps:11.4.2'
+    compile 'com.google.android.gms:play-services-ads:11.4.2'
     testCompile 'junit:junit:4.12'
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
