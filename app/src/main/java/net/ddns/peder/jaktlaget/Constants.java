@@ -61,4 +61,5 @@ public final class Constants {
 
     // For Google Ads
     public static final String ADMOB_ID = "ca-app-pub-1180457891371684~5778981859";
+    public static final String privacy_url = "https://peder.ddns.net/jaktlaget-privacy";
 }

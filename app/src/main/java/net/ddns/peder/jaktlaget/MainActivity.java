@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    private void requestAds(boolean personalized) {
+    public void requestAds(boolean personalized) {
         Bundle ad_extras = new Bundle();
         if (personalized) {
             Log.i(tag, "Requesting personalized ads");
@@ -200,11 +200,9 @@ public class MainActivity extends AppCompatActivity implements
 
         URL privacyUrl = null;
         try {
-            // TODO: Replace with your app's privacy policy URL.
-            privacyUrl = new URL("https://www.your.com/privacyurl");
+            privacyUrl = new URL(Constants.privacy_url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            // Handle error.
         }
 
         form = new ConsentForm.Builder(this, privacyUrl)
