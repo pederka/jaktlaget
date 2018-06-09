@@ -41,6 +41,7 @@ public class JsonUtil {
         try {
             OutputStream out = new FileOutputStream(file);
             out.write(exportDataToJson(context).toString().getBytes());
+            out.close();
         } catch(Exception e) {
             e.printStackTrace();
         }

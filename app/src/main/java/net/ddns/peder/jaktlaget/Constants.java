@@ -23,6 +23,7 @@ public final class Constants {
     public static final String SHARED_PREF_TEAM_CODE = "team_code";
     public static final String SHARED_PREF_FIRST_TIME_ACTIVE = "first_time_active";
     public static final String SHARED_PREF_FIRST_TIME_LANDMARK = "first_time_landmark";
+    public static final String SHARED_PREF_AD_CONSENT = "ad_consent";
 
     // Intent extras
     public static final String EXTRA_MAP = "net.ddns.peder.INTENT_MAP";
@@ -45,6 +46,9 @@ public final class Constants {
     public static final int TEAM_LENGTH = 13;
     public static final int WEATHER_SYNC_COOLDOWN = 60000;
     public static final float SCALE_WIDTH = 200;
+    public static final int AD_PERSONALIZED = 0;
+    public static final int AD_NONPERSONALIZED = 1;
+    public static final int AD_UNKNOWN = 2;
 
     // For tile cache
     public static final String DISK_CACHE_SUBDIR = "tiles";

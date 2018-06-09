@@ -38,11 +38,13 @@ import android.widget.Toast;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.ads.consent.*;
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
@@ -63,6 +65,8 @@ import net.ddns.peder.jaktlaget.utils.CameraPositionUtil;
 import net.ddns.peder.jaktlaget.utils.LocationHistoryUtil;
 import net.ddns.peder.jaktlaget.utils.TileCacheUtil;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,9 +95,9 @@ public class MainActivity extends AppCompatActivity implements
     private TextView action_bar_title;
     private static final String tag = "MainActivity";
     private SwitchCompat runSwitch;
-    private AdView mAdView;
     private Target t1;
     private DiskLruCache tileCache;
+    private ConsentForm form;
 
     public NavigationView navigationView;
 
@@ -115,6 +119,25 @@ public class MainActivity extends AppCompatActivity implements
                 goInactive();
             }
         }
+    }
+
+    private void requestAds(boolean personalized) {
+        Bundle ad_extras = new Bundle();
+        if (personalized) {
+            Log.i(tag, "Requesting personalized ads");
+            ad_extras.putString("npa", "0");
+        } else {
+            Log.i(tag, "Requestion non-personalized ads");
+            ad_extras.putString("npa", "1");
+        }
+        // Initialize ad (with test device id)
+        MobileAds.initialize(this, Constants.ADMOB_ID);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+            .addNetworkExtrasBundle(AdMobAdapter.class, ad_extras)
+            .addTestDevice("936F11665060AFF4D65E4EF39B4A0FE3")
+            .build();
+        mAdView.loadAd(adRequest);
     }
 
     public void showCaseGoActive() {
@@ -148,6 +171,93 @@ public class MainActivity extends AppCompatActivity implements
             e.printStackTrace();
         }
 
+        ConsentInformation consentInformation = ConsentInformation.getInstance(this);
+        String[] publisherIds = {"pub-1180457891371684"};
+        consentInformation.requestConsentInfoUpdate(publisherIds, new ConsentInfoUpdateListener() {
+            @Override
+            public void onConsentInfoUpdated(ConsentStatus consentStatus) {
+                Log.i(tag, "Consent info updated");
+                if (consentStatus == ConsentStatus.PERSONALIZED) {
+                    Log.i(tag, "User has consented to personalized ads");
+                    requestAds(true);
+                }
+                else if (consentStatus == ConsentStatus.NON_PERSONALIZED) {
+                    Log.i(tag, "User has not consented to personalized ads");
+                    requestAds(false);
+                }
+                else {
+                    Log.i(tag, "User consent status unknown");
+                }
+                // User's consent status successfully updated.
+            }
+
+            @Override
+            public void onFailedToUpdateConsentInfo(String errorDescription) {
+                Log.i(tag, "Failed to update consent info. Not serving ads.");
+                // User's consent status failed to update.
+            }
+        });
+
+        URL privacyUrl = null;
+        try {
+            // TODO: Replace with your app's privacy policy URL.
+            privacyUrl = new URL("https://www.your.com/privacyurl");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            // Handle error.
+        }
+
+        form = new ConsentForm.Builder(this, privacyUrl)
+                .withListener(new ConsentFormListener() {
+                    @Override
+                    public void onConsentFormLoaded() {
+                        Log.i(tag, "Consent form loaded successfully");
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        int consent = prefs.getInt(Constants.SHARED_PREF_AD_CONSENT, Constants.AD_UNKNOWN);
+                        if (consent == Constants.AD_UNKNOWN) {
+                            form.show();
+                        }
+                    }
+
+                    @Override
+                    public void onConsentFormOpened() {
+                        Log.i(tag, "Consent form opened");
+                        // Consent form was displayed.
+                    }
+
+                    @Override
+                    public void onConsentFormClosed(
+                            ConsentStatus consentStatus, Boolean userPrefersAdFree) {
+                        Log.i(tag, "User closed consent form info updated");
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        if (consentStatus == ConsentStatus.PERSONALIZED) {
+                            Log.i(tag, "User has consented to personalized ads");
+                            prefs.edit()
+                                    .putInt(Constants.SHARED_PREF_AD_CONSENT, Constants.AD_PERSONALIZED)
+                                    .apply();
+                            requestAds(true);
+                        }
+                        else if (consentStatus == ConsentStatus.NON_PERSONALIZED) {
+                            Log.i(tag, "User has not consented to personalized ads");
+                            prefs.edit()
+                                    .putInt(Constants.SHARED_PREF_AD_CONSENT, Constants.AD_NONPERSONALIZED)
+                                    .apply();
+                            requestAds(false);
+                        }
+                    }
+
+                    @Override
+                    public void onConsentFormError(String errorDescription) {
+                        Log.e(tag, errorDescription);
+                        // Consent form error.
+                    }
+                })
+                .withPersonalizedAdsOption()
+                .withNonPersonalizedAdsOption()
+                .build();
+
+        form.load();
+
         br = new ServiceBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_SERVICE);
@@ -159,13 +269,8 @@ public class MainActivity extends AppCompatActivity implements
 
         mHandler = new Handler();
 
-        // Initialize ad (with test device id)
-        MobileAds.initialize(this, Constants.ADMOB_ID);
-        mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                 .addTestDevice("936F11665060AFF4D65E4EF39B4A0FE3")
-                 .build();
-        mAdView.loadAd(adRequest);
+
+
 
         if (teamLocationHistory == null) {
             teamLocationHistory = new HashMap<>();
