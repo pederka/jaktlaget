@@ -14,8 +14,8 @@ android {
         applicationId "net.ddns.peder.jaktlaget"
         minSdkVersion 18
         targetSdkVersion 26
-        versionCode 24
-        versionName "1.23"
+        versionCode 25
+        versionName "1.24"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
