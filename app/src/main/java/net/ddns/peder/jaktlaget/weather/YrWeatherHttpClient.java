@@ -17,7 +17,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public class YrWeatherHttpClient extends WeatherHttpClient {
 
     private static final String BASE_URL =
-            "http://api.met.no/weatherapi/locationforecastlts/1.3/?lat=%2$s;lon=%2$s";
+            "http://api.met.no/weatherapi/locationforecastlts/1.3/?lat=%1$s;lon=%2$s";
     private final static String tag = "YrWeatherClient";
 
     public YrWeatherHttpClient(Context context) {
