@@ -2,7 +2,6 @@ package net.ddns.peder.jaktlaget.weather;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.Xml;
 import com.google.android.gms.maps.model.LatLng;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -17,7 +16,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public class YrWeatherHttpClient extends WeatherHttpClient {
 
     private static final String BASE_URL =
-            "http://api.met.no/weatherapi/locationforecastlts/1.3/?lat=%1$s;lon=%2$s";
+            "https://api.met.no/weatherapi/locationforecast/1.9/?lat=%1$s;lon=%2$s";
     private final static String tag = "YrWeatherClient";
 
     public YrWeatherHttpClient(Context context) {
