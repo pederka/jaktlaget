@@ -35,6 +35,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
@@ -107,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements
     private BroadcastReceiver br;
     public static final String ACTION_SERVICE = "net.ddns.peder.jaktlaget.ACTION_SERVICE";
 
+    public RequestQueue queue;
+
     private class ServiceBroadcastReceiver extends BroadcastReceiver {
         private final String brtag = "BroadcastReceiver";
 
@@ -163,6 +167,8 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        queue = Volley.newRequestQueue(this);
 
         // Initialize cache
         try {

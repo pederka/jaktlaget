@@ -59,6 +59,9 @@ public final class Constants {
     public static final int SOCKET_PORT = 10024;
     public static final int SOCKET_TIMEOUT = 5000;
 
+    // For API
+    public static final String API_URL = "http://1gq1t20qnk.execute-api.eu-central-1.amazonaws.com/dev";
+
     // For Google Ads
     public static final String ADMOB_ID = "ca-app-pub-1180457891371684~5778981859";
     public static final String privacy_url = "https://peder.ddns.net/jaktlaget-privacy";
