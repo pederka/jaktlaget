@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
+import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;
@@ -46,7 +47,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
 
     @Override
     public void onSyncComplete(int result) {
-        if (result == DataSynchronizer.SUCCESS) {
+        if (result == JaktlagetAPISynchronizer.SUCCESS) {
              SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                      getContext());
              sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_NO_TEAM, false).apply();
@@ -57,14 +58,14 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
              ft.commit();
              ((MainActivity)getActivity()).showCaseGoActive();
         }
-        else if (result == DataSynchronizer.FAILED_TRANSFER) {
+        else if (result == JaktlagetAPISynchronizer.FAILED_TRANSFER) {
             Toast.makeText(getContext(), R.string.toast_no_contact_server, Toast.LENGTH_SHORT).show();
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             if (codeText != null) {
                 codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
         }
-        else if (result == DataSynchronizer.FAILED_TEAM) {
+        else if (result == JaktlagetAPISynchronizer.FAILED_TEAM) {
             Toast.makeText(getContext(), R.string.toast_no_team_or_user, Toast.LENGTH_SHORT).show();
             userText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
@@ -72,7 +73,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                 codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
         }
-        else if (result == DataSynchronizer.FAILED_USER) {
+        else if (result == JaktlagetAPISynchronizer.FAILED_USER) {
             Toast.makeText(getContext(), R.string.toast_no_team_or_user, Toast.LENGTH_SHORT).show();
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             userText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
@@ -80,7 +81,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                 codeText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
         }
-        else if (result == DataSynchronizer.FAILED_CODE) {
+        else if (result == JaktlagetAPISynchronizer.FAILED_CODE) {
             //Toast.makeText(getContext(), R.string.toast_wrong_code, Toast.LENGTH_SHORT).show();
             teamText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_24dp, 0);
             // Only set error if code field actually existed
@@ -95,7 +96,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     if (submitForm()) {
-                        DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
+                        JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getContext(),
                                 TeamManagementFragment.this);
                         dataSynchronizer.execute();
                     }
@@ -176,7 +177,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (codeText == null) {
                     if (submitForm()) {
-                        DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
+                        JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getContext(),
                                 TeamManagementFragment.this);
                         dataSynchronizer.execute();
                         View view = getActivity().getCurrentFocus();
@@ -201,7 +202,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             @Override
             public void onClick(View v) {
                 if (submitForm()) {
-                    DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
+                    JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getContext(),
                             TeamManagementFragment.this);
                     dataSynchronizer.execute();
                     View view = getActivity().getCurrentFocus();
@@ -266,7 +267,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (submitForm()) {
-                    DataSynchronizer dataSynchronizer = new DataSynchronizer(getContext(),
+                    JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getContext(),
                             TeamManagementFragment.this);
                     dataSynchronizer.execute();
                 }

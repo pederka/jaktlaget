@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;

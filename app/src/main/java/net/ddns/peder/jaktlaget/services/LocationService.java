@@ -21,6 +21,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
+import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;
@@ -49,7 +50,7 @@ public class LocationService extends Service {
 
         @Override
         public void onSyncComplete(int result) {
-            if (result == DataSynchronizer.SUCCESS) {
+            if (result == JaktlagetAPISynchronizer.SUCCESS) {
                 PositionsDbHelper positionsDbHelper = new PositionsDbHelper(getApplicationContext());
                 SQLiteDatabase posdb = positionsDbHelper.getReadableDatabase();
                 final String[] PROJECTION = {
@@ -127,7 +128,7 @@ public class LocationService extends Service {
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
 
-            DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(),
+            JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getApplicationContext(),
                                                                             this);
             myLocationHistory.add(new LatLng(location.getLatitude(), location.getLongitude()));
             Log.i(tag, "Syncing after location changed");

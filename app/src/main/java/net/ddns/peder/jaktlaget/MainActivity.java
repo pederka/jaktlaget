@@ -49,7 +49,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.ads.consent.*;
 import com.jakewharton.disklrucache.DiskLruCache;
 
-import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
+import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
 import net.ddns.peder.jaktlaget.fragments.AboutFragment;
 import net.ddns.peder.jaktlaget.fragments.AllLandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.AllTeamFragment;
@@ -537,7 +537,7 @@ public class MainActivity extends AppCompatActivity implements
     private Runnable syncData = new Runnable() {
         @Override
         public void run() {
-            DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(), null);
+            JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getApplicationContext(), null);
             dataSynchronizer.execute();
             mHandler.postDelayed(this, SYNC_DELAY_ACTIVITY);
         }
@@ -554,7 +554,7 @@ public class MainActivity extends AppCompatActivity implements
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
         }
-        DataSynchronizer dataSynchronizer = new DataSynchronizer(getApplicationContext(), null);
+        JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getApplicationContext(), null);
         dataSynchronizer.execute();
         if (mHandler != null && runningService) {
             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
