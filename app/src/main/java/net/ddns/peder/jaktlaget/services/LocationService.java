@@ -21,6 +21,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
+import net.ddns.peder.jaktlaget.AsyncTasks.HttpsDataSynchronizer;
 import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.MainActivity;
@@ -128,7 +129,7 @@ public class LocationService extends Service {
             preferences.edit().putLong(Constants.SHARED_PREF_TIME,
                                                             System.currentTimeMillis()).apply();
 
-            JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getApplicationContext(),
+            HttpsDataSynchronizer dataSynchronizer = new HttpsDataSynchronizer(getApplicationContext(),
                                                                             this);
             myLocationHistory.add(new LatLng(location.getLatitude(), location.getLongitude()));
             Log.i(tag, "Syncing after location changed");

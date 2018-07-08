@@ -60,7 +60,7 @@ public final class Constants {
     public static final int SOCKET_TIMEOUT = 5000;
 
     // For API
-    public static final String API_URL = "http://1gq1t20qnk.execute-api.eu-central-1.amazonaws.com/dev";
+    public static final String API_URL = "https://1gq1t20qnk.execute-api.eu-central-1.amazonaws.com/dev";
 
     // For Google Ads
     public static final String ADMOB_ID = "ca-app-pub-1180457891371684~5778981859";

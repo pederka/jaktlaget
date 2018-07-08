@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.ads.consent.*;
 import com.jakewharton.disklrucache.DiskLruCache;
 
+import net.ddns.peder.jaktlaget.AsyncTasks.HttpsDataSynchronizer;
 import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
 import net.ddns.peder.jaktlaget.fragments.AboutFragment;
 import net.ddns.peder.jaktlaget.fragments.AllLandmarksFragment;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements
         AboutFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener,
         HelpFragment.OnFragmentInteractionListener {
 
+    private static MainActivity instance;
     private final static int MY_PERMISSIONS_REQUEST = 1654;
     private final static int ACTIVATE_PERMISSION_REQUEST = 1655;
     private LocationListener locationListener;
@@ -161,12 +163,18 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        instance = this;
 
         queue = Volley.newRequestQueue(this);
 
@@ -537,7 +545,7 @@ public class MainActivity extends AppCompatActivity implements
     private Runnable syncData = new Runnable() {
         @Override
         public void run() {
-            JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getApplicationContext(), null);
+            HttpsDataSynchronizer dataSynchronizer = new HttpsDataSynchronizer(getApplicationContext(), null);
             dataSynchronizer.execute();
             mHandler.postDelayed(this, SYNC_DELAY_ACTIVITY);
         }
@@ -554,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
         }
-        JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getApplicationContext(), null);
+        HttpsDataSynchronizer dataSynchronizer = new HttpsDataSynchronizer(getApplicationContext(), null);
         dataSynchronizer.execute();
         if (mHandler != null && runningService) {
             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);

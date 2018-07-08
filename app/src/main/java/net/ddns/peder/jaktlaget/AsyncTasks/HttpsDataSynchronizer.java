@@ -1,22 +1,18 @@
 package net.ddns.peder.jaktlaget.AsyncTasks;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.JsonReader;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
 import net.ddns.peder.jaktlaget.Constants;
-import net.ddns.peder.jaktlaget.MainActivity;
+import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
 import net.ddns.peder.jaktlaget.interfaces.OnSyncComplete;
@@ -24,43 +20,55 @@ import net.ddns.peder.jaktlaget.utils.JsonUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 
+import javax.net.SocketFactory;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.TrustManagerFactory;
 
-public class JaktlagetAPISynchronizer {
-
+public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
     public static int SUCCESS = 0;
     public static int FAILED_USER = 1;
     public static int FAILED_TEAM = 2;
     public static int FAILED_TRANSFER = 3;
     public static int FAILED_CODE = 4;
     public static int FAILED_TIMEOUT = 5;
-
+    private Context mContext;
+    private SocketFactory socketFactory;
     private String userId;
     private SQLiteDatabase posdb;
     private SQLiteDatabase lmdb;
+    private OnSyncComplete onSyncComplete;
     private String teamId;
     private String code;
-    private final static String tag = "JaktlagetAPISyncronizer";
+    private boolean verbose;
+    private final static String tag = "HttpsDataSyncronizer";
+    private ProgressDialog dialog;
     private SharedPreferences sharedPrefs;
     private URL jaktlagetEndpoint;
 
-    private Context mContext;
+    public HttpsDataSynchronizer(Context context, OnSyncComplete onSyncComplete) {
+        mContext = context;
 
-    private OnSyncComplete onSyncComplete;
-    static final String url = Constants.API_URL;
-
-    public JaktlagetAPISynchronizer(Context context, OnSyncComplete onSyncComplete) {
-        this.mContext = context;
         this.onSyncComplete = onSyncComplete;
+
+        dialog = new ProgressDialog(context);
 
         try {
             jaktlagetEndpoint = new URL(Constants.API_URL);
@@ -80,17 +88,29 @@ public class JaktlagetAPISynchronizer {
         TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(mContext);
         lmdb = teamLandmarksDbHelper.getWritableDatabase();
 
+
+
+        // Clear team landmarks database
+        teamLandmarksDbHelper.clearTable(lmdb);
+
     }
 
-    public void execute() {
+    @Override
+    protected void onPreExecute() {
+        if (this.verbose) {
+            this.dialog.setMessage("Kommuniserer med server..");
+            this.dialog.show();
+        }
+    }
+
+    @Override
+    protected Integer doInBackground(Void... params) {
 
         if (userId.equals(Constants.DEFAULT_USER_ID)) {
-            onSyncComplete.onSyncComplete(FAILED_USER);
-            return;
+            return FAILED_USER;
         }
         if (teamId.equals(Constants.DEFAULT_TEAM_ID)) {
-            onSyncComplete.onSyncComplete(FAILED_USER);
-            return;
+            return FAILED_TEAM;
         }
 
         // Add yourself to database
@@ -137,15 +157,53 @@ public class JaktlagetAPISynchronizer {
         try {
             HttpsURLConnection myConnection =
                     (HttpsURLConnection) jaktlagetEndpoint.openConnection();
+            myConnection.setDoInput(true);
+            myConnection.setDoOutput(true);
+            myConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            myConnection.setRequestProperty("Accept", "application/json");
             myConnection.setRequestMethod("POST");
-            InputStream responseBody = myConnection.getInputStream();
-            InputStreamReader responseBodyReader = new InputStreamReader(responseBody,
-                    "UTF-8");
-            JsonReader jsonReader = new JsonReader(responseBodyReader);
+            OutputStreamWriter wr= new OutputStreamWriter(myConnection.getOutputStream());
+            wr.write(postObject.toString());
+            wr.flush();
+            int res = myConnection.getResponseCode();
+            if (res == HttpsURLConnection.HTTP_OK) {
+                InputStream responseBody = myConnection.getInputStream();
+                InputStreamReader responseBodyReader = new InputStreamReader(responseBody,
+                        "UTF-8");
+                JsonReader jsonReader = new JsonReader(responseBodyReader);
+                return SUCCESS;
+            } else if (res == HttpsURLConnection.HTTP_UNAUTHORIZED) {
+                return FAILED_CODE;
+            }
+            else {
+                Log.d(tag, "Https connection failed with response code: "+res);
+                return FAILED_TRANSFER;
+            }
+
         } catch (IOException e) {
             Log.e(tag, e.toString());
             Log.e(tag, "Error in HTTPS connection");
+            return FAILED_TRANSFER;
         }
+    }
 
+    @Override
+    protected void onPostExecute(Integer result) {
+        if (dialog.isShowing()) {
+            dialog.dismiss();
+        }
+        if (onSyncComplete != null) {
+                onSyncComplete.onSyncComplete(result);
+        }
+    }
+
+    private static int byteArrayToInt(byte[] b)
+    {
+        return   b[3] & 0xFF |
+                (b[2] & 0xFF) << 8 |
+                (b[1] & 0xFF) << 16 |
+                (b[0] & 0xFF) << 24;
     }
 }
+
+

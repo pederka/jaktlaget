@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
+import net.ddns.peder.jaktlaget.AsyncTasks.HttpsDataSynchronizer;
 import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
 import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.adapters.TeamLandmarksCursorAdapter;
@@ -50,7 +51,7 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
 
     @Override
     public void onSyncComplete(int result) {
-        if (result == JaktlagetAPISynchronizer.SUCCESS) {
+        if (result == HttpsDataSynchronizer.SUCCESS) {
             // Update list
             TeamLandmarksDbHelper DbHelper = new TeamLandmarksDbHelper(getContext());
             SQLiteDatabase dbtmp = DbHelper.getReadableDatabase();
@@ -64,7 +65,7 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
             mAdapter.changeCursor(cursor);
             mAdapter.notifyDataSetChanged();
         }
-        else if (result == JaktlagetAPISynchronizer.FAILED_TIMEOUT) {
+        else if (result == HttpsDataSynchronizer.FAILED_TIMEOUT) {
             Toast.makeText(getContext(), R.string.toast_sync_timeout, Toast.LENGTH_SHORT).show();
         }
         else {
@@ -90,7 +91,7 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        JaktlagetAPISynchronizer dataSynchronizer = new JaktlagetAPISynchronizer(getContext(),
+                        HttpsDataSynchronizer dataSynchronizer = new HttpsDataSynchronizer(getContext(),
                                                     TeamLandmarksFragment.this);
                         dataSynchronizer.execute();
                     }
