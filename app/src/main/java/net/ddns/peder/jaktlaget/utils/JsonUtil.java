@@ -140,6 +140,31 @@ public class JsonUtil {
         }
     }
 
+    public static void importUserInformationFromJson(Context context, SQLiteDatabase posdb,
+                                                     SQLiteDatabase lmdb, JSONObject json) {
+        try {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                                                                        context);
+            boolean autoshowteam = sharedPreferences.getBoolean(
+                    context.getResources().getString(R.string.pref_autoshowteam_key),
+                    Boolean.valueOf(context.getResources().getString(
+                                                        R.string.pref_autoshowteam_default)));
+            // Get user position and update local database
+            String userId = json.getString(JSON_USER);
+            Log.d(tag, "New position from user: "+userId);
+            Float latitude = Float.parseFloat(json.getString(JSON_LAT));
+            Float longitude = Float.parseFloat(json.getString(JSON_LON));
+            long time = Long.parseLong(json.getString(JSON_TIME));
+            updateUserPosition(posdb, userId, latitude, longitude, time, autoshowteam);
+            // Add user shared landmarks to local database
+            String landmarksString = json.getString(JSON_LMARRAY);
+            JSONArray landmarksArray = new JSONArray(landmarksString);
+            readLandmarksFromJson(lmdb, userId, landmarksArray, autoshowteam);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void updateUserPosition(SQLiteDatabase db, String userId, float lat, float lon,
                                              long time, boolean show) {
         final String[] PROJECTION = {

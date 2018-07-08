@@ -761,7 +761,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
         else {
             // If no position then just show Norway
-            map.moveCamera(CameraUpdateFactory.newLatLngBounds(NORWAY, 0));
+            //map.moveCamera(CameraUpdateFactory.newLatLngBounds(NORWAY, 1));
         }
     }
 

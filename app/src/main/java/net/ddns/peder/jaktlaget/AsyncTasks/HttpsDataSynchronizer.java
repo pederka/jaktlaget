@@ -18,10 +18,12 @@ import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
 import net.ddns.peder.jaktlaget.interfaces.OnSyncComplete;
 import net.ddns.peder.jaktlaget.utils.JsonUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -88,11 +90,8 @@ public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
         TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(mContext);
         lmdb = teamLandmarksDbHelper.getWritableDatabase();
 
-
-
         // Clear team landmarks database
         teamLandmarksDbHelper.clearTable(lmdb);
-
     }
 
     @Override
@@ -162,15 +161,33 @@ public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
             myConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             myConnection.setRequestProperty("Accept", "application/json");
             myConnection.setRequestMethod("POST");
-            OutputStreamWriter wr= new OutputStreamWriter(myConnection.getOutputStream());
+            OutputStreamWriter wr = new OutputStreamWriter(myConnection.getOutputStream());
             wr.write(postObject.toString());
             wr.flush();
+            wr.close();
+            StringBuffer response = new StringBuffer();
+            String inputLine;
             int res = myConnection.getResponseCode();
             if (res == HttpsURLConnection.HTTP_OK) {
-                InputStream responseBody = myConnection.getInputStream();
-                InputStreamReader responseBodyReader = new InputStreamReader(responseBody,
-                        "UTF-8");
-                JsonReader jsonReader = new JsonReader(responseBodyReader);
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(myConnection.getInputStream()));
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                // Start parsing response
+                // Get code
+                JSONObject responseJsonObject = new JSONObject(response.toString());
+                String codeString = responseJsonObject.getString("code");
+                Log.d(tag, "Code is: "+codeString);
+                sharedPrefs.edit().putString(Constants.SHARED_PREF_TEAM_CODE, codeString).apply();
+                // Get team info
+                JSONArray team_members = responseJsonObject.getJSONArray("team_members");
+                for (int i=0; i<team_members.length(); i++) {
+                    JsonUtil.importUserInformationFromJson(mContext, posdb, lmdb,
+                            team_members.getJSONObject(i));
+                }
                 return SUCCESS;
             } else if (res == HttpsURLConnection.HTTP_UNAUTHORIZED) {
                 return FAILED_CODE;
@@ -183,6 +200,9 @@ public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
         } catch (IOException e) {
             Log.e(tag, e.toString());
             Log.e(tag, "Error in HTTPS connection");
+            return FAILED_TRANSFER;
+        } catch (JSONException e) {
+            Log.e(tag, "Failed to parse JSON");
             return FAILED_TRANSFER;
         }
     }
