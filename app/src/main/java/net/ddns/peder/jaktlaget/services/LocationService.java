@@ -85,6 +85,13 @@ public class LocationService extends Service {
                                             teamLocationHistory);
                 cursor.close();
             }
+            else if (result == JaktlagetAPISynchronizer.FAILED_CODE) {
+                // Reset team and team code
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
+                                                                          getApplicationContext());
+                preferences.edit().putString(Constants.SHARED_PREF_TEAM_CODE, "").apply();
+                preferences.edit().putString(Constants.SHARED_PREF_TEAM_ID, "").apply();
+            }
         }
 
         private void addToTeamLocationHistory(String user, LatLng latLng) {

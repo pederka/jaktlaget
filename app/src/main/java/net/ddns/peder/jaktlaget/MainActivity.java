@@ -63,6 +63,7 @@ import net.ddns.peder.jaktlaget.fragments.TeamFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamInfoFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamLandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamManagementFragment;
+import net.ddns.peder.jaktlaget.interfaces.OnSyncComplete;
 import net.ddns.peder.jaktlaget.services.LocationService;
 import net.ddns.peder.jaktlaget.utils.CameraPositionUtil;
 import net.ddns.peder.jaktlaget.utils.LocationHistoryUtil;
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements
         TeamManagementFragment.OnFragmentInteractionListener, AllLandmarksFragment.OnFragmentInteractionListener,
         AllTeamFragment.OnFragmentInteractionListener, TeamInfoFragment.OnFragmentInteractionListener,
         AboutFragment.OnFragmentInteractionListener, IntroFragment.OnFragmentInteractionListener,
-        HelpFragment.OnFragmentInteractionListener {
+        HelpFragment.OnFragmentInteractionListener, OnSyncComplete {
 
     private static MainActivity instance;
     private final static int MY_PERMISSIONS_REQUEST = 1654;
@@ -542,10 +543,22 @@ public class MainActivity extends AppCompatActivity implements
         myLocationHistory.clear();
     }
 
+    @Override
+    public void onSyncComplete(int result) {
+        if (result == JaktlagetAPISynchronizer.FAILED_CODE) {
+            // Reset team and team code
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
+                                                                      getApplicationContext());
+            preferences.edit().putString(Constants.SHARED_PREF_TEAM_CODE, "").apply();
+            preferences.edit().putString(Constants.SHARED_PREF_TEAM_ID, "").apply();
+        }
+    }
+
     private Runnable syncData = new Runnable() {
         @Override
         public void run() {
-            HttpsDataSynchronizer dataSynchronizer = new HttpsDataSynchronizer(getApplicationContext(), null);
+            Log.d(tag, "Running periodic sync");
+            HttpsDataSynchronizer dataSynchronizer = new HttpsDataSynchronizer(getApplicationContext(), instance);
             dataSynchronizer.execute();
             mHandler.postDelayed(this, SYNC_DELAY_ACTIVITY);
         }
