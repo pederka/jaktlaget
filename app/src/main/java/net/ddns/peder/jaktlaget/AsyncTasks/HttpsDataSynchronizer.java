@@ -8,11 +8,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.JsonReader;
 import android.util.Log;
 
 import net.ddns.peder.jaktlaget.Constants;
-import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
 import net.ddns.peder.jaktlaget.interfaces.OnSyncComplete;
@@ -22,27 +20,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.security.KeyStore;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
 
-import javax.net.SocketFactory;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.TrustManagerFactory;
 
 public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
     public static int SUCCESS = 0;
@@ -52,7 +36,6 @@ public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
     public static int FAILED_CODE = 4;
     public static int FAILED_TIMEOUT = 5;
     private Context mContext;
-    private SocketFactory socketFactory;
     private String userId;
     private SQLiteDatabase posdb;
     private SQLiteDatabase lmdb;
@@ -218,14 +201,6 @@ public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
         if (onSyncComplete != null) {
                 onSyncComplete.onSyncComplete(result);
         }
-    }
-
-    private static int byteArrayToInt(byte[] b)
-    {
-        return   b[3] & 0xFF |
-                (b[2] & 0xFF) << 8 |
-                (b[1] & 0xFF) << 16 |
-                (b[0] & 0xFF) << 24;
     }
 }
 
