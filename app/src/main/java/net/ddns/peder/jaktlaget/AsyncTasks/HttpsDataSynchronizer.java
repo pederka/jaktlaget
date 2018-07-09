@@ -151,7 +151,6 @@ public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
         } catch (JSONException e) {
             Log.e(tag, "Error adding team and code to POST Json payload");
         }
-        Log.i(tag, ""+postObject.toString());
 
         try {
             HttpsURLConnection myConnection =
@@ -160,6 +159,7 @@ public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
             myConnection.setDoOutput(true);
             myConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             myConnection.setRequestProperty("Accept", "application/json");
+            myConnection.setRequestProperty("x-api-key", Constants.API_KEY);
             myConnection.setRequestMethod("POST");
             OutputStreamWriter wr = new OutputStreamWriter(myConnection.getOutputStream());
             wr.write(postObject.toString());
@@ -180,19 +180,21 @@ public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
                 // Get code
                 JSONObject responseJsonObject = new JSONObject(response.toString());
                 String codeString = responseJsonObject.getString("code");
-                Log.d(tag, "Code is: "+codeString);
                 sharedPrefs.edit().putString(Constants.SHARED_PREF_TEAM_CODE, codeString).apply();
                 // Get team info
                 JSONArray team_members = responseJsonObject.getJSONArray("team_members");
+                Log.d(tag, "Received data for "+team_members.length()+" team members");
                 for (int i=0; i<team_members.length(); i++) {
                     JsonUtil.importUserInformationFromJson(mContext, posdb, lmdb,
                             team_members.getJSONObject(i));
                 }
                 return SUCCESS;
             } else if (res == HttpsURLConnection.HTTP_UNAUTHORIZED) {
+                wr.close();
                 return FAILED_CODE;
             }
             else {
+                wr.close();
                 Log.d(tag, "Https connection failed with response code: "+res);
                 return FAILED_TRANSFER;
             }
@@ -202,6 +204,7 @@ public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
             Log.e(tag, "Error in HTTPS connection");
             return FAILED_TRANSFER;
         } catch (JSONException e) {
+            Log.e(tag, e.toString());
             Log.e(tag, "Failed to parse JSON");
             return FAILED_TRANSFER;
         }

@@ -61,6 +61,7 @@ public final class Constants {
 
     // For API
     public static final String API_URL = "https://1gq1t20qnk.execute-api.eu-central-1.amazonaws.com/dev";
+    public static final String API_KEY = "tWU3UuTOsa5fCytLmjs1N9iKXSdrwnwC9w0qsI12";
 
     // For Google Ads
     public static final String ADMOB_ID = "ca-app-pub-1180457891371684~5778981859";
