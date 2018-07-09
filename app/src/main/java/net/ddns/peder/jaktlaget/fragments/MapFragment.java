@@ -492,6 +492,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("Tag", "Destroying map fragment. Cleaning up databases.");
+        if (db != null) {
+            db.close();
+        }
+        if (posdb != null) {
+            posdb.close();
+        }
+        if (tldb != null) {
+            tldb.close();
+        }
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
          try {
@@ -761,7 +776,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
         else {
             // If no position then just show Norway
-            //map.moveCamera(CameraUpdateFactory.newLatLngBounds(NORWAY, 1));
+            map.moveCamera(CameraUpdateFactory.newLatLngBounds(NORWAY, 0));
         }
     }
 

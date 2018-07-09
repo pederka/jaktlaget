@@ -477,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements
                      == PackageManager.PERMISSION_GRANTED) {
              // Set everything active
              activeText.setText(getString(R.string.actionbar_active));
-             mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+             mHandler.postDelayed(syncData, 0);
              runningService = true;
              runSwitch.setChecked(true);
              prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, true).apply();
@@ -578,7 +578,7 @@ public class MainActivity extends AppCompatActivity implements
         HttpsDataSynchronizer dataSynchronizer = new HttpsDataSynchronizer(getApplicationContext(), null);
         dataSynchronizer.execute();
         if (mHandler != null && runningService) {
-            mHandler.postDelayed(syncData, SYNC_DELAY_ACTIVITY);
+            mHandler.postDelayed(syncData, 0);
         }
         startPositionUpdates();
     }
