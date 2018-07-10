@@ -1,10 +1,12 @@
 package net.ddns.peder.jaktlaget.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.jaktlaget.AsyncTasks.HttpsDataSynchronizer;
 import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
+import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.adapters.PositionCursorAdapter;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
@@ -43,8 +46,7 @@ public class TeamFragment extends Fragment implements OnSyncComplete {
     }
 
     public static TeamFragment newInstance(String param1, String param2) {
-        TeamFragment fragment = new TeamFragment();
-        return fragment;
+        return new TeamFragment();
     }
 
     @Override
@@ -54,6 +56,13 @@ public class TeamFragment extends Fragment implements OnSyncComplete {
         }
         else if (result == HttpsDataSynchronizer.FAILED_TIMEOUT) {
             Toast.makeText(getContext(), R.string.toast_sync_timeout, Toast.LENGTH_SHORT).show();
+        }
+        else if (result == HttpsDataSynchronizer.FAILED_CODE) {
+            // Reset team and team code
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
+                            getContext());
+            preferences.edit().putString(Constants.SHARED_PREF_TEAM_CODE, "").apply();
+            preferences.edit().putString(Constants.SHARED_PREF_TEAM_ID, "").apply();
         }
         else {
             Toast.makeText(getContext(), R.string.toast_sync_failed, Toast.LENGTH_SHORT).show();
