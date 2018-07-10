@@ -50,7 +50,6 @@ import com.google.ads.consent.*;
 import com.jakewharton.disklrucache.DiskLruCache;
 
 import net.ddns.peder.jaktlaget.AsyncTasks.HttpsDataSynchronizer;
-import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
 import net.ddns.peder.jaktlaget.fragments.AboutFragment;
 import net.ddns.peder.jaktlaget.fragments.AllLandmarksFragment;
 import net.ddns.peder.jaktlaget.fragments.AllTeamFragment;
@@ -545,7 +544,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onSyncComplete(int result) {
-        if (result == JaktlagetAPISynchronizer.FAILED_CODE) {
+        if (result == HttpsDataSynchronizer.FAILED_CODE) {
             // Reset team and team code
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
                                                                       getApplicationContext());

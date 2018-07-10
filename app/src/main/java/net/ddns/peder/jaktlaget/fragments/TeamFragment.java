@@ -17,9 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.jaktlaget.AsyncTasks.HttpsDataSynchronizer;
-import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.adapters.PositionCursorAdapter;

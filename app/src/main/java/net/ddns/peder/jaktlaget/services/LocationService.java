@@ -1,7 +1,6 @@
 package net.ddns.peder.jaktlaget.services;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -20,9 +19,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.jaktlaget.AsyncTasks.HttpsDataSynchronizer;
-import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;
@@ -51,7 +48,7 @@ public class LocationService extends Service {
 
         @Override
         public void onSyncComplete(int result) {
-            if (result == JaktlagetAPISynchronizer.SUCCESS) {
+            if (result == HttpsDataSynchronizer.SUCCESS) {
                 PositionsDbHelper positionsDbHelper = new PositionsDbHelper(getApplicationContext());
                 SQLiteDatabase posdb = positionsDbHelper.getReadableDatabase();
                 final String[] PROJECTION = {
@@ -85,7 +82,7 @@ public class LocationService extends Service {
                                             teamLocationHistory);
                 cursor.close();
             }
-            else if (result == JaktlagetAPISynchronizer.FAILED_CODE) {
+            else if (result == HttpsDataSynchronizer.FAILED_CODE) {
                 // Reset team and team code
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
                                                                           getApplicationContext());

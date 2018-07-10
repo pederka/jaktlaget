@@ -48,8 +48,7 @@ public class TeamLandmarksFragment extends Fragment implements OnSyncComplete {
     }
 
     public static TeamLandmarksFragment newInstance(String param1, String param2) {
-        TeamLandmarksFragment fragment = new TeamLandmarksFragment();
-        return fragment;
+        return new TeamLandmarksFragment();
     }
 
     @Override

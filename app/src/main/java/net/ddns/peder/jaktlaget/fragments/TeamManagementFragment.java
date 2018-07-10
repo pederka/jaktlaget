@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.text.InputFilter;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -25,13 +24,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.ddns.peder.jaktlaget.AsyncTasks.DataSynchronizer;
 import net.ddns.peder.jaktlaget.AsyncTasks.HttpsDataSynchronizer;
-import net.ddns.peder.jaktlaget.AsyncTasks.JaktlagetAPISynchronizer;
 import net.ddns.peder.jaktlaget.Constants;
 import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;
-import net.ddns.peder.jaktlaget.adapters.TeamPagerAdapter;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.database.TeamLandmarksDbHelper;
 import net.ddns.peder.jaktlaget.interfaces.OnSyncComplete;
@@ -48,7 +44,7 @@ public class TeamManagementFragment extends Fragment implements OnSyncComplete {
 
     @Override
     public void onSyncComplete(int result) {
-        if (result == JaktlagetAPISynchronizer.SUCCESS) {
+        if (result == HttpsDataSynchronizer.SUCCESS) {
              SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
                      getContext());
              sharedPreferences.edit().putBoolean(Constants.SHARED_PREF_NO_TEAM, false).apply();
