@@ -224,6 +224,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
         LandmarksDbHelper landmarksDbHelper = new LandmarksDbHelper(getContext());
         db = landmarksDbHelper.getWritableDatabase();
+        TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
+        tldb = teamLandmarksDbHelper.getReadableDatabase();
+        PositionsDbHelper positionsDbHelper = new PositionsDbHelper(getContext());
+        posdb = positionsDbHelper.getReadableDatabase();
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -491,9 +495,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onDestroyView() {
         super.onDestroyView();
         Log.d("Tag", "Destroying map fragment. Cleaning up databases.");
-        // Clean up landmark database on fragment destroy view
         if (db != null) {
             db.close();
+        }
+        if (posdb != null) {
+            posdb.close();
+        }
+        if (tldb != null) {
+            tldb.close();
         }
     }
 
@@ -829,8 +838,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE,
         };
 
-        TeamLandmarksDbHelper teamLandmarksDbHelper = new TeamLandmarksDbHelper(getContext());
-        tldb = teamLandmarksDbHelper.getReadableDatabase();
         final Cursor cursor = tldb.query(TeamLandmarksDbHelper.TABLE_NAME,
                          PROJECTION,
                          null,
@@ -857,7 +864,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             teamMarkerList.add(marker);
         }
         cursor.close();
-        tldb.close();
     }
 
     private void hideTeamPositions() {
@@ -888,8 +894,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
         String selection = PositionsDbHelper.COLUMN_NAME_SHOWED + " = ?";
         String[] selectionArgs = { "1" };
-        PositionsDbHelper positionsDbHelper = new PositionsDbHelper(getContext());
-        posdb = positionsDbHelper.getReadableDatabase();
         final Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
                          PROJECTION,
                          selection,
@@ -934,7 +938,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             userNameMarkerList.add(map.addMarker(nameMarkerOptions));
         }
         cursor.close();
-        posdb.close();
     }
 
     @Override
