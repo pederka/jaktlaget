@@ -948,6 +948,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onResume() {
         super.onResume();
+        mHandler.postDelayed(updateMyPosition, Constants.MAP_LOCATION_UPDATE_INTERVAL);
+        mHandler.postDelayed(updateTeamPositions, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
         // Show team immediately if active and toggled
         if (getActivity() != null && ((MainActivity)getActivity()).isActive()) {
             if (team_toggled) {
