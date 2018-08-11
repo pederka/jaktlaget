@@ -204,7 +204,7 @@ public class LocationService extends Service {
                 R.drawable.ic_map_black_24dp, getResources().getString(R.string.action_map),
                         pendingIntent).build();
 
-        Notification notification = new NotificationCompat.Builder(this)
+        Notification notification = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
