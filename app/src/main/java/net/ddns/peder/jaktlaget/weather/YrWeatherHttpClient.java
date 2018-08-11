@@ -29,28 +29,41 @@ public class YrWeatherHttpClient extends WeatherHttpClient {
         InputStream is = null;
         String FULL_URL = String.format(BASE_URL, position.latitude,
                                                     position.longitude);
-        try {
-            Log.d(tag, "Using URL: "+FULL_URL);
-            con = (HttpURLConnection) ( new URL(FULL_URL)).openConnection();
-            con.setRequestMethod("GET");
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.connect();
+        int count = 0;
+        int maxTries = 4;
+        while(true) {
+            try {
+                Log.d(tag, "Using URL: " + FULL_URL);
+                con = (HttpURLConnection) (new URL(FULL_URL)).openConnection();
+                con.setRequestMethod("GET");
+                con.setDoInput(true);
+                con.setDoOutput(true);
+                con.connect();
 
-            // Let's read the response
-            is = con.getInputStream();
-            WindResult result = parseXml(is);
-            is.close();
-            con.disconnect();
-            return result;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        finally {
-            try { is.close(); } catch(Throwable t) {}
-            try { con.disconnect(); } catch(Throwable t) {}
+                // Let's read the response
+                is = con.getInputStream();
+                WindResult result = parseXml(is);
+                is.close();
+                con.disconnect();
+                return result;
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (++count > maxTries) {
+                    return null;
+                }
+                else {
+                    Log.d(tag, "Failed to get weather data, retrying ("+count+"/"+maxTries+")");
+                }
+            } finally {
+                try {
+                    is.close();
+                } catch (Throwable t) {
+                }
+                try {
+                    con.disconnect();
+                } catch (Throwable t) {
+                }
+            }
         }
     }
 
