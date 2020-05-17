@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/team_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
             app:tabMode="fixed"
             app:tabTextColor="@color/white" />
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/team_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

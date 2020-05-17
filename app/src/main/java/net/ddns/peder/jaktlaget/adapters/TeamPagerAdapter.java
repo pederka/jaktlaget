@@ -1,14 +1,14 @@
 package net.ddns.peder.jaktlaget.adapters;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import net.ddns.peder.jaktlaget.fragments.TeamFragment;
 import net.ddns.peder.jaktlaget.fragments.TeamInfoFragment;
-import net.ddns.peder.jaktlaget.fragments.TeamManagementFragment;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 /**
  * Created by peder on 4/1/17.

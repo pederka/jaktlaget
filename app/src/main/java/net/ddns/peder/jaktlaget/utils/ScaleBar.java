@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.location.Location;
-import android.support.v7.widget.AppCompatImageView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;
@@ -16,6 +15,8 @@ import com.google.android.gms.maps.model.LatLng;
 import net.ddns.peder.jaktlaget.Constants;
 
 import java.util.Locale;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 public class ScaleBar extends AppCompatImageView {
 

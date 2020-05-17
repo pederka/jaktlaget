@@ -24,7 +24,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="20sp"></TextView>
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/show_check_box"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

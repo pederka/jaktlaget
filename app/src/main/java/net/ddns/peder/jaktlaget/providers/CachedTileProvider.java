@@ -1,12 +1,13 @@
 package net.ddns.peder.jaktlaget.providers;
 
 import android.content.Context;
-import android.support.compat.BuildConfig;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 import com.jakewharton.disklrucache.DiskLruCache;
+
+import net.ddns.peder.jaktlaget.BuildConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;

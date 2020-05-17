@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +21,8 @@ import net.ddns.peder.jaktlaget.R;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import androidx.fragment.app.Fragment;
 
 public class AboutFragment extends Fragment {
     private OnFragmentInteractionListener mListener;

@@ -4,13 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.widget.TextView;
 
 import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
+
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
 
 /**
  * Created by peder on 3/19/17.

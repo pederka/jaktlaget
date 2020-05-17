@@ -3,7 +3,6 @@ package net.ddns.peder.jaktlaget.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,8 @@ import android.widget.ImageView;
 
 import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;
+
+import androidx.fragment.app.Fragment;
 
 public class HelpFragment extends Fragment {
     private OnFragmentInteractionListener mListener;

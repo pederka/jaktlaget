@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lm_row_layout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -35,14 +36,14 @@
             android:layout_gravity="center"
             android:layout_weight="1.0">
 
-            <android.support.v7.widget.AppCompatCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/show_check_box"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1" />
 
-            <android.support.v7.widget.AppCompatCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/share_check_box"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -58,7 +59,7 @@
             android:layout_gravity="center"
             android:layout_weight="0.5"
             android:background="?android:selectableItemBackground"
-            android:src="@drawable/ic_delete_forever_primary_color_24dp" />
+            app:srcCompat="@drawable/ic_delete_forever_primary_color_24dp" />
 
     </LinearLayout>
 </LinearLayout>

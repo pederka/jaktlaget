@@ -16,7 +16,7 @@
         <activity
             android:name="net.ddns.peder.jaktlaget.SplashActivity"
             android:theme="@style/SplashTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="unspecified">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="net.ddns.peder.jaktlaget.MainActivity.ACTION_SERVICE" />
@@ -33,8 +33,11 @@
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCr_XDVrLYE9uvSX-xTS9oyuql6yEmvQzU"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCr_XDVrLYE9uvSX-xTS9oyuql6yEmvQzU"/>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1180457891371684~5778981859"/>
     </application>
-
-
 </manifest>

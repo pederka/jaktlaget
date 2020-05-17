@@ -2,10 +2,11 @@ package net.ddns.peder.jaktlaget.fragments;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceFragmentCompat;
 
 import net.ddns.peder.jaktlaget.MainActivity;
 import net.ddns.peder.jaktlaget.R;
+
+import androidx.preference.PreferenceFragmentCompat;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 

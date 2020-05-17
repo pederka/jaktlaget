@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +21,9 @@ import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.adapters.PositionCursorAdapter;
 import net.ddns.peder.jaktlaget.database.PositionsDbHelper;
 import net.ddns.peder.jaktlaget.interfaces.OnSyncComplete;
+
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class TeamFragment extends Fragment implements OnSyncComplete {
     private OnFragmentInteractionListener mListener;

@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,8 @@ import android.widget.ListView;
 import net.ddns.peder.jaktlaget.R;
 import net.ddns.peder.jaktlaget.adapters.LandmarksCursorAdapter;
 import net.ddns.peder.jaktlaget.database.LandmarksDbHelper;
+
+import androidx.fragment.app.Fragment;
 
 public class LandmarksFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
