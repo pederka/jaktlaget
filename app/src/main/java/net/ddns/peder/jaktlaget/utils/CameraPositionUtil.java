@@ -34,7 +34,7 @@ public class CameraPositionUtil {
     static public CameraPosition loadCameraPositionFromPreferences(Context context) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         Gson gson = new Gson();
-        String json = sharedPrefs.getString(Constants.SHARED_PREF_CAMERA_POSITION, null);
+        String json = sharedPrefs.getString(Constants.SHARED_PREF_CAMERA_POSITION, "");
         Type type = new TypeToken<CameraPosition>() {}.getType();
         CameraPosition cameraPosition = gson.fromJson(json,type);
         if (cameraPosition != null) {

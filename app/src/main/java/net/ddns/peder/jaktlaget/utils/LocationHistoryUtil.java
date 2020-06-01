@@ -33,7 +33,7 @@ public class LocationHistoryUtil {
     static public List<LatLng> loadLocationHistoryFromPreferences(Context context) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         Gson gson = new Gson();
-        String json = sharedPrefs.getString(Constants.SHARED_PREF_LOCATION_HISTORY, null);
+        String json = sharedPrefs.getString(Constants.SHARED_PREF_LOCATION_HISTORY, "");
         Type type = new TypeToken<ArrayList<LatLng>>() {}.getType();
         List<LatLng> myLocationHistory = gson.fromJson(json,type);
         if (myLocationHistory != null) {
@@ -58,7 +58,7 @@ public class LocationHistoryUtil {
     static public Map<String, List<LatLng>> loadTeamLocationHistoryFromPreferences(Context context) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         Gson gson = new Gson();
-        String json = sharedPrefs.getString(Constants.SHARED_PREF_TEAM_LOCATION_HISTORY, null);
+        String json = sharedPrefs.getString(Constants.SHARED_PREF_TEAM_LOCATION_HISTORY, "");
         Type type = new TypeToken<Map<String, List<LatLng>>>() {}.getType();
         Map<String, List<LatLng>> teamLocationHistory = gson.fromJson(json,type);
         if (teamLocationHistory != null) {

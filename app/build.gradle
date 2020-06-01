@@ -12,10 +12,10 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "net.ddns.peder.jaktlaget"
-        minSdkVersion 18
+        minSdkVersion 19
         targetSdkVersion 28
-        versionCode 29
-        versionName "1.28"
+        versionCode 30
+        versionName "1.29"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

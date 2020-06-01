@@ -35,6 +35,8 @@ import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.ads.consent.*;
@@ -107,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements
     private DiskLruCache tileCache;
     private ConsentForm form;
 
+    private AdView mAdView;
+
     public NavigationView navigationView;
 
     private List<LatLng> myLocationHistory;
@@ -131,24 +135,28 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public void requestAds(boolean personalized) {
-        Bundle ad_extras = new Bundle();
-        if (personalized) {
-            Log.i(tag, "Requesting personalized ads");
-            ad_extras.putString("npa", "0");
-        } else {
-            Log.i(tag, "Requestion non-personalized ads");
-            ad_extras.putString("npa", "1");
-        }
-        // Initialize ad (with test device id)
-        MobileAds.initialize(this, Constants.ADMOB_ID);
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-            .addNetworkExtrasBundle(AdMobAdapter.class, ad_extras)
-            .addTestDevice("936F11665060AFF4D65E4EF39B4A0FE3")
-            .build();
-        mAdView.loadAd(adRequest);
-    }
+    //public void requestAds(boolean personalized) {
+    //    Bundle ad_extras = new Bundle();
+    //    if (personalized) {
+    //        Log.i(tag, "Requesting personalized ads");
+    //        ad_extras.putString("npa", "0");
+    //    } else {
+    //        Log.i(tag, "Requesting non-personalized ads");
+    //        ad_extras.putString("npa", "1");
+    //    }
+    //    // Initialize ad (with test device id)
+    //    MobileAds.initialize(this, new OnInitializationCompleteListener() {
+    //        @Override
+    //        public void onInitializationComplete(InitializationStatus initializationStatus) {
+    //        }
+    //    });
+    //    mAdView = findViewById(R.id.adView);
+    //    AdRequest adRequest = new AdRequest.Builder()
+    //       .addNetworkExtrasBundle(AdMobAdapter.class, ad_extras)
+    //    //    .addTestDevice("936F11665060AFF4D65E4EF39B4A0FE3")
+    //       .build();
+    //    mAdView.loadAd(adRequest);
+    //}
 
     public void showCaseGoActive() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -199,11 +207,11 @@ public class MainActivity extends AppCompatActivity implements
                 Log.i(tag, "Consent info updated");
                 if (consentStatus == ConsentStatus.PERSONALIZED) {
                     Log.i(tag, "User has consented to personalized ads");
-                    requestAds(true);
+                    //requestAds(true);
                 }
                 else if (consentStatus == ConsentStatus.NON_PERSONALIZED) {
                     Log.i(tag, "User has not consented to personalized ads");
-                    requestAds(false);
+                    //requestAds(false);
                 }
                 else {
                     Log.i(tag, "User consent status unknown");
@@ -253,14 +261,14 @@ public class MainActivity extends AppCompatActivity implements
                             prefs.edit()
                                     .putInt(Constants.SHARED_PREF_AD_CONSENT, Constants.AD_PERSONALIZED)
                                     .apply();
-                            requestAds(true);
+                            //requestAds(true);
                         }
                         else if (consentStatus == ConsentStatus.NON_PERSONALIZED) {
                             Log.i(tag, "User has not consented to personalized ads");
                             prefs.edit()
                                     .putInt(Constants.SHARED_PREF_AD_CONSENT, Constants.AD_NONPERSONALIZED)
                                     .apply();
-                            requestAds(false);
+                            //requestAds(false);
                         }
                     }
 
@@ -274,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements
                 .withNonPersonalizedAdsOption()
                 .build();
 
-        form.load();
+        //form.load();
 
         br = new ServiceBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -286,8 +294,6 @@ public class MainActivity extends AppCompatActivity implements
         mContext = this;
 
         mHandler = new Handler();
-
-
 
 
         if (teamLocationHistory == null) {
@@ -388,6 +394,12 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             displaySelectedScreen(R.id.nav_map);
         }
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
 
         // Set default settings on first time app start
         PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
@@ -501,6 +513,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //No call for super(). Bug on API Level > 11.
+        super.onSaveInstanceState(outState);
     }
 
     public Map<String, List<LatLng>> getTeamLocationHistory() {

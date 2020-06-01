@@ -63,8 +63,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -97,7 +99,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private boolean weather_toggled;
     private FloatingActionButton lineButton;
     private boolean line_toggled;
-    private FloatingActionButton deleteLineButton;
     private FloatingActionMenu menu;
     private ImageButton myPositionButton;
     private List<Marker> markerList;
@@ -201,7 +202,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         // Request permissions
-        if (getActivity() != null && ContextCompat.checkSelfPermission(getContext(),
+        if (getActivity() != null && ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
@@ -232,9 +233,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        team_inactive_limit = 60000*Long.parseLong(sharedPreferences.getString(
-                getContext().getResources().getString(R.string.pref_hideteamlimit_key),
-                getContext().getResources().getString(R.string.pref_hideteamlimit_default)));
+        team_inactive_limit = 60000*Long.parseLong(Objects.requireNonNull(sharedPreferences.getString(
+                requireContext().getResources().getString(R.string.pref_hideteamlimit_key),
+                requireContext().getResources().getString(R.string.pref_hideteamlimit_default))));
 
         userMarkerList = new ArrayList<>();
         userNameMarkerList = new ArrayList<>();
@@ -326,7 +327,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 }
             }
         });
-        deleteLineButton = (FloatingActionButton) view.findViewById(R.id.menu_item_delete_trace);
+        FloatingActionButton deleteLineButton = (FloatingActionButton) view.findViewById(R.id.menu_item_delete_trace);
         deleteLineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -476,7 +477,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
 
         // Get height of map
         try {
