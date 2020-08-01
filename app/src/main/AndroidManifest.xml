@@ -36,7 +36,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCr_XDVrLYE9uvSX-xTS9oyuql6yEmvQzU"/>
+            android:value="${googlemapsapikey}"/>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-1180457891371684~5778981859"/>

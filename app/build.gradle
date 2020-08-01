@@ -18,11 +18,16 @@ android {
         applicationId "net.ddns.peder.jaktlaget"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 34
-        versionName "1.33"
+        versionCode 35
+        versionName "1.34"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        buildConfigField("String", "apikey", apikeyProperties['apikey'])
+        def addConstant = {constantName, constantValue ->
+            manifestPlaceholders += [ (constantName):constantValue]
+            buildConfigField "String", "${constantName}", "\"${constantValue}\""
+        }
+        addConstant("apikey", apikeyProperties['apikey'])
+        addConstant("googlemapsapikey", apikeyProperties['googlemapsapikey'])
     }
     lintOptions {
         disable 'RestrictedApi'
