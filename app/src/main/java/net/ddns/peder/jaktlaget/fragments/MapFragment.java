@@ -196,6 +196,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     };
 
+    private Runnable updateTeamLandmarks = new Runnable() {
+        @Override
+        public void run() {
+            if (map != null && getActivity() != null) {
+                if (landmarks_toggled) {
+                    addTeamLandmarks(map);
+                }
+            }
+            mHandler.postDelayed(this, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
+        }
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -765,8 +777,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
 
         // Start update of own and team locations
-        mHandler.postDelayed(updateMyPosition, Constants.MAP_LOCATION_UPDATE_INTERVAL);
-        mHandler.postDelayed(updateTeamPositions, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
+        //mHandler.postDelayed(updateMyPosition, Constants.MAP_LOCATION_UPDATE_INTERVAL);
+        //mHandler.postDelayed(updateTeamPositions, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
+        //mHandler.postDelayed(updateTeamLandmarks, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
 
     }
 
@@ -803,7 +816,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
         String selection = LandmarksDbHelper.COLUMN_NAME_SHOWED + " = ?";
         String[] selectionArgs = { "1" };
-        final Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
+        Cursor cursor = db.query(LandmarksDbHelper.TABLE_NAME,
                          PROJECTION,
                          selection,
                          selectionArgs,
@@ -831,6 +844,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void addTeamLandmarks(GoogleMap map) {
+        Log.d(tag, "Updating team landmarks on map");
         final String[] PROJECTION = {
             TeamLandmarksDbHelper.COLUMN_NAME_ID,
             TeamLandmarksDbHelper.COLUMN_NAME_SHOWED,
@@ -840,13 +854,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             TeamLandmarksDbHelper.COLUMN_NAME_LONGITUDE,
         };
 
-        final Cursor cursor = tldb.query(TeamLandmarksDbHelper.TABLE_NAME,
+        Cursor cursor = tldb.query(TeamLandmarksDbHelper.TABLE_NAME,
                          PROJECTION,
                          null,
                          null,
                          null,
                          null,
                          null);
+        hideTeamLandmarks();
+        teamMarkerList.clear();
         while (cursor.moveToNext()) {
             Float latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(
                     TeamLandmarksDbHelper.COLUMN_NAME_LATITUDE));
@@ -876,6 +892,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
+    private void hideTeamLandmarks() {
+        for (int i=0; i<teamMarkerList.size(); i++) {
+            teamMarkerList.get(i).remove();
+        }
+    }
+
     private void updateTeamPositions(GoogleMap map) {
         if (map == null) {
             return;
@@ -896,7 +918,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
         String selection = PositionsDbHelper.COLUMN_NAME_SHOWED + " = ?";
         String[] selectionArgs = { "1" };
-        final Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
+        Cursor cursor = posdb.query(PositionsDbHelper.TABLE_NAME,
                          PROJECTION,
                          selection,
                          selectionArgs,
@@ -952,6 +974,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         super.onResume();
         mHandler.postDelayed(updateMyPosition, Constants.MAP_LOCATION_UPDATE_INTERVAL);
         mHandler.postDelayed(updateTeamPositions, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
+        mHandler.postDelayed(updateTeamLandmarks, Constants.MAP_TEAM_POSITION_UPDATE_INTERVAL);
         // Show team immediately if active and toggled
         if (getActivity() != null && ((MainActivity)getActivity()).isActive()) {
             if (team_toggled) {
@@ -994,6 +1017,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
         mHandler.removeCallbacks(updateMyPosition);
         mHandler.removeCallbacks(updateTeamPositions);
+        mHandler.removeCallbacks(updateTeamLandmarks);
     }
 
     @Override
