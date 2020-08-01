@@ -587,9 +587,24 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         stopService(new Intent(getApplicationContext(), LocationService.class));
         mHandler.removeCallbacks(syncData);
-        myLocationHistory = LocationHistoryUtil.loadLocationHistoryFromPreferences(this);
-        teamLocationHistory = LocationHistoryUtil.loadTeamLocationHistoryFromPreferences(this);
-        cameraPosition = CameraPositionUtil.loadCameraPositionFromPreferences(this);
+        try {
+            myLocationHistory = LocationHistoryUtil.loadLocationHistoryFromPreferences(this);
+        }
+        catch (Exception e) {
+            LocationHistoryUtil.clearLocationHistory(this);
+        }
+        try {
+            teamLocationHistory = LocationHistoryUtil.loadTeamLocationHistoryFromPreferences(this);
+        }
+        catch (Exception e) {
+            LocationHistoryUtil.clearTeamLocationHistory(this);
+        }
+        try {
+            cameraPosition = CameraPositionUtil.loadCameraPositionFromPreferences(this);
+        }
+        catch (Exception e) {
+            CameraPositionUtil.clearCameraPositionFromPreferences(this);
+        }
         if (myLocationHistory == null) {
             myLocationHistory = new ArrayList<>();
         }
