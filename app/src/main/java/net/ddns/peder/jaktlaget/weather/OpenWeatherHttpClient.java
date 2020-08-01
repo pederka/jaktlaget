@@ -19,7 +19,7 @@ import java.net.URL;
 public class OpenWeatherHttpClient extends WeatherHttpClient {
 
     private static final String BASE_URL =
-                          "http://api.openweathermap.org/data/2.5/weather?lat=%1$s&lon=%2$s&appid=";
+                          "https://api.openweathermap.org/data/2.5/weather?lat=%1$s&lon=%2$s&appid=";
     private final static String tag = "OpenWeatherHttpClient";
     private static final String API_KEY = "c15b30390af4e93d81ba16a7dc110b01";
 
