@@ -54,14 +54,8 @@ public final class Constants {
     public static final String DISK_CACHE_SUBDIR = "tiles";
     public static final long DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10MB
 
-    // For SSL socket
-    public static final String SOCKET_ADDR = "peder.ddns.net";
-    public static final int SOCKET_PORT = 10024;
-    public static final int SOCKET_TIMEOUT = 5000;
-
     // For API
     public static final String API_URL = "https://1gq1t20qnk.execute-api.eu-central-1.amazonaws.com/dev";
-    public static final String API_KEY = "tWU3UuTOsa5fCytLmjs1N9iKXSdrwnwC9w0qsI12";
 
     // For Google Ads
     public static final String privacy_url = "https://peder.ddns.net/jaktlaget-privacy";

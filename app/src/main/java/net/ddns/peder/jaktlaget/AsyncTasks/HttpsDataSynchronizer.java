@@ -142,7 +142,7 @@ public class HttpsDataSynchronizer extends AsyncTask<Void, Void, Integer>{
             myConnection.setDoOutput(true);
             myConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             myConnection.setRequestProperty("Accept", "application/json");
-            myConnection.setRequestProperty("x-api-key", Constants.API_KEY);
+            myConnection.setRequestProperty("x-api-key", net.ddns.peder.jaktlaget.BuildConfig.apikey);
             myConnection.setRequestMethod("POST");
             OutputStreamWriter wr = new OutputStreamWriter(myConnection.getOutputStream());
             wr.write(postObject.toString());
