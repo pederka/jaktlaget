@@ -43,4 +43,10 @@ public class CameraPositionUtil {
         return cameraPosition;
     }
 
+    static public void clearCameraPositionFromPreferences(Context context) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(Constants.SHARED_PREF_CAMERA_POSITION, "");
+        editor.apply();
+    }
 }

@@ -42,6 +42,13 @@ public class LocationHistoryUtil {
         return myLocationHistory;
     }
 
+    static public void clearLocationHistory(Context context) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(Constants.SHARED_PREF_LOCATION_HISTORY, "");
+        editor.apply();
+    }
+
     static public void saveTeamLocationHistoryToPreferences(Context context,
                                                    Map<String, List<LatLng>> teamLocationHistory) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -67,4 +74,10 @@ public class LocationHistoryUtil {
         return teamLocationHistory;
     }
 
+    static public void clearTeamLocationHistory(Context context) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(Constants.SHARED_PREF_TEAM_LOCATION_HISTORY, "");
+        editor.apply();
+    }
 }
