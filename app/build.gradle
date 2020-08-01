@@ -8,14 +8,14 @@ android {
     signingConfigs {
         release
     }
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
     defaultConfig {
         applicationId "net.ddns.peder.jaktlaget"
         minSdkVersion 19
-        targetSdkVersion 28
-        versionCode 30
-        versionName "1.29"
+        targetSdkVersion 29
+        versionCode 33
+        versionName "1.32"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -57,7 +57,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-ads:19.1.0'
+    implementation 'com.google.android.gms:play-services-ads:19.3.0'
     testImplementation 'junit:junit:4.13'
     implementation 'com.github.clans:fab:1.6.4'
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
