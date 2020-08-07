@@ -508,16 +508,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("Tag", "Destroying map fragment. Cleaning up databases.");
-        if (db != null) {
-            db.close();
-        }
-        if (posdb != null) {
-            posdb.close();
-        }
-        if (tldb != null) {
-            tldb.close();
-        }
+        //Log.d("Tag", "Destroying map fragment. Cleaning up databases.");
+        //if (db != null) {
+        //    db.close();
+        //}
+        //if (posdb != null) {
+        //    posdb.close();
+        //}
+        //if (tldb != null) {
+        //    tldb.close();
+        //}
     }
 
     @Override

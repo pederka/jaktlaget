@@ -31,12 +31,6 @@ import com.android.volley.toolbox.Volley;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
-import com.google.ads.mediation.admob.AdMobAdapter;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.ads.consent.*;
@@ -109,8 +103,6 @@ public class MainActivity extends AppCompatActivity implements
     private DiskLruCache tileCache;
     private ConsentForm form;
 
-    private AdView mAdView;
-
     public NavigationView navigationView;
 
     private List<LatLng> myLocationHistory;
@@ -134,29 +126,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     }
-
-    //public void requestAds(boolean personalized) {
-    //    Bundle ad_extras = new Bundle();
-    //    if (personalized) {
-    //        Log.i(tag, "Requesting personalized ads");
-    //        ad_extras.putString("npa", "0");
-    //    } else {
-    //        Log.i(tag, "Requesting non-personalized ads");
-    //        ad_extras.putString("npa", "1");
-    //    }
-    //    // Initialize ad (with test device id)
-    //    MobileAds.initialize(this, new OnInitializationCompleteListener() {
-    //        @Override
-    //        public void onInitializationComplete(InitializationStatus initializationStatus) {
-    //        }
-    //    });
-    //    mAdView = findViewById(R.id.adView);
-    //    AdRequest adRequest = new AdRequest.Builder()
-    //       .addNetworkExtrasBundle(AdMobAdapter.class, ad_extras)
-    //    //    .addTestDevice("936F11665060AFF4D65E4EF39B4A0FE3")
-    //       .build();
-    //    mAdView.loadAd(adRequest);
-    //}
 
     public void showCaseGoActive() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -395,12 +364,6 @@ public class MainActivity extends AppCompatActivity implements
             displaySelectedScreen(R.id.nav_map);
         }
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-
         // Set default settings on first time app start
         PreferenceManager.setDefaultValues(this, R.xml.fragment_settings, false);
     }
@@ -490,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements
               ft.commit();
          }
          else if (ContextCompat.checkSelfPermission((Activity) mContext,
-                     Manifest.permission.ACCESS_FINE_LOCATION)
+                     Manifest.permission.ACCESS_BACKGROUND_LOCATION)
                      == PackageManager.PERMISSION_GRANTED) {
              // Set everything active
              activeText.setText(getString(R.string.actionbar_active));
@@ -504,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements
          else {
              // Request permission
              ActivityCompat.requestPermissions((Activity) mContext,
-                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                     new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                      ACTIVATE_PERMISSION_REQUEST);
              runSwitch.setChecked(false);
          }
