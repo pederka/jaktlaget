@@ -44,7 +44,7 @@ public final class Constants {
     public static final long TEAM_TIME_FADE = 300000;
     public static final int CODE_LENGTH = 4;
     public static final int TEAM_LENGTH = 13;
-    public static final int WEATHER_SYNC_COOLDOWN = 60000;
+    public static final int WEATHER_SYNC_COOLDOWN = 1000;
     public static final float SCALE_WIDTH = 200;
     public static final int AD_PERSONALIZED = 0;
     public static final int AD_NONPERSONALIZED = 1;
