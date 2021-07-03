@@ -353,6 +353,18 @@ public class MainActivity extends AppCompatActivity implements
             startPositionUpdates();
         }
 
+        // Request background location
+        if (Build.VERSION.SDK_INT > 28 && ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                    MY_PERMISSIONS_REQUEST);
+        } else {
+            startPositionUpdates();
+        }
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String userId = sharedPreferences.getString(Constants.SHARED_PREF_USER_ID,
                                                                         Constants.DEFAULT_USER_ID);
@@ -454,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements
          }
          else if (ContextCompat.checkSelfPermission((Activity) mContext,
                      Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                     == PackageManager.PERMISSION_GRANTED) {
+                     == PackageManager.PERMISSION_GRANTED || Build.VERSION.SDK_INT < 29) {
              // Set everything active
              activeText.setText(getString(R.string.actionbar_active));
              mHandler.postDelayed(syncData, 0);
