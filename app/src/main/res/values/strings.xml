@@ -195,7 +195,8 @@
 
     <string name="about_privacy_header">Personvern:</string>
     <string name="about_privacy">Når appen Jaktlaget er aktiv vil ditt jegernavn, dine siste koordinater, og de kartmerker du har valgt å dele, sendes til vår tjener ved jevne mellomrom. All kommunikasjon mellom telefonen og vår tjener er kryptert.
-                                 Vi lagrer ingen informasjon om deg til andre formål enn for å gi dine lagkamerater din siste posisjon. Ingen posisjonshistorikk lagres på tjenersiden. Alle data fra inaktive lag slettes etter én måned.</string>
+                                 Vi lagrer ingen informasjon om deg til andre formål enn for å gi dine lagkamerater din siste posisjon. Ingen posisjonshistorikk lagres på tjenersiden. Alle data fra inaktive lag slettes etter én måned. Se mer informasjon på:
+                                 https://drgaff.net/jaktlaget-privacy/ </string>
 
     <string name="about_ad_header">Reklame:</string>
     <string name="about_ads">Appen Jaktlaget bruker reklame for å holde den gratis for brukere. Reklamen kan enten være personalisert (tilpasset feks. websider du ha besøkt, andre apper du har installert) eller ikke-personalisert.
