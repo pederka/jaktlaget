@@ -208,4 +208,11 @@
 
     <string name="channel_name">Jaktlaget er aktiv</string>
     <string name="channel_description">Viser deg når jaktlaget aktivt deler din position med resten av laget</string>
+    <string name="disclosure_header">Kan vi hente lokasjonsdata i bagrunnen?</string>
+    <string name="disclosure_text">Når du går AKTIV så deler appen din posisjon med resten av jaktlaget ditt i bakgrunnen. Når du skrur av AKTIV så stopper denne innsamlingen av data.
+        <br/><br/>Du kan takke nei til bruk av posisjonsdata, men da vil du ikke se andre eller dele din posisjon med et jaktlag.
+        <br/><br/>Er det greit at appen henter posisjonen din i bakgrunnen når du er i AKTIV modus?
+    </string>
+    <string name="disc_button_accept_text">Det er greit!</string>
+    <string name="disc_button_reject_text">Nei takk</string>
 </resources>

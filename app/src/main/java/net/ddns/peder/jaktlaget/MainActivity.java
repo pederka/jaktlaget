@@ -168,91 +168,6 @@ public class MainActivity extends AppCompatActivity implements
 
         createNotificationChannel();
 
-        ConsentInformation consentInformation = ConsentInformation.getInstance(this);
-        String[] publisherIds = {"pub-1180457891371684"};
-        consentInformation.requestConsentInfoUpdate(publisherIds, new ConsentInfoUpdateListener() {
-            @Override
-            public void onConsentInfoUpdated(ConsentStatus consentStatus) {
-                Log.i(tag, "Consent info updated");
-                if (consentStatus == ConsentStatus.PERSONALIZED) {
-                    Log.i(tag, "User has consented to personalized ads");
-                    //requestAds(true);
-                }
-                else if (consentStatus == ConsentStatus.NON_PERSONALIZED) {
-                    Log.i(tag, "User has not consented to personalized ads");
-                    //requestAds(false);
-                }
-                else {
-                    Log.i(tag, "User consent status unknown");
-                }
-                // User's consent status successfully updated.
-            }
-
-            @Override
-            public void onFailedToUpdateConsentInfo(String errorDescription) {
-                Log.i(tag, "Failed to update consent info. Not serving ads.");
-                // User's consent status failed to update.
-            }
-        });
-
-        URL privacyUrl = null;
-        try {
-            privacyUrl = new URL(Constants.privacy_url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        form = new ConsentForm.Builder(this, privacyUrl)
-                .withListener(new ConsentFormListener() {
-                    @Override
-                    public void onConsentFormLoaded() {
-                        Log.i(tag, "Consent form loaded successfully");
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        int consent = prefs.getInt(Constants.SHARED_PREF_AD_CONSENT, Constants.AD_UNKNOWN);
-                        if (consent == Constants.AD_UNKNOWN) {
-                            form.show();
-                        }
-                    }
-
-                    @Override
-                    public void onConsentFormOpened() {
-                        Log.i(tag, "Consent form opened");
-                        // Consent form was displayed.
-                    }
-
-                    @Override
-                    public void onConsentFormClosed(
-                            ConsentStatus consentStatus, Boolean userPrefersAdFree) {
-                        Log.i(tag, "User closed consent form info updated");
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        if (consentStatus == ConsentStatus.PERSONALIZED) {
-                            Log.i(tag, "User has consented to personalized ads");
-                            prefs.edit()
-                                    .putInt(Constants.SHARED_PREF_AD_CONSENT, Constants.AD_PERSONALIZED)
-                                    .apply();
-                            //requestAds(true);
-                        }
-                        else if (consentStatus == ConsentStatus.NON_PERSONALIZED) {
-                            Log.i(tag, "User has not consented to personalized ads");
-                            prefs.edit()
-                                    .putInt(Constants.SHARED_PREF_AD_CONSENT, Constants.AD_NONPERSONALIZED)
-                                    .apply();
-                            //requestAds(false);
-                        }
-                    }
-
-                    @Override
-                    public void onConsentFormError(String errorDescription) {
-                        Log.e(tag, errorDescription);
-                        // Consent form error.
-                    }
-                })
-                .withPersonalizedAdsOption()
-                .withNonPersonalizedAdsOption()
-                .build();
-
-        //form.load();
-
         br = new ServiceBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_SERVICE);
@@ -340,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-
         // Request permissions
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -348,18 +262,6 @@ public class MainActivity extends AppCompatActivity implements
 
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST);
-        } else {
-            startPositionUpdates();
-        }
-
-        // Request background location
-        if (Build.VERSION.SDK_INT > 28 && ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                     MY_PERMISSIONS_REQUEST);
         } else {
             startPositionUpdates();
@@ -475,6 +377,26 @@ public class MainActivity extends AppCompatActivity implements
              prefs.edit().putBoolean(Constants.SHARED_PREF_RUNNING, true).apply();
              Toast.makeText(getApplicationContext(), R.string.run_stop,
                      Toast.LENGTH_SHORT).show();
+         }
+         else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+             AlertDialog.Builder builder = new AlertDialog.Builder(this);
+             builder.setPositiveButton(R.string.disc_button_accept_text, new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
+                     ActivityCompat.requestPermissions((Activity) mContext,
+                             new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                             ACTIVATE_PERMISSION_REQUEST);
+                     runSwitch.setChecked(false);
+                 }
+             });
+             builder.setNegativeButton(R.string.disc_button_reject_text, new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
+                     runSwitch.setChecked(false);
+                 }
+             });
+             builder.setMessage(R.string.disclosure_text);
+             builder.setTitle(R.string.disclosure_header);
+             AlertDialog dialog = builder.create();
+             dialog.show();
          }
          else {
              // Request permission
